@@ -1,0 +1,191 @@
+@import "~@angular/material/theming";
+@import "./mixins.scss";
+
+// Fonts
+$custom-typography: mat-typography-config(
+   $font-family: "'Montserrat', sans-serif"
+);
+@include mat-core($custom-typography);
+
+// Custom palette (http://mcg.mbitson.com)
+$cei-green: (
+   50: #e0f8ea,
+   100: #b3efcb,
+   200: #80e4a9,
+   300: #4dd987,
+   400: #26d06d,
+   500: #00c853,
+   600: #00c24c,
+   700: #00bb42,
+   800: #00b439,
+   900: #00a729,
+   A100: #d1ffd9,
+   A200: #9effaf,
+   A400: #6bff85,
+   A700: #52ff70,
+   contrast: (
+      50: #000000,
+      100: #000000,
+      200: #000000,
+      300: #000000,
+      400: #ffffff,
+      500: #ffffff,
+      600: #ffffff,
+      700: #ffffff,
+      800: #ffffff,
+      900: #ffffff,
+      A100: #000000,
+      A200: #000000,
+      A400: #000000,
+      A700: #000000
+   )
+);
+
+/* For use in src/lib/core/theming/_palette.scss */
+$cei-blue: (
+   50: #e0f3fc,
+   100: #b3e2f7,
+   200: #80cff1,
+   300: #4dbbeb,
+   400: #26ade7,
+   500: #009ee3,
+   600: #0096e0,
+   700: #008cdc,
+   800: #0082d8,
+   900: #0070d0,
+   A100: #f8fbff,
+   A200: #c5e1ff,
+   A400: #92c6ff,
+   A700: #79b9ff,
+   contrast: (
+      50: #000000,
+      100: #000000,
+      200: #000000,
+      300: #000000,
+      400: #000000,
+      500: #ffffff,
+      600: #ffffff,
+      700: #ffffff,
+      800: #ffffff,
+      900: #ffffff,
+      A100: #000000,
+      A200: #000000,
+      A400: #000000,
+      A700: #000000
+   )
+);
+
+/* For use in src/lib/core/theming/_palette.scss */
+$cei-green-alt: (
+   50: #e4f8ea,
+   100: #bcecca,
+   200: #8fe0a7,
+   300: #62d483,
+   400: #40ca69,
+   500: #1ec14e,
+   600: #1abb47,
+   700: #16b33d,
+   800: #12ab35,
+   900: #0a9e25,
+   A100: #cbffd2,
+   A200: #98ffa7,
+   A400: #65ff7b,
+   A700: #4cff65,
+   contrast: (
+      50: #000000,
+      100: #000000,
+      200: #000000,
+      300: #ffffff,
+      400: #ffffff,
+      500: #ffffff,
+      600: #ffffff,
+      700: #ffffff,
+      800: #ffffff,
+      900: #ffffff,
+      A100: #000000,
+      A200: #000000,
+      A400: #000000,
+      A700: #000000
+   )
+);
+
+// Main light theme
+// $cei-theme-primary: mat-palette($cei-green, 600, 300, 900);
+$cei-theme-primary: mat-palette($cei-blue);
+$cei-theme-accent: mat-palette($mat-teal);
+$cei-theme-warn: mat-palette($mat-red);
+$cei-theme-white: mat-palette($mat-grey, 300);
+$cei-theme-grey: mat-palette($mat-grey, 400);
+$cei-theme-darkgrey: mat-palette($mat-grey, 500);
+
+$background-color: map_get($mat-grey, 200);
+$text-color: map_get($mat-red, 300);
+
+// Theme
+$cei-theme: mat-light-theme($cei-theme-primary, $cei-theme-accent, $cei-theme-warn);
+// Custom colors
+$custom-colors: (
+   cc-grey: mat-palette($mat-grey, 500)
+);
+$cei-theme: map-merge(
+   $cei-theme,
+   (
+      custom-colors: $custom-colors
+   )
+);
+
+// Insert custom background color
+$background: map-get($cei-theme, background);
+
+$background: map_merge(
+   $background,
+   (
+      background: $background-color
+   )
+);
+
+$cei-theme: map_merge(
+   $cei-theme,
+   (
+      background: $background
+   )
+);
+
+$text: map-get($cei-theme, foreground);
+
+$text: map_merge(
+   $text,
+   (
+      primary-text: $text-color
+   )
+);
+
+$cei-theme: map_merge(
+   $cei-theme,
+   (
+      foreground: $text
+   )
+);
+
+hr {
+   border-top: 1px solid mat-color($cei-theme-grey);
+}
+
+@include angular-material-theme($cei-theme);
+// Include theme styles for your custom components.
+@include mat-toolbar-theme($cei-theme);
+@include mat-nav-list-theme($cei-theme);
+
+// Alternative dark theme
+// $dark-primary: mat-palette($mat-blue-grey);
+$dark-primary: mat-palette($cei-green-alt);
+$dark-accent: mat-palette($mat-pink, 500);
+$dark-warn: mat-palette($mat-deep-orange);
+// Theme
+$cei-dark-theme: mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
+
+.cei-dark-theme {
+   @include angular-material-theme($cei-dark-theme);
+
+   $cei-theme-white: mat-palette($mat-red);
+}

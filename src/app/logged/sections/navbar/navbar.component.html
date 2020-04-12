@@ -1,0 +1,76 @@
+<mat-toolbar
+   *ngIf="user"
+   color="primary"
+   [ngClass]="{ 'mat-toolbar-left': !(isDarkTheme$ | async), 'mat-toolbar-left-alt': isDarkTheme$ | async }"
+>
+   <div fxFlex="80" fxLayoutAlign="start center">
+      <mat-icon fxFlex="20" fxFlexOffset="10">person_pin</mat-icon>
+      <span class="mat-subheading-1 m-0" fxFlex="80">{{ user.name }}</span>
+   </div>
+   <div fxFlex="20">
+      <button mat-icon-button [matMenuTriggerFor]="menuUser">
+         <mat-icon>keyboard_arrow_down</mat-icon>
+      </button>
+   </div>
+   <mat-menu #menuUser="matMenu">
+      <button mat-menu-item>
+         <mat-icon>face</mat-icon>
+         <span>Ver perfil</span>
+      </button>
+      <button mat-menu-item>
+         <mat-icon>help_outline</mat-icon>
+         <span>Ayuda</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+         <mat-icon>exit_to_app</mat-icon>
+         <span>Salir</span>
+      </button>
+   </mat-menu>
+</mat-toolbar>
+<mat-nav-list *ngIf="menu">
+   <div *ngFor="let module of menu.modules">
+      <span class="title-menu pl-5">{{ module.name }}</span>
+      <div class="my-5">
+         <a
+            *ngFor="let functionality of module.functionalities"
+            class="item-menu"
+            mat-list-item
+            routerLink="{{ routes[functionality.code] }}"
+            [routerLinkActive]="['is-active']"
+         >
+            <div
+               [ngSwitch]="functionality.code"
+               [ngClass]="{
+                  'mr-5': true,
+                  'text-secondary': true
+               }"
+            >
+               <mat-icon *ngSwitchCase="menuItems.HOME">
+                  home
+               </mat-icon>
+               <mat-icon [svgIcon]="'nuevo_pedido_simple'" *ngSwitchCase="menuItems.NEW_ORDER"> </mat-icon>
+               <mat-icon [svgIcon]="'mis_pedidos_simple'" *ngSwitchCase="menuItems.MY_ORDERS"> </mat-icon>
+               <mat-icon [svgIcon]="'pedidos_en_curso_simple'" *ngSwitchCase="menuItems.ACTIVE_ORDERS"> </mat-icon>
+               <mat-icon *ngSwitchCase="menuItems.HISTORICAL_ORDERS">
+                  history
+               </mat-icon>
+               <mat-icon [svgIcon]="'transferir_saldo_simple'" *ngSwitchCase="menuItems.TRANSFER_MONEY"> </mat-icon>
+               <mat-icon [svgIcon]="'movimientos'" *ngSwitchCase="menuItems.MOVEMENTS"> </mat-icon>
+               <mat-icon *ngSwitchCase="menuItems.STUDENT_LIST">
+                  list
+               </mat-icon>
+
+               <span *ngSwitchDefault> </span>
+            </div>
+            <span
+               [ngClass]="{
+                  'text-secondary-lighter': isDarkTheme$ | async,
+                  'text-secondary-darker': !(isDarkTheme$ | async)
+               }"
+            >
+               {{ functionality.name }}
+            </span>
+         </a>
+      </div>
+   </div>
+</mat-nav-list>

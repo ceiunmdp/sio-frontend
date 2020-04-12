@@ -1,0 +1,114 @@
+<!-- <mat-card class="mb-4" fxLayout="column">
+</mat-card> -->
+
+<ng-template [ngIf]="smallScreen" [ngIfElse]="bigScreen">
+   <mat-card>
+      <mat-vertical-stepper linear #stepper>
+         <mat-step>
+            <ng-container *ngTemplateOutlet="stepOne"></ng-container>
+         </mat-step>
+         <!-- <mat-step>
+            <ng-container *ngTemplateOutlet="stepTwo"></ng-container>
+         </mat-step>
+         <mat-step>
+            <ng-container *ngTemplateOutlet="stepThree"></ng-container>
+         </mat-step> -->
+      </mat-vertical-stepper>
+   </mat-card>
+</ng-template>
+
+<ng-template #bigScreen>
+   <mat-card>
+      <mat-horizontal-stepper linear #stepper>
+         <mat-step>
+            <ng-container *ngTemplateOutlet="stepOne"></ng-container>
+         </mat-step>
+         <!-- <mat-step>
+            <ng-container *ngTemplateOutlet="stepTwo"></ng-container>
+         </mat-step>
+         <mat-step>
+            <ng-container *ngTemplateOutlet="stepThree"></ng-container>
+         </mat-step> -->
+      </mat-horizontal-stepper>
+   </mat-card>
+</ng-template>
+
+<ng-template #stepOne>
+   <!-- <mat-step [stepControl]="firstFormGroup"> -->
+   <!-- Form -->
+   <ng-template matStepLabel>Buscar usuario</ng-template>
+   <!-- <form [formGroup]="firstFormGroup">
+            <mat-form-field>
+               <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
+            </mat-form-field>
+         </form> -->
+   <div>
+      <mat-tab-group mat-align-tabs="center">
+         <!-- DNI -->
+         <mat-tab>
+            <ng-template mat-tab-label>
+               <mat-icon [svgIcon]="'id_card'"></mat-icon>
+               DNI
+            </ng-template>
+            <div class="my-2" fxFlex="30">
+               <cei-input-text [type]="'text'" [placeholder]="'Ingrese el DNI'"></cei-input-text>
+            </div>
+            <div class="my-2">
+               <button mat-raised-button color="primary">Buscar</button>
+            </div>
+            <div *ngIf="true">
+               <mat-list>
+                  <mat-list-item>
+                     <span fxFlex.gt-md="40" fxFlex.lt-lg="45"><strong>Nombre</strong></span>
+                     <span fxFlex.gt-md="40" fxFlex.lt-lg="45"><strong>Email</strong></span>
+                  </mat-list-item>
+                  <mat-divider></mat-divider>
+                  <mat-list-item>
+                     <span fxFlex.gt-md="40" fxFlex.lt-lg="45">Manuel Nucci</span>
+                     <span fxFlex.gt-md="40" fxFlex.lt-lg="45">manuucci96@gmail.com</span>
+                  </mat-list-item>
+               </mat-list>
+            </div>
+         </mat-tab>
+
+         <!-- Name -->
+         <mat-tab>
+            <ng-template mat-tab-label>
+               <mat-icon [svgIcon]="'font'"></mat-icon>
+               Nombre
+            </ng-template>
+            Content 2
+         </mat-tab>
+      </mat-tab-group>
+      <div class="my-2">
+         <button mat-raised-button color="primary" matStepperNext [disabled]="true">Continuar</button>
+      </div>
+   </div>
+   <!-- </mat-step> -->
+</ng-template>
+
+<ng-template #stepTwo>
+   <mat-step [stepControl]="secondFormGroup">
+      <ng-template matStepLabel>Elegir importe</ng-template>
+      <!-- <form [formGroup]="secondFormGroup">
+            <mat-form-field>
+               <input matInput placeholder="Address" formControlName="secondCtrl" required>
+            </mat-form-field>
+            <div>
+               <button mat-button matStepperPrevious>Back</button>
+               <button mat-button matStepperNext>Next</button>
+            </div>
+         </form> -->
+   </mat-step>
+</ng-template>
+
+<ng-template #stepThree>
+   <mat-step>
+      <ng-template matStepLabel>¡Operación finalizada!</ng-template>
+      You are now done.
+      <div>
+         <button mat-button matStepperPrevious>Back</button>
+         <button mat-button (click)="stepper.reset()">Reset</button>
+      </div>
+   </mat-step>
+</ng-template>

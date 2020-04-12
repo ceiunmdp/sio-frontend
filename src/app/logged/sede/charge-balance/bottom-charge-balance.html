@@ -1,0 +1,52 @@
+<div fxLayoutAlign="center stretch">
+   <h2 class="text-secondary-darker pt-1">
+      Carga de saldo
+   </h2>
+</div>
+<div fxLayout="column" fxLayoutGap="3%" class="mx-3 my-5">
+   <div fxLayout="row wrap" fxLayoutAlign="space-between stretch">
+      <div fxLayout="row wrap" fxLayoutAlign="start center">
+         <mat-icon class="mrs-1 text-secondary">perm_identity</mat-icon>
+         <span> {{this.chargeBalanceUser.name + this.chargeBalanceUser.surname}} </span>
+      </div>
+      <div fxLayout="row wrap" fxLayoutAlign="start center">
+         <mat-icon class="mrs-1 text-secondary">assignment_ind</mat-icon>
+         <span> {{this.chargeBalanceUser.dni | number}} </span>
+      </div>
+      <div fxLayout="row wrap" fxLayoutAlign="start center">
+         <mat-icon class=" text-primary">attach_money</mat-icon>
+         <span> {{this.chargeBalanceUser.balance }} </span>
+      </div>
+   </div>
+
+   <form
+      [formGroup]="this.chargeBalanceForm"
+      fxLayout="row wrap"
+      fxLayoutAlign="center center"
+      (submit)="this.onClickChargeBalance()"
+      class=" mt-3"
+   >
+      <cei-number-input
+         fxFlex="70"
+         [fontSize]="'16px'"
+         [form]="this.chargeBalanceForm"
+         [name]="this.MONEY"
+         [minValue]="1"
+         [placeholder]="'Ingrese el saldo a cargar'"
+         [prefix]="'$'"
+         class="mb-5 mt-4"
+      >
+      </cei-number-input>
+      <div fxFlex="100" fxLayout="row" class="mt-5" fxLayoutAlign="space-between ">
+         <button type="button" (click)="this.onCancelCharge()" fxFlex="45%" mat-raised-button color="warn">
+            Cancelar
+         </button>
+         <button type="submit" [disabled]="!chargeBalanceForm.valid" fxFlex="45%" mat-raised-button color="primary">
+            Cargar
+         </button>
+      </div>
+   </form>
+</div>
+
+<swal (confirm)="onConfirmSwal()" #responseSwal> </swal>
+<swal (confirm)="chargeBalance()" #questionSwal> </swal>

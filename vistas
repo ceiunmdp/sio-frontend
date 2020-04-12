@@ -1,0 +1,67 @@
+Start Page
+    Registro
+    Login
+    Video tutorial
+Modal Form para registro de usuario
+Modal Sign-in para loguearse que incluye el olvidó contraseña
+    Cambia su comportamiento en función de si se loguea u olvidó su contraseña
+
+----------------------
+
+Home (usuario común)
+    Barra de navegación
+        Home (ícono)
+        Pedidos
+            Nuevo Pedido (dinámico)
+            Mis Pedidos
+            Ver Pedido (dinámico)
+        Material
+        Precios
+        Ayuda
+            Manual de uso
+            Contacto
+
+        Símbolo $ con el saldo
+        Notificaciones
+        Nombre o foto de usuario con desplegable
+            Editar perfil
+            Cerrar sesión
+    Estado de los pedidos en curso (si existiesen)
+    Accesos directos a las funcionalidades del sitio
+        Nuevo Pedido -> nos lleva al buscador de archivos
+        Mis Pedidos
+        Movimientos
+        Manual de uso
+    Blog de noticias del CEI (plan a futuro una vez que el sistema de impresiones funcione)
+
+Mis Pedidos: historial de pedidos hasta la fecha, tanto los completados como los pendientes
+
+Nuevo pedido: contiene tanto un buscador de archivos como la opción de subir material
+Modal para customizar archivo seleccionado
+Administrar pedido: se pueden ver todos los documentos elegidos y modificarlos si fuera
+necesario. Además aquí es donde se podrá configurar el anillado.
+
+Movimientos: tabla con las cargas de saldo y compras realizadas en el sitio.
+
+----------------------
+
+Home (usuario becado)
+    Barra de navegación
+        Copias disponibles próximo al saldo
+
+----------------------
+
+Home (cátedra)
+    Subir material
+
+----------------------
+
+Home (administrador)
+    Administrar usuarios - CRUD de usuarios/becados
+    Administrar cátedras - CRUD de cátedras
+
+----------------------
+
+Home (sede)
+    Pedidos
+    Cargar saldo

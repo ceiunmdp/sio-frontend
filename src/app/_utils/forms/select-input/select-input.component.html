@@ -1,0 +1,19 @@
+ <div fxLayout="row">
+    <mat-form-field fxFlex="100" [formGroup]="form">
+       <mat-label *ngIf="this.label">
+          <mat-icon *ngIf="this.icon">{{ icon }}</mat-icon>
+          <b>{{ label }}</b>
+       </mat-label>
+       <mat-select [formControlName]="name" id="{{name}}" placeholder="{{placeholder}}"
+          [disabled]="disabled? '' : null">
+          <mat-option *ngIf="defaultValue">{{ defaultValue }}</mat-option>
+          <mat-option value="{{ proxyCalculateId()(element) }}" *ngFor="let element of elements">
+             {{ proxyCalculateName()(element) }}
+          </mat-option>
+       </mat-select>
+       <mat-error *ngIf="this.form.get(this.name).errors &&
+           (this.form.get(this.name).dirty || this.form.get(this.name).touched)">
+          {{ objectValues(this.form.get(this.name).errors)[0] }}
+       </mat-error>
+    </mat-form-field>
+ </div>

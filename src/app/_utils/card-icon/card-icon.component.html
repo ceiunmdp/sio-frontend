@@ -1,0 +1,24 @@
+<mat-card
+   class="px-0"
+   [ngClass]="{ 'card-shadow': isMouseOut, 'mat-elevation-z12': !isMouseOut, clickable: 'clickable' }"
+   (mouseover)="changeStyle($event)"
+   (mouseout)="changeStyle($event)"
+>
+   <mat-card-header fxLayout="row wrap" fxLayoutAlign="center">
+      <mat-card-subtitle fxLayout="row wrap" fxLayoutAlign="center">
+         <mat-icon
+            class="color-on-hover-card"
+            mat-list-icon
+            [style.width.px]="this.iconWidth"
+            [style.height.px]="this.iconHeight"
+            [svgIcon]="icon"
+         >
+         </mat-icon>
+      </mat-card-subtitle>
+      <mat-card-subtitle fxLayout="row wrap" fxLayoutAlign="center">
+         <span class="color-on-hover-card">
+            {{ text }}
+         </span>
+      </mat-card-subtitle>
+   </mat-card-header>
+</mat-card>

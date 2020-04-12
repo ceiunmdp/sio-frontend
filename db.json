@@ -1,0 +1,142 @@
+{
+   "orders": [
+      {
+         "id": 1,
+         "userId": 3,
+         "campus": {
+            "id": 2,
+            "name": "Anexo"
+         },
+         "state": {
+            "id": 1,
+            "name": "Solicitado"
+         },
+         "tracking": [
+            {
+               "state": {
+                  "id": 1,
+                  "name": "Solicitado"
+               },
+               "date": "2020-03-07T14:34:17.780Z"
+            },
+            {
+               "state": {
+                  "id": 2,
+                  "name": "En curso"
+               },
+               "date": "2020-03-07T16:34:17.780Z"
+            }
+         ],
+         "amountPaid": 102,
+         "totalPrice": 102,
+         "dateOrdered": "2020-03-07T14:34:17.780Z",
+         "orderFiles": [
+            {
+               "id": 1,
+               "file": {
+                  "id": 1,
+                  "name": "Primer parcial1",
+                  "format": "pdf",
+                  "numberOfSheets": 40,
+                  "type": 1,
+                  "course": {
+                     "id": 1,
+                     "name": "Algebra A"
+                  }
+               },
+               "state": {
+                  "id": 1,
+                  "name": "Por imprimir"
+               },
+               "configuration": {
+                  "id": 1,
+                  "doubleFace": false,
+                  "color": false,
+                  "slidesPerSheet": "2",
+                  "fromUntil": "1-50",
+                  "ringedGroup": {
+                     "id": 1,
+                     "item": {
+                        "id": 5,
+                        "name": "Anillado mediano"
+                     },
+                     "price": 40
+                  },
+                  "ringedOrder": 2
+               },
+               "price": 25
+            },
+            {
+               "id": 1,
+               "file": {
+                  "id": 1,
+                  "name": "Primer parcial2",
+                  "format": "pdf",
+                  "numberOfSheets": 40,
+                  "type": 1,
+                  "course": {
+                     "id": 1,
+                     "name": "Algebra A"
+                  }
+               },
+               "state": {
+                  "id": 1,
+                  "name": "Por imprimir"
+               },
+               "configuration": {
+                  "id": 1,
+                  "doubleFace": false,
+                  "color": false,
+                  "slidesPerSheet": "2",
+                  "fromUntil": "1-50",
+                  "ringedGroup": {
+                     "id": 2,
+                     "item": {
+                        "id": 3,
+                        "name": "Anillado pequeño"
+                     },
+                     "price": 40
+                  },
+                  "ringedOrder": 1
+               },
+               "price": 25
+            },
+            {
+               "id": 1,
+               "file": {
+                  "id": 1,
+                  "name": "Primer parcial3",
+                  "format": "pdf",
+                  "numberOfSheets": 40,
+                  "type": 1,
+                  "course": {
+                     "id": 1,
+                     "name": "Algebra A"
+                  }
+               },
+               "state": {
+                  "id": 1,
+                  "name": "Por imprimir"
+               },
+               "configuration": {
+                  "id": 1,
+                  "doubleFace": false,
+                  "color": false,
+                  "slidesPerSheet": "2",
+                  "fromUntil": "1-50",
+                  "ringedGroup": {
+                     "id": 1,
+                     "item": {
+                        "id": 5,
+                        "name": "Anillado mediano"
+                     },
+                     "price": 40
+                  },
+                  "ringedOrder": 1
+               },
+               "price": 25
+            }
+         ]
+      }
+   ]
+}

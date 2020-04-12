@@ -1,0 +1,27 @@
+<!-- <p>
+   <mat-slide-toggle [checked]="isDarkTheme | async" (change)="toggleDarkTheme($event.checked)">Dark theme
+   </mat-slide-toggle>
+</p> -->
+<!-- <div id="rectangle" fxLayout="row" fxLayoutAlign="start center" class="bg-primary">
+   <a href="/cei/home">
+      <img fxFlexOffset="2%" src="../../../assets/images/cei3.png" alt="Logo CEI" height="80%">
+   </a>
+</div> -->
+
+
+<mat-toolbar color="primary" class="position-sticky mat-toolbar-right">
+   <div fxLayout="row" fxFlex="100">
+      <div fxFlex="30" fxLayoutAlign="start center">
+         <mat-icon class="example-icon" aria-hidden="false" aria-label="Example user verified icon">verified_user
+         </mat-icon>
+         <span class="mat-small">(Logo del cei)</span>
+      </div>
+      <div fxFlex="40" fxLayoutAlign="center center">
+         Sistema de Impresiones
+      </div>
+      <div fxFlexOffset="20" fxFlex="10" fxLayoutAlign="end center">
+         <cei-toggle-theme class="ml-5"></cei-toggle-theme>
+         <!-- <span class="mat-subheading-2 m-0" fxFlex="80">¿tema?</span> -->
+      </div>
+   </div>
+</mat-toolbar>

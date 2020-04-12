@@ -1,0 +1,65 @@
+ul {
+   list-style-type: circle;
+}
+
+.trackingList mat-list-item {
+   position: relative;
+   padding: 10px;
+}
+
+.trackingList mat-list-item:before {
+   content: "";
+   width: 16px;
+   height: 16px;
+   border-radius: 50%;
+   background: #d8d8d8;
+   position: absolute;
+   left: -15px;
+   top: 50%;
+   transform: translateY(-55%);
+}
+
+// last circle
+.trackingList mat-list-item:last-child:before {
+   content: "";
+   width: 16px;
+   height: 16px;
+   border-radius: 50%;
+   background: lightgreen;
+   position: absolute;
+   left: -15px;
+   top: 50%;
+   transform: translateY(-55%);
+}
+
+.trackingList mat-list-item:not(:last-child):after {
+   content: "";
+   width: 2px;
+   height: 100%;
+   background: #d8d8d8;
+   position: absolute;
+   left: -8px;
+   top: 50%;
+}
+
+.overlap {
+   position: absolute;
+   top: -28px;
+}
+
+.container {
+   width: 100%;
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+   align-items: center;
+}
+
+.line {
+   flex: 1;
+}
+
+.text {
+   padding-left: 10px;
+   padding-right: 10px;
+}

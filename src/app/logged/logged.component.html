@@ -1,0 +1,42 @@
+<mat-sidenav-container>
+   <mat-sidenav #snav style="width: 210px;" [mode]="mode" [opened]="opened" [fixedInViewport]="'true'">
+      <cei-navbar></cei-navbar>
+   </mat-sidenav>
+   <mat-sidenav-content class="content">
+      <mat-toolbar
+         [ngClass]="{
+            'mat-elevation-z6': !(isDarkTheme$ | async),
+            'toolbar-right': true,
+            'mat-toolbar-right': !(isDarkTheme$ | async)
+         }"
+         color="primary"
+         class="position-sticky"
+         (scroll)="onWindowScroll($event)"
+      >
+         <button mat-icon-button fxHide="true" fxShow.lt-md (click)="snav.toggle()">
+            <mat-icon>menu</mat-icon>
+         </button>
+
+         <span fxFlexOffset="2" fxFlex="58">{{ message?.title }}</span>
+         <div fxFlexOffset="30" fxLayoutAlign="start center">
+            <cei-toggle-theme class="mr-5"></cei-toggle-theme>
+            <button mat-icon-button [matMenuTriggerFor]="menuNotifications">
+               <mat-icon matBadge="15" matBadgeColor="warn">notifications_none</mat-icon>
+            </button>
+         </div>
+      </mat-toolbar>
+      <div class="mt-4 mx-5">
+         <router-outlet></router-outlet>
+         <!-- <cei-footer></cei-footer> -->
+      </div>
+   </mat-sidenav-content>
+</mat-sidenav-container>
+
+<mat-menu #menuNotifications="matMenu">
+   <button mat-menu-item>
+      <span>Notificacion 1</span>
+   </button>
+   <button mat-menu-item>
+      <span>Notificacion 1</span>
+   </button>
+</mat-menu>

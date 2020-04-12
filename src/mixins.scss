@@ -1,0 +1,188 @@
+// Import library functions for theme creation.
+@import "~@angular/material/theming";
+
+// Define a mixin that accepts a theme and outputs the theme-specific styles.
+@mixin mat-toolbar-theme($theme) {
+   // Extract the palettes you need from the theme definition.
+   $primary: map-get($theme, primary);
+   $accent: map-get($theme, accent);
+   $warn: map-get($theme, warn);
+
+   $bg-alt: mat-palette($mat-grey, 800);
+
+   $foreground: map-get($theme, foreground);
+   $secondary-text: map-get($foreground, secondary-text);
+
+   // Define any styles affected by the theme.
+   .mat-toolbar {
+      // Use mat-color to extract individual colors from a palette.
+      // background-color: mat-color($primary);
+      // border-color: mat-color($accent);
+   }
+
+   .mat-toolbar-right {
+      // Use mat-color to extract individual colors from a palette.
+      background-color: mat-color($primary) !important;
+      border-color: mat-color($accent, A400);
+      color: white;
+   }
+   .mat-toolbar-right-alt {
+      // Use mat-color to extract individual colors from a palette.
+      background-color: mat-color($bg-alt);
+      // background-color: mat-color($primary);
+      border-color: mat-color($accent, A400);
+      color: white;
+   }
+
+   .mat-toolbar-left {
+      // Use mat-color to extract individual colors from a palette.
+      background-color: mat-color($primary, darker);
+      border-color: mat-color($accent, A400);
+      color: white;
+   }
+   .mat-toolbar-left-alt {
+      // Use mat-color to extract individual colors from a palette.
+      // background-color: mat-color($primary, darker);
+      border-color: mat-color($accent, A400);
+      color: white;
+   }
+
+   .is-active {
+      color: mat-color($accent) !important;
+   }
+   //
+
+   // .is-active {
+   //    background-color: mat-color($primary);
+   // }
+
+   .is-active.item-menu {
+      color: mat-color($primary) !important;
+      -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+      -moz-box-sizing: border-box; /* Firefox, other Gecko */
+      box-sizing: border-box; /* Opera/IE 8+ */
+      border-left-style: solid;
+      border-width: 4px;
+   }
+
+   .is-active.item-menu span {
+      color: mat-color($primary) !important;
+   }
+
+   .is-active .mat-icon {
+      color: mat-color($primary);
+   }
+
+   .mat-nav-list .title-menu {
+      color: $secondary-text;
+      font-size: 13px;
+   }
+
+   .item-menu {
+      //   color: mat-color($accent, lighter) !important;
+      font-size: 14px !important;
+   }
+
+   li > .mat-tree-node:hover {
+      color: mat-color($accent);
+   }
+
+   span.warn {
+      color: mat-color($warn);
+   }
+
+   span.primary {
+      color: mat-color($primary);
+   }
+
+   span.accent {
+      color: mat-color($accent);
+   }
+
+   .text-warn {
+      color: mat-color($warn) !important;
+   }
+
+   .text-warn-lighter {
+      color: mat-color($warn, lighter) !important;
+   }
+
+   .text-warn-darker {
+      color: mat-color($warn, darker) !important;
+   }
+
+   .text-primary {
+      color: mat-color($primary) !important;
+   }
+
+   .text-primary-lighter {
+      color: mat-color($primary, lighter) !important;
+   }
+
+   .text-primary-darker {
+      color: mat-color($primary, darker) !important;
+   }
+
+   .text-accent {
+      color: mat-color($accent) !important;
+   }
+
+   .text-accent-lighter {
+      color: mat-color($accent, lighter) !important;
+   }
+
+   .text-accent-darker {
+      color: mat-color($accent, darker) !important;
+   }
+
+   .swal2-title,
+   .swal2-content {
+      //   font: 500 20px/32px 'Montserrat', sans-serif !important;
+      font-family: "Montserrat", sans-serif !important;
+   }
+
+   .swal2-confirm {
+      //   color: mat-color($primary) !important;
+      background-color: mat-color($accent) !important;
+   }
+
+   .swal2-cancel {
+      //   color: mat-color($primary) !important;
+      background-color: mat-color($warn) !important;
+   }
+
+   .mat-snack-bar-container {
+      background-color: mat-color($warn) !important;
+      //   background-color: white !important;
+      //   color: white;
+   }
+
+   .mat-card:hover .color-on-hover-card.mat-icon {
+      @extend .text-primary;
+   }
+
+   .mat-card:hover span.color-on-hover-card {
+      @extend .text-primary-darker;
+   }
+}
+
+// No anda el de abajo
+@mixin mat-nav-list-theme($theme) {
+   $primary: map-get($theme, primary);
+   $foreground: map-get($theme, foreground);
+   $background: map-get($theme, background);
+   $secondary-text: map-get($foreground, secondary-text);
+   $bg-color: map-get($background, disabled-button-toggle);
+
+   .mat-nav-list .title-menu {
+      color: grey;
+   }
+
+   // .mat-nav-list .item-menu {
+   //    font-weight: bold;
+   // }
+
+   // .mat-nav-list .item-menu.is-active {
+   //    background-color: $bg-color;
+   // }
+}

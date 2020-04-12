@@ -1,0 +1,26 @@
+<!-- <mat-slide-toggle [checked]="isDarkTheme" (change)="toggleDarkTheme($event.checked)">
+   <span class="mat-body-2">Dark theme</span>
+</mat-slide-toggle> -->
+
+<button mat-icon-button [matMenuTriggerFor]="menuTheme">
+   <mat-icon matBadge="15" matBadgeColor="warn">brush</mat-icon>
+</button>
+
+<mat-menu #menuTheme="matMenu" style="z-index: 2000 !important;">
+   <!-- <mat-radio-group labelPosition="before" fxLayout="column">
+      <mat-radio-button [value]="0">
+         Light
+      </mat-radio-button>
+      <mat-radio-button [value]="1">
+         Dark
+      </mat-radio-button>
+   </mat-radio-group> -->
+   <button mat-menu-item (click)="toggleDarkTheme(false)" fxFlex="100" fxLayoutAlign="space-between center">
+      <span>Light</span>
+      <mat-icon *ngIf="!isDarkTheme">checked</mat-icon>
+   </button>
+   <button mat-menu-item (click)="toggleDarkTheme(true)" fxFlex="100" fxLayoutAlign="space-between center">
+      <span>Dark</span>
+      <mat-icon *ngIf="isDarkTheme">checked</mat-icon>
+   </button>
+</mat-menu>

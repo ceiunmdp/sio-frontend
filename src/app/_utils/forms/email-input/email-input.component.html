@@ -1,0 +1,18 @@
+<div fxLayout="row">
+   <mat-form-field fxFlex="100" [formGroup]="form">
+      <mat-label *ngIf="this.label">
+         <mat-icon *ngIf="this.icon">{{ icon }}</mat-icon>
+         <b>{{ label }}</b>
+      </mat-label>
+      <input matInput [formControlName]="name" id="{{name}}" name="{{name}}" type="email" placeholder="{{placeholder}}"
+         [readonly]="readonly" [attr.disabled]="disabled? '' : null">
+      <button [disabled]="!this.form.get(this.name).value || this.form.get(this.name).disabled" type="button" mat-button
+         *ngIf="this.clearable" matSuffix mat-icon-button aria-label="Clear" (click)="this.form.get(this.name).reset()">
+         <mat-icon>close</mat-icon>
+      </button>
+      <mat-error
+         *ngIf="this.form.get(this.name).errors && (this.form.get(this.name).dirty || this.form.get(this.name).touched)">
+         {{ objectValues(this.form.get(this.name).errors)[0] }}
+      </mat-error>
+   </mat-form-field>
+</div>

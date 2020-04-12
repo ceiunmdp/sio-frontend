@@ -1,0 +1,76 @@
+<mat-toolbar>
+   <footer>
+      <div fxLayout="row wrap" fxLayoutAlign="space-evenly center" class="bg-primary py-2">
+         <div class="item" fxFlex="0 1 auto" fxFlex.xs="0 1 60%" ngClass.xs="flex-item py-4">
+            <div fxLayout="column" fxLayoutAlign="start center">
+               <mat-list dense>
+                  <mat-list-item>
+                     <h3><strong> Contacto </strong></h3>
+                  </mat-list-item>
+                  <mat-divider></mat-divider>
+                  <mat-list-item>
+                     <mat-icon mat-list-icon> home </mat-icon>
+                     <h4 mat-line>Av. Juan B. Justo 4302</h4>
+                  </mat-list-item>
+                  <mat-list-item>
+                     <mat-icon mat-list-icon> phone </mat-icon>
+                     <h4 mat-line>+54 0223 481-6600</h4>
+                  </mat-list-item>
+                  <mat-list-item>
+                     <mat-icon mat-list-icon> email </mat-icon>
+                     <h4 mat-line>cei@fi.mdp.edu.ar</h4>
+                  </mat-list-item>
+               </mat-list>
+            </div>
+         </div>
+         <!-- No puedo centrar la imagen en mobile -->
+         <div class="item" fxFlex="0 1 auto" ngClass.xs="flex-item pr-5">
+            <div fxLayout="column" fxLayoutAlign="start center">
+               <img src="../../../assets/images/cei3.png" alt="Logo CEI" height="150">
+            </div>
+         </div>
+         <div class="item" fxFlex="0 1 auto" fxFlex.xs="0 1 40%" ngClass.xs="flex-item py-4">
+            <div fxLayout="column" fxLayoutAlign="start center">
+               <mat-list dense>
+                  <mat-list-item>
+                     <h3><strong> Seguinos </strong></h3>
+                  </mat-list-item>
+                  <mat-divider></mat-divider>
+                  <mat-list-item>
+                     <mat-nav-list>
+                        <a mat-list-item href="https://www.facebook.com/cei.unmdp/" target="_blank">
+                           <mat-icon mat-list-icon svgIcon="facebook">
+                           </mat-icon>
+                           <h4 matLine>Facebook</h4>
+                        </a>
+                     </mat-nav-list>
+                  </mat-list-item>
+                  <mat-list-item>
+                     <mat-nav-list>
+                        <a mat-list-item href="https://www.instagram.com/cei_unmdp/" target="_blank">
+                           <mat-icon mat-list-icon svgIcon="instagram"></mat-icon>
+                           <h4 mat-line>Instagram</h4>
+                        </a>
+                     </mat-nav-list>
+                  </mat-list-item>
+                  <mat-list-item>
+                     <mat-nav-list>
+                        <a mat-list-item href="https://twitter.com/cei_unmdp/" target="_blank">
+                           <mat-icon mat-list-icon svgIcon="twitter"></mat-icon>
+                           <h4 mat-line>Twitter</h4>
+                        </a>
+                     </mat-nav-list>
+                  </mat-list-item>
+               </mat-list>
+            </div>
+         </div>
+      </div>
+      <div class="row" fxLayoutAlign="space-evenly center" class="bg-dark pt-1" ngClass.xs="pt-4">
+         <div class="item">
+            <div fxLayout="column" fxLayoutAlign="space-around center">
+               <h4>© 2019 Copyright: SEM Soluciones</h4>
+            </div>
+         </div>
+      </div>
+   </footer>
+</mat-toolbar>

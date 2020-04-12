@@ -1,0 +1,45 @@
+<div fxLayout="row wrap" fxLayoutAlign="space-between">
+   <!-- Accesos directos -->
+   <div class="mb-3" fxLayout="row wrap" fxLayoutAlign="space-between" fxFlex="100">
+      <cei-card-icon
+         ceiMaterialElevation
+         fxFlex="48"
+         [icon]="'pedidos_en_curso'"
+         [text]="'Pedidos en curso'"
+         [routerLink]="routes.ACTIVE_ORDERS"
+         routerLinkActive="router-link-active"
+      >
+      </cei-card-icon>
+      <cei-card-icon
+         ceiMaterialElevation
+         fxFlex="48"
+         [icon]="'cargar_saldo'"
+         [text]="'Cargar saldo'"
+         [routerLink]="routes.STUDENT_LIST"
+      >
+      </cei-card-icon>
+   </div>
+
+   <!-- Pedidos en curso -->
+   <mat-card class="m-0 mb-3 card-shadow" fxFlex="100" [ngClass.lt-md]="{ 'border-radius-0': true }">
+      <mat-card-header>
+         <mat-card-subtitle><span class="mat-h3">Pedidos pendientes</span></mat-card-subtitle>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content>
+         <mat-list class="mx-3">
+            <mat-list-item *ngFor="let pedido of pedidos">
+               <span fxFlex.gt-md="40" fxFlex.lt-lg="45"> {{ pedido.nombre }}</span>
+               <span fxFlex.gt-md="40" fxFlex.lt-lg="45"> {{ pedido.estado }}</span>
+               <button fxHide="true" fxShow.gt-md mat-raised-button fxFlex="20" color="primary">Ver más</button>
+               <button fxLayoutAlign="center" fxHide="true" fxShow.lt-lg mat-mini-fab color="primary">
+                  <mat-icon>search</mat-icon>
+               </button>
+            </mat-list-item>
+         </mat-list>
+      </mat-card-content>
+      <mat-card-footer>
+         <!-- Para cargar saldo -->
+      </mat-card-footer>
+   </mat-card>
+</div>
