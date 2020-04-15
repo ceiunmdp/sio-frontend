@@ -70,12 +70,8 @@
    </mat-card>
 </div>
 <mat-menu #menuUser="matMenu" style="min-width: 600px !important;">
-   <button
-      *ngIf="!this.historicOrdersShow; else activeOrdersShow"
-      mat-menu-item
-      fxLayoutAlign="start center"
-      (click)="this.getHistoricOrders()"
-   >
+   <button *ngIf="!this.historicOrdersShow; else activeOrdersShow" mat-menu-item fxLayoutAlign="start center"
+      (click)="this.getHistoricOrders()">
       <mat-icon>find_replace</mat-icon>
       <span>Mostrar el historial de pedidos</span>
    </button>
@@ -86,3 +82,4 @@
       </button>
    </ng-template>
 </mat-menu>
+<cei-alert-error #alertError></cei-alert-error>

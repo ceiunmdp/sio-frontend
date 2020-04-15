@@ -9,7 +9,7 @@ import { map } from "rxjs/operators";
    providedIn: "root"
 })
 export class SedeService {
-   constructor(private http: HttpClient) {}
+   constructor(private http: HttpClient) { }
 
    getOrders(active?: boolean): Observable<Order[]> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
@@ -76,6 +76,70 @@ export class SedeService {
          .pipe(
             map<HttpResponse<any>, any>(response => {
                return response.body;
+            })
+         );
+   }
+
+   patchOrderFile(orderId: number, orderFileId: number, stateId: number): Observable<any> {
+      const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      let body;
+
+      body = {
+         state: {
+            id: stateId
+         }
+      };
+
+      return this.http
+         .patch<any>(`${environment.apiUrl}/user/orders/${orderId}/order-files/${orderFileId}`, JSON.stringify(body), {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe(
+            map<HttpResponse<any>, any>(response => {
+               return response.body.data;
+            })
+         );
+   }
+
+   patchOrderRing(orderId: number, ringGroupId: number, stateId: number): Observable<any> {
+      const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      let body;
+
+      body = {
+         state: {
+            id: stateId
+         }
+      };
+
+      return this.http
+         .patch<any>(`${environment.apiUrl}/user/orders/${orderId}/ringed-groups/${ringGroupId}`, JSON.stringify(body), {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe(
+            map<HttpResponse<any>, any>(response => {
+               return response.body.data;
+            })
+         );
+   }
+
+   patchOrder(orderId: number, stateId: number): Observable<any> {
+      const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      let body;
+      body = {
+         state: {
+            id: stateId
+         }
+      };
+      return this.http
+         .patch<any>(`${environment.apiUrl}/user/orders/${orderId}`, JSON.stringify(body), {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe(
+            map<HttpResponse<any>, any>(response => {
+               return response.body.data;
             })
          );
    }

@@ -7,12 +7,19 @@
    </h2>
 </div>
 <div class="my-4">
+   <div>
+      <h4 class="text-secondary">Estado:
+         <span class="text-secondary-darker">
+            {{this.order.state.name}}
+         </span>
+      </h4>
+   </div>
    <mat-accordion>
-      <mat-expansion-panel *ngFor="let orderFile of this.order.orderFiles; let i=index" [expanded]="i === 0">
+      <mat-expansion-panel *ngFor="let orderFile of this.order.orderFiles; let i=index">
          <mat-expansion-panel-header>
             <mat-panel-description>
                <span>
-                  <span [ngClass]="{'text-primary': orderFile.state.id == ORDER_STATES.POR_IMPRIMIR}">
+                  <span [ngClass]="{'text-primary': orderFile.state.id == FILE_STATES.POR_IMPRIMIR}">
                      {{ orderFile.state.name }}
                   </span>
                   - {{orderFile.file.name | titlecase}}
@@ -55,12 +62,8 @@
             </div>
             <div fxLayout="row" class="mt-2">
                <div fxFlex="60" fxLayoutAlign="start center">
-                  <button
-                     [color]="'accent'"
-                     *ngIf="orderFile.state.id == ORDER_STATES.IMPRESO; else spanPorImprimir"
-                     mat-button
-                     (click)="onChangeFileState(order.id, orderFile.id,ORDER_STATES.POR_IMPRIMIR)"
-                  >
+                  <button [color]="'accent'" *ngIf="orderFile.state.id == FILE_STATES.IMPRESO; else spanPorImprimir"
+                     mat-button (click)="onChangeFileState(order.id, orderFile.id,FILE_STATES.POR_IMPRIMIR)">
                      Por imprimir
                   </button>
                   <ng-template #spanPorImprimir>
@@ -69,17 +72,11 @@
                      </span>
                   </ng-template>
 
-                  <mat-icon
-                     class="text-secondary"
-                     [ngStyle]="{'transform': orderFile.state.id == ORDER_STATES.IMPRESO ? 'rotate(180deg)' : ''}"
-                     >label_important</mat-icon
-                  >
-                  <button
-                     *ngIf="orderFile.state.id == ORDER_STATES.POR_IMPRIMIR; else spanImpreso"
-                     mat-button
-                     [color]="'accent'"
-                     (click)="onChangeFileState(order.id, orderFile.id,ORDER_STATES.IMPRESO)"
-                  >
+                  <mat-icon class="text-secondary"
+                     [ngStyle]="{'transform': orderFile.state.id == FILE_STATES.IMPRESO ? 'rotate(180deg)' : ''}">
+                     label_important</mat-icon>
+                  <button *ngIf="orderFile.state.id == FILE_STATES.POR_IMPRIMIR; else spanImpreso" mat-button
+                     [color]="'accent'" (click)="onChangeFileState(order.id, orderFile.id,FILE_STATES.IMPRESO)">
                      Imprimir
                   </button>
                   <ng-template #spanImpreso>
@@ -103,7 +100,7 @@
             <mat-panel-description>
                <span>
                   <b>
-                     {{ringed.price | moneda}} - {{ ringed.name | titlecase}}
+                     {{ringed.state.name}} - {{ ringed.name | titlecase}}
                   </b>
                </span>
             </mat-panel-description>
@@ -117,7 +114,37 @@
                   <span class="text-secondary-darker"> <b>{{fileRinged.name}}</b> &nbsp; ({{fileRinged.course}}) </span>
                </mat-list-item>
             </mat-list>
+            <div class="separator separator-center mt-1">
+               <mat-icon class="text-secondary">check_circle_outline</mat-icon>
+            </div>
+
+            <div fxLayoutAlign="center center">
+               <button [color]="'accent'" *ngIf="ringed.state.id == RING_STATES.ANILLADO; else spanPorAnillar"
+                  mat-button (click)="onChangeRingState(order.id, ringed.id, RING_STATES.POR_ANILLAR)">
+                  Por anillar
+               </button>
+               <ng-template #spanPorAnillar>
+                  <span class="text-secondary mr-2">
+                     Por anillar
+                  </span>
+               </ng-template>
+
+               <mat-icon class="text-secondary"
+                  [ngStyle]="{'transform': ringed.state.id == RING_STATES.ANILLADO ? 'rotate(180deg)' : ''}">
+                  label_important</mat-icon>
+               <button *ngIf="ringed.state.id == RING_STATES.POR_ANILLAR; else spanAnillado" mat-button
+                  [color]="'accent'" (click)="onChangeRingState(order.id, ringed.id, RING_STATES.ANILLADO)">
+                  Anillar
+               </button>
+               <ng-template #spanAnillado>
+                  <span class="text-secondary ml-2">
+                     Anillado
+                  </span>
+               </ng-template>
+            </div>
+
          </div>
       </mat-expansion-panel>
    </mat-accordion>
 </div>
+<cei-alert-error #alertError></cei-alert-error>
