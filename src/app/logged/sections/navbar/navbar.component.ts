@@ -1,7 +1,6 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { Module } from "src/app/_models/menu/module";
 import { User } from "src/app/_models/users/user";
 import { Routes } from "src/app/_routes/routes";
 import { MenuItems } from "src/app/_menu-items/menuItems";
@@ -9,6 +8,7 @@ import { GeneralService } from "src/app/_services/general.service";
 import { AuthenticationService } from "../../../_services/authentication.service";
 import { HttpErrorResponseHandlerService } from "./../../../_services/http-error-response-handler.service";
 import { Observable } from "rxjs";
+import { Functionality } from 'src/app/_models/menu/functionality';
 
 @Component({
    selector: "cei-navbar",
@@ -17,7 +17,7 @@ import { Observable } from "rxjs";
 })
 export class NavbarComponent implements OnInit {
    user: User;
-   menu: Module;
+   menu: Functionality;
    routes = Routes; // Necessary for the view
    menuItems = MenuItems;
    isDarkTheme$: Observable<boolean>;
@@ -27,7 +27,7 @@ export class NavbarComponent implements OnInit {
       public authService: AuthenticationService,
       private httpErrorResponseHandlerService: HttpErrorResponseHandlerService,
       private router: Router
-   ) {}
+   ) { }
 
    ngOnInit() {
       console.log(MenuItems.ACTIVE_ORDERS);
@@ -39,7 +39,7 @@ export class NavbarComponent implements OnInit {
 
    getMenu() {
       this.generalService.getMenu().subscribe(
-         (modulee: Module) => {
+         (modulee: Functionality) => {
             console.log(modulee);
 
             this.menu = modulee;

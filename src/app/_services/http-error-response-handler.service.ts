@@ -53,7 +53,7 @@ export class HttpErrorResponseHandlerService {
                 // TO DO
 
                 // Redirect the user to HOME
-                router.navigate([Routes.LOGIN]);
+                // router.navigate([Routes.LOGIN]);
                 break;
             default:
                 // Any other possible error status

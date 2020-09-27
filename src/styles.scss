@@ -10,12 +10,18 @@ $grey-darker: mat-color($grey-map, darker);
 $grey-lighter: mat-color($grey-map, lighter);
 
 // Personalización de prueba (considerar alternativas).
-body {
-   // font-weight: lighter;
-   // font-size: 1rem;
+html, body {
+   height: 100%;
    margin: 0;
-   // line-height: 1.5;
-}
+ }
+ 
+
+// body {
+//    // font-weight: lighter;
+//    // font-size: 1rem;
+//    margin: 0;
+//    // line-height: 1.5;
+// }
 
 // Text
 .text-center {

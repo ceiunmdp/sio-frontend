@@ -46,18 +46,10 @@
                </div>
 
                <mat-list *ngIf="!!this.order" role="list" fxLayout="column" class="trackingList">
-                  <mat-list-item
-                     fxLayoutAlign="start center"
-                     fxFlex="100"
-                     role="listitem"
-                     *ngFor="let tracking of this.order.tracking"
-                  >
-                     <span
-                        class="mat-body text-secondary"
-                        fxFlex="100"
-                        fxLayout="row wrap"
-                        fxLayoutAlign="center center"
-                     >
+                  <mat-list-item fxLayoutAlign="start center" fxFlex="100" role="listitem"
+                     *ngFor="let tracking of this.order.tracking">
+                     <span class="mat-body text-secondary" fxFlex="100" fxLayout="row wrap"
+                        fxLayoutAlign="center center">
                         <span> {{ tracking.date | date: "dd/MM/yy H:mm" }} hs </span>
                         <mat-icon>arrow_forward</mat-icon>
                         <span>
@@ -71,19 +63,13 @@
       </mat-card-content>
       <mat-card-footer class="mb-2">
          <div fxFlex="100%" fxLayoutAlign="center center" class="mat-icon-medium">
-            <mat-icon
-               class="text-secondary "
-               *ngIf="this.order.state !== 'SOLICITADO'"
-               matTooltip="Sólo es posible cancelar un pedido en estado 'Solicitado'"
-               >lock</mat-icon
-            >
-            <mat-icon
-               class="text-secondary "
-               *ngIf="this.order.state === 'SOLICITADO'"
-               matTooltip="Puede cancelar el pedido mientras el estado del mismo sea 'Solicitado' (el saldo será reincorporado)"
-               >lock_open</mat-icon
-            >
-            <button mat-button color="warn" [disabled]="this.order.state !== 'SOLICITADO'" [swal]="confirmCancelSwal">
+            <mat-icon class="text-secondary " *ngIf="this.order.state.name !== 'SOLICITADO'"
+               matTooltip="Sólo es posible cancelar un pedido en estado 'Solicitado'">lock</mat-icon>
+            <mat-icon class="text-secondary " *ngIf="this.order.state.name === 'SOLICITADO'"
+               matTooltip="Puede cancelar el pedido mientras el estado del mismo sea 'Solicitado' (el saldo será reincorporado)">
+               lock_open</mat-icon>
+            <button mat-button color="warn" [disabled]="this.order.state.name !== 'SOLICITADO'"
+               [swal]="confirmCancelSwal">
                Cancelar pedido
             </button>
          </div>
@@ -92,21 +78,9 @@
    <!-- Fin card -->
 </div>
 
-<swal
-   #orderCancelSwal
-   title="Pedido cancelado correctamente"
-   icon="success"
-   [confirmButtonText]="'Ok'"
-   (confirm)="this.router.navigate([routes.MY_ORDERS])"
->
+<swal #orderCancelSwal title="Pedido cancelado correctamente" icon="success" [confirmButtonText]="'Ok'"
+   (confirm)="this.router.navigate([routes.MY_ORDERS])">
 </swal>
-<swal
-   #confirmCancelSwal
-   title="¿Seguro desea cancelar el pedido?"
-   type="question"
-   (confirm)="doCancel()"
-   [showCancelButton]="true"
-   [confirmButtonText]="'Sí'"
-   [cancelButtonText]="'No'"
->
+<swal #confirmCancelSwal title="¿Seguro desea cancelar el pedido?" type="question" (confirm)="doCancel()"
+   [showCancelButton]="true" [confirmButtonText]="'Sí'" [cancelButtonText]="'No'">
 </swal>

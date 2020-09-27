@@ -15,9 +15,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { FormRulesModule } from 'ng-form-rules';
 import { MatListModule } from '@angular/material/list';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
-
-
-
+import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
+import { firebaseConfig } from '../app.module';
 
 @NgModule({
     declarations: [StartPageComponent, HeaderComponent],
@@ -35,7 +34,13 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
         MatIconModule,
         FormRulesModule,
         MatListModule,
-        SweetAlert2Module.forRoot()
+        SweetAlert2Module.forRoot(),
+        NgxAuthFirebaseUIModule.forRoot(firebaseConfig, () => 'your_app_name_factory',
+            {
+                toastMessageOnAuthSuccess: false, // whether to open/show a snackbar message on auth success - default : true
+                toastMessageOnAuthError: false, // whether to open/show a snackbar message on auth error - default : true
+                authGuardLoggedInURL: '/cei', // url for authenticated users - to use in combination with canActivate feature on a route
+            }),
     ]
 })
 export class UnloggedModule { }

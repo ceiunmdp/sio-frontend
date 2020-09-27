@@ -20,6 +20,8 @@ import { UserRegister } from "src/app/_models/users/user-register";
 import { HttpErrorResponseHandlerService } from "src/app/_services/http-error-response-handler.service";
 import { CustomValidators } from "src/app/_validators/custom-validators";
 import { MatTabGroup } from "@angular/material";
+import { AngularFireAuth } from '@angular/fire/auth';
+import { CODE_FIREBASE_AUTH } from 'src/app/_api/codeFirebaseAuth';
 
 @Component({
    selector: "cei-start-page",
@@ -28,172 +30,119 @@ import { MatTabGroup } from "@angular/material";
 })
 export class StartPageComponent implements OnInit {
    @ViewChild("alertError", { static: true }) alertError;
-   @ViewChild("tabs", { static: true }) tabGroup: MatTabGroup;
-   @ViewChild("registerSuccessSwal", { static: true }) registerSuccessSwal;
+   // @ViewChild("registerSuccessSwal", { static: true }) registerSuccessSwal;
 
    messageError: string;
-   formRegister: FormGroup;
    typeAlert: string;
    messageAlert: string;
-   selectedTab = 0;
-
-   /** Form Login */
-   public readonly EMAIL = "email";
-   public readonly PASSWORD = "password";
-   formLogin: FormGroup;
 
    constructor(
-      private formBuilder: FormBuilder,
-      private svc: ReactiveFormsRuleService,
-      private generalService: GeneralService,
+      // private generalService: GeneralService,
       private authService: AuthenticationService,
-      private unloggedService: UnloggedService,
+      // private unloggedService: UnloggedService,
       private router: Router,
-      private httpErrorResponseHandlerService: HttpErrorResponseHandlerService
-   ) {}
+      private httpErrorResponseHandlerService: HttpErrorResponseHandlerService,
+   ) { }
 
    ngOnInit() {
-      this.formLogin = this.createFormLogin();
-      this.formRegister = this.svc.createFormGroup(this.createSettingRegister());
    }
 
-   createFormLogin(): FormGroup {
-      return this.formBuilder.group({
-         [this.EMAIL]: [
-            "",
-            [
-               CustomValidators.required("Email requerido"),
-               CustomValidators.email("Ingrese un formato de email correcto")
-            ]
-         ],
-         [this.PASSWORD]: [
-            "",
-            [
-               CustomValidators.required("Contraseña requerida"),
-               CustomValidators.password(
-                  "La contraseña debe estar conformada por un mínimo de 8 caracteres, al menos una mayúscula, una minúscula, un número y un carácter especial"
-               )
-            ]
-         ]
+   // onLogin() {
+   //    this.unloggedService.login(this.formLogin.value).subscribe(
+   //       loginResponse => {
+   //          const token: string = loginResponse.token;
+   //          if (token) {
+   //             this.authService.updateCurrentUser({
+   //                token
+   //             });
+   //             const payload: Payload = jwt_decode(token);
+   //             console.warn("Payload: ", payload);
+   //             this.authService.getUserData().subscribe(
+   //                (user: User) => {
+   //                   console.log("usuario: ", user);
+
+   //                   // TODO: Make some subinterfaces of User to manage the multiple types
+   //                   // TODO: Decide if store the 'type' or not in the Local Storage
+   //                   user.token = token;
+   //                   //  user.id = payload.id;
+
+   //                   // Store user details and jwt token in local storage to keep user logged in between page refreshes
+   //                   this.authService.updateCurrentUser(user);
+
+   //                   // Set the theme
+   //                   this.generalService.setDarkTheme(!!user.dark_theme);
+   //                   // this.alertError.openError('nada');
+   //                   this.alertError.closeError();
+   //                   if (this.authService.redirectUrl) {
+   //                      this.router.navigate([this.authService.redirectUrl]);
+   //                      // this.authService.RedirectUrl = null;
+   //                   } else {
+   //                      this.router.navigate(["/cei/home"]);
+   //                   }
+   //                },
+   //                (error: HttpErrorResponse) => {
+   //                   this.handleErrors(error);
+   //                }
+   //             );
+   //          } else {
+   //             console.log("no token");
+   //          }
+   //       },
+   //       (error: HttpErrorResponse) => {
+   //          this.handleErrors(error);
+   //       }
+   //    );
+   // }
+
+   // onRegister() {
+   //    console.log(this.formRegister);
+   //    this.unloggedService.register(this.formRegister.value).subscribe(
+   //       res => {
+   //          this.registerSuccessSwal.fire();
+   //          // this.router.navigate(['/']);
+   //       },
+   //       err => this.handleErrors(err)
+   //    );
+   // }
+
+   onSuccess(e) {
+      const u: User = {
+         token: e.xa,
+      }
+      this.authService.updateCurrentUser(u);
+      this.authService.getUserData().subscribe((u: Partial<User>) => {
+         this.authService.updateCurrentUser(u);
       });
+      if (this.authService.redirectUrl) {
+         this.router.navigate([this.authService.redirectUrl]);
+         // this.authService.RedirectUrl = null;
+      } else {
+         this.router.navigate(["/cei/home"]);
+      }
    }
 
-   createSettingRegister(): AbstractModelSettings<UserRegister> {
-      return AdhocModelSettings.create<UserRegister>((builder: ModelSettingsBuilder) => {
-         return [
-            builder.property("name", prop => {
-               prop.valid.push(
-                  builder.validTest(
-                     `Nombre requerido`,
-                     builder.rule(formRegister => !!formRegister.name)
-                  )
-               );
-            }),
-            builder.property("surname", prop => {
-               prop.valid.push(
-                  builder.validTest(
-                     `Email requerido`,
-                     builder.rule(formRegister => !!formRegister.surname)
-                  )
-               );
-            }),
-            builder.property("email", prop => {
-               prop.valid.push(
-                  builder.validTest(
-                     `Email requerido`,
-                     builder.rule(formRegister => !!formRegister.email)
-                  )
-               );
-            }),
-            builder.property("dni", prop => {
-               prop.valid.push(
-                  builder.validTest(
-                     `DNI requerido`,
-                     builder.rule(formRegister => !!formRegister.dni)
-                  )
-               );
-            }),
-            builder.property("password", prop => {
-               prop.valid.push(
-                  builder.validTest(
-                     `Contraseña requerida`,
-                     builder.rule(formRegister => !!formRegister.password)
-                  )
-               );
-            })
-            // builder.property('contrasenaConfirm', prop => {
-            //     prop.valid.push(
-            //         builder.validTest(`Contraseña requerida`, builder.rule(formRegister => !!formRegister.contrasenaConfirm))
-            //     );
-            // })
-         ];
-      });
+   onError(e) {
+      let message: string;
+      switch (e.code) {
+         case CODE_FIREBASE_AUTH.EMAIL_NOT_FOUND:
+            message = 'Usuario no encontrado'
+            break;
+         case CODE_FIREBASE_AUTH.INVALID_PASSWORD:
+            message = 'Contraseña incorrecta'
+            break;
+         default:
+            message = 'Ha ocurrido un error'
+            break;
+      }
+      this.alertError.openError(message);
    }
 
-   onLogin() {
-      this.unloggedService.login(this.formLogin.value).subscribe(
-         loginResponse => {
-            const token: string = loginResponse.token;
-            if (token) {
-               this.authService.updateCurrentUser({
-                  token
-               });
-               const payload: Payload = jwt_decode(token);
-               console.warn("Payload: ", payload);
-               this.authService.getUserData().subscribe(
-                  (user: User) => {
-                     console.log("usuario: ", user);
-
-                     // TODO: Make some subinterfaces of User to manage the multiple types
-                     // TODO: Decide if store the 'type' or not in the Local Storage
-                     user.token = token;
-                     //  user.id = payload.id;
-
-                     // Store user details and jwt token in local storage to keep user logged in between page refreshes
-                     this.authService.updateCurrentUser(user);
-
-                     // Set the theme
-                     this.generalService.setDarkTheme(!!user.darkTheme);
-                     // this.alertError.openError('nada');
-                     this.alertError.closeError();
-                     if (this.authService.redirectUrl) {
-                        this.router.navigate([this.authService.redirectUrl]);
-                        // this.authService.RedirectUrl = null;
-                     } else {
-                        this.router.navigate(["/cei/home"]);
-                     }
-                  },
-                  (error: HttpErrorResponse) => {
-                     this.handleErrors(error);
-                  }
-               );
-            } else {
-               console.log("no token");
-            }
-         },
-         (error: HttpErrorResponse) => {
-            this.handleErrors(error);
-         }
-      );
-   }
-
-   onRegister() {
-      console.log(this.formRegister);
-      this.unloggedService.register(this.formRegister.value).subscribe(
-         res => {
-            this.registerSuccessSwal.fire();
-            // this.router.navigate(['/']);
-         },
-         err => this.handleErrors(err)
-      );
-   }
-
-   cleanForms() {
-      this.formLogin = this.createFormLogin();
-      this.formRegister = this.svc.createFormGroup(this.createSettingRegister());
-      this.tabGroup.selectedIndex = 0;
-      this.alertError.closeError();
-   }
+   // cleanForms() {
+   //    this.formLogin = this.createFormLogin();
+   //    this.formRegister = this.svc.createFormGroup(this.createSettingRegister());
+   //    this.tabGroup.selectedIndex = 0;
+   //    this.alertError.closeError();
+   // }
 
    handleErrors(err: HttpErrorResponse) {
       this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);

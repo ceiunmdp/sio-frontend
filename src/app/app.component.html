@@ -1,7 +1,21 @@
-<div fxFlex fxLayout="column" [ngClass]="{'cei-dark-theme': isDarkTheme$ | async}">
+<!-- <ngx-auth-firebaseui [signInTabText]="'Iniciar Sesión'" [signInCardTitleText]="'Ingresá tus credenciales'"
+   [loginButtonText]="'Ingresar' " [forgotPasswordButtonText]="'Olvidé mi contraseña'" [nameText]="'Nombre' "
+   [nameErrorRequiredText]="'El nombre es requerido'" [nameErrorMinLengthText]="'El nombre es muy corto!' "
+   [nameErrorMaxLengthText]="'El nombre es muy largo!' " [emailText]="'E-mail'"
+   [emailErrorRequiredText]="'El e-mail es requerido' " [emailErrorPatternText]="'El formato del e-mail no es válido' "
+   [passwordText]="'Contraseña'" [passwordErrorRequiredText]="'La contraseña es requerida' "
+   [registerTabText]="'Registrarse'" [registerCardTitleText]="'Completá el formulario de registro' "
+   [registerButtonText]="'Registrarme' " [guestButtonText]="'Continuar como invitado' "
+   [resetPasswordTabText]="'Resetear contraseña' " [resetPasswordInputText]="'Ingrese su e-mail' "
+   [resetPasswordErrorRequiredText]="'El e-mail es requerido' "
+   [resetPasswordErrorPatternText]="'El formato del e-mail no es válido'" [resetPasswordActionButtonText]="'Resetear' "
+   [resetPasswordInstructionsText]="'Te enviamos un mail a la casilla indicada. Seguí las instrucciones para reestablecer tu contraseña' "
+   [emailConfirmationTitle]="'?' " [emailConfirmationText]="'?' " [guestEnabled]="false">
+</ngx-auth-firebaseui> -->
+<div style="height:100% ;" [ngClass]="{'cei-dark-theme': isDarkTheme$ | async}">
    <!-- mat-typography: aplica la tipografía de Material de manera global -->
    <!-- mat-app-background: aplica el tema seleccionado en theme.scss de manera global -->
-   <div class="mat-app-background mat-typography">
+   <div style="height:100% ;" class="mat-app-background mat-typography">
       <router-outlet></router-outlet>
       <!-- <cei-footer></cei-footer> -->
    </div>

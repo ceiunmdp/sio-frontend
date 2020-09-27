@@ -45,4 +45,4 @@ import { NavbarComponent } from './sections/navbar/navbar.component';
       SectionsModule
    ]
 })
-export class LoggedModule {}
+export class LoggedModule { }
