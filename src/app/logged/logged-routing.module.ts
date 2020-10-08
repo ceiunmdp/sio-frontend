@@ -68,4 +68,4 @@ const loggedRoutes: Routes = [
    imports: [RouterModule.forChild(loggedRoutes)],
    exports: [RouterModule]
 })
-export class LoggedRoutingModule {}
+export class LoggedRoutingModule { }

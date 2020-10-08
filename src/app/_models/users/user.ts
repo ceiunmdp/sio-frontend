@@ -1,10 +1,11 @@
 export interface User {
    id?: number;
+   dark_theme?: number;
+   disabled?: number;
+   display_name?: string;
    email?: string;
-   name?: string;
-   surname?: string;
+   email_verified?: boolean;
    balance?: number;
-   darkTheme?: number;
    token?: string;
    dni?: number;
    type?: number;

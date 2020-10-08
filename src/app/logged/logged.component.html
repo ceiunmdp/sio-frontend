@@ -3,16 +3,11 @@
       <cei-navbar></cei-navbar>
    </mat-sidenav>
    <mat-sidenav-content class="content">
-      <mat-toolbar
-         [ngClass]="{
+      <mat-toolbar [ngClass]="{
             'mat-elevation-z6': !(isDarkTheme$ | async),
             'toolbar-right': true,
             'mat-toolbar-right': !(isDarkTheme$ | async)
-         }"
-         color="primary"
-         class="position-sticky"
-         (scroll)="onWindowScroll($event)"
-      >
+         }" color="primary" class="position-sticky" (scroll)="onWindowScroll($event)">
          <button mat-icon-button fxHide="true" fxShow.lt-md (click)="snav.toggle()">
             <mat-icon>menu</mat-icon>
          </button>

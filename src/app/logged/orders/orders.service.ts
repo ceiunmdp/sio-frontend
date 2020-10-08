@@ -13,12 +13,20 @@ import { Year } from "./../../_models/orders/year";
 import { InternalOrder } from "./new-order/new-order.component";
 import { Campus } from "src/app/_models/campus";
 import { Item } from "src/app/_models/item";
+import { OR, AND } from 'src/app/_helpers/filterBuilder';
 
 export interface ExternalOrder {
    campusId: number;
    totalPrice: number;
    amountPaid: number;
    files: ExternalFile[];
+}
+
+export enum TREE_TYPES {
+   CAREER,
+   YEAR,
+   COURSE,
+   FILE
 }
 
 export interface ExternalFile {
@@ -64,11 +72,25 @@ interface TreeArchivos {
    ];
 }
 
+interface CareerResponse {
+   id: string,
+   name: string
+}
+// TODO: Cambiar
+interface YearResponse {
+   id: string,
+   name: string
+}
+interface CourseResponse {
+   id: string,
+   name: string
+}
+
 @Injectable({
    providedIn: "root"
 })
 export class OrdersService {
-   constructor(private http: HttpClient) {}
+   constructor(private http: HttpClient) { }
 
    getOrders(active?: boolean): Observable<Order[]> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
@@ -122,11 +144,63 @@ export class OrdersService {
          );
    }
 
+
+   // TODO:NUEVO
+   getCareers(): Observable<Career[]> {
+      const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      return this.http.get(environment.apiUrl + '/' + API.CAREERS, { headers: queryHeaders, observe: "response" }).pipe(
+         map<HttpResponse<any>, any>(result => {
+            const careers: CareerResponse[] = result.body.data.items;
+            return careers.map((careerResponse: CareerResponse) => { const career: any = careerResponse; career.children = []; career.type = TREE_TYPES.CAREER; return career });
+            // return this.buildTreeFiles(result.body.data);
+         })
+      );
+   }
+
+   // TODO:NUEVO
+   getYears(filter: OR | AND): Observable<Year[]> {
+      const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      const queryParams = new HttpParams().append('filter', JSON.stringify(filter));
+      return this.http.get(environment.apiUrl + '/' + API.RELATIONS,
+         {
+            headers: queryHeaders,
+            observe: "response",
+            params: queryParams
+         }).pipe(
+            map<HttpResponse<any>, any>(result => {
+               const years: YearResponse[] = result.body.data.items;
+               return years.map((yearResponse: YearResponse) => { const year: any = yearResponse; year.children = []; year.type = TREE_TYPES.YEAR; return year });
+            })
+         );
+   }
+
+   // TODO:NUEVO
+   getCourses(filter: OR | AND): Observable<Course[]> {
+      const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      const queryParams = new HttpParams().append('filter', JSON.stringify(filter));
+      return this.http.get(environment.apiUrl + '/' + API.COURSES,
+         {
+            headers: queryHeaders,
+            observe: "response",
+            params: queryParams
+         }).pipe(
+            map<HttpResponse<any>, any>(result => {
+               const courses: CourseResponse[] = result.body.data.items;
+               return courses.map((courseResponse: CourseResponse) => { const course: any = courseResponse; course.children = []; course.type = TREE_TYPES.COURSE; return course });
+            })
+         );
+   }
+
+
+
+
+
    getFiles(): Observable<Career[]> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
-      return this.http.get(environment.apiUrl + "/files", { headers: queryHeaders, observe: "response" }).pipe(
+      return this.http.get(environment.apiUrl + '/' + API.CAREERS, { headers: queryHeaders, observe: "response" }).pipe(
          map<HttpResponse<any>, any>(result => {
-            return this.buildTreeFiles(result.body.data);
+            return null;
+            // return this.buildTreeFiles(result.body.data);
          })
       );
    }
@@ -159,6 +233,31 @@ export class OrdersService {
                return result.body.data;
             })
          );
+   }
+
+   getFile(fileId: number): Observable<Career[]> {
+      console.log('entro');
+
+      const queryHeaders = new HttpHeaders().append("Content-Type", 'application/x-www-form-urlencoded');
+      const queryParams = new HttpParams()
+         .append('download', 'true');
+
+      return this.http.get(`${environment.apiUrl}/files/${fileId}`, { headers: queryHeaders, responseType: 'blob', observe: "response", params: queryParams }).pipe(
+         map<any, any>(result => {
+            return result.body;
+         })
+      );
+   }
+
+   // Todo: Este método no está en el repo original
+   getFilesByCourse(courseId: number): Observable<File[]> {
+      const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      const queryParams = new HttpParams().append("courseId", courseId.toString())
+      return this.http.get(environment.apiUrl + "/files", { headers: queryHeaders, observe: "response", params: queryParams }).pipe(
+         map<HttpResponse<any>, any>(result => {
+            return result.body.data;
+         })
+      );
    }
 
    getItems(): Observable<Item[]> {

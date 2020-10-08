@@ -148,7 +148,7 @@ export class ChargeBalanceComponent implements OnInit {
       private generalService: GeneralService,
       private sedeService: SedeService,
       private fb: FormBuilder
-   ) {}
+   ) { }
 
    ngOnInit() {
       this.generalService.sendMessage({ title: this.TITLE });

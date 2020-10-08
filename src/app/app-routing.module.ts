@@ -8,11 +8,11 @@ const appRoutes: Routes = [
    {
       path: "",
       canActivate: [AuthGuardUnlogged],
-      redirectTo: "login",
+      redirectTo: "repositorio",
       pathMatch: "full"
    },
    {
-      path: "login",
+      path: "admin",
       loadChildren: () => import("./unlogged/unlogged.module").then(mod => mod.UnloggedModule),
       canActivate: [AuthGuardUnlogged] // Avoids loading the module if the user is already authenticated
    },
@@ -20,6 +20,11 @@ const appRoutes: Routes = [
       path: "cei",
       loadChildren: () => import("./logged/logged.module").then(mod => mod.LoggedModule),
       canActivateChild: [AuthGuard] // Avoids loading the module before the user is authenticated
+   },
+   {
+      path: "repositorio",
+      loadChildren: () => import("./modules/repository/repository.module").then(mod => mod.RepositoryModule),
+      // canActivateChild: [AuthGuard] // Avoids loading the module before the user is authenticated
    },
    {
       path: "**",
@@ -39,4 +44,4 @@ const appRoutes: Routes = [
    ],
    exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
