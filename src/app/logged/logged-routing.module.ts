@@ -53,6 +53,12 @@ const loggedRoutes: Routes = [
             canLoad: [RoleGuard],
             data: { expectedRoles: [Roles.Sede] }
             // ¿Preload de este módulo?
+         },
+         {
+            path: "admin",
+            loadChildren: () => import("./admin/admin.module").then(mod => mod.AdminModule),
+            //canLoad: [RoleGuard],
+            //data: { expectedRoles: [Roles.Admin] }
          }
       ]
    }
