@@ -12,10 +12,32 @@ import { File } from 'src/app/_models/orders/file';
 import { Year } from 'src/app/_models/orders/year';
 import { FilterBuilder, OPERATORS } from 'src/app/_helpers/filterBuilder';
 
-
 interface Node {
   name: string;
   children?: Node[];
+}
+
+interface _Career extends Career, Node {
+  type?: TREE_TYPES.CAREER;
+}
+interface _Year extends Year, Node {
+  type: TREE_TYPES.YEAR;
+  careerId: string;
+  children: Course[];
+}
+interface _Course extends Course, Node {
+  type: TREE_TYPES.COURSE;
+  children: File[];
+  careerId: string;
+  yearId: string;
+
+}
+
+interface _File extends File, Node {
+  type: TREE_TYPES.FILE;
+  careerId: string;
+  yearId: string;
+  courseId: string;
 }
 @Component({
   selector: 'cei-files',
@@ -28,7 +50,7 @@ export class FilesComponent implements OnInit {
 
   dataSource = new MatTreeNestedDataSource<any>();
   treeArchivos;
-  treeControl = new NestedTreeControl<any>(node => node.children);
+  treeControl = new NestedTreeControl<Node>(node => node.children);
   messageError: string;
 
   errorResponse = false;
@@ -48,7 +70,10 @@ export class FilesComponent implements OnInit {
   getCareers() {
     this.loadingResponse = true
     this.filesService.getCareers().toPromise().then(
-      careers => { this.dataSource.data = careers; this.loadingResponse = false },
+      (careers: Career[]) => {
+        const careersMapped: _Career[] = careers.map(career => { let _career: _Career = { ...career, children: [], type: TREE_TYPES.CAREER }; return _career })
+        this.dataSource.data = careersMapped; this.loadingResponse = false
+      },
       error => {
         this.errorResponse = true; this.loadingResponse = false;
         this.handleErrors(error);
@@ -57,80 +82,75 @@ export class FilesComponent implements OnInit {
   }
 
   // !: Este handler no está en el repo original
-  onClickTreeNode(node: Career | Course | Year) {
-    // Pregunto para saber si el node que vino es un curso 
-    // (y por lo tanto va a requerir una request)
-    console.log(this.dataSource.data);
-    console.log(node);
-    if (node.children && this.treeControl.isExpanded(node)) {
+  onClickTreeNode(node: _Career | _Course | _Year) {
+    if (node.children && node.children.length == 0) {
       switch (node.type) {
         case TREE_TYPES.CAREER:
-          // GET A relations con career id
+          // GET relations with career id
           this.getYearsByCareerService(node).then(years => { console.log('años:', years); this.addYears(years) });
           break;
         case TREE_TYPES.YEAR:
-          // GET A relations con career id
+          // GET relations with career id
           this.getCoursesByYearService(node).then(courses => { console.log('materias:', courses); this.addCourses(courses) });
+          break;
+        case TREE_TYPES.COURSE:
+          // GET A relations con career id
+          this.getFilesByCourseService(node).then(files => { console.log('archivos:', files); this.addFiles(files) });
           break;
 
         default:
           break;
       }
     }
-
-    // if (!!node.requireRequestToGetChildren && !!node.children && node.children.length == 0) {
-    //   node = <Course>node;
-    //   this.getFileByCourseService(node).then(files => {
-    //     // this.dataSource.data[node.id]
-    //     const indexCareer = this.dataSource.data.findIndex(career => career.id == node.careerIdReference);
-    //     if (indexCareer != -1) {
-    //       const indexYear = this.dataSource.data[indexCareer].children.findIndex(year => year.name == node.yearNameReference);
-    //       if (indexYear != -1) {
-    //         const indexCourse = this.dataSource.data[indexCareer].children[indexYear].children.findIndex(course => course.id == node.id);
-    //         this.dataSource.data[indexCareer].children[indexYear].children[indexCourse].children = files;
-    //         this.refreshTree();
-    //       }
-    //     }
-    //   })
-    // }
   }
 
-  addYears(years: Year[]) {
+  addYears(years: _Year[]) {
     years.forEach(year => {
-      const careersToUpdate: Career[] = year.careers;
-      careersToUpdate.forEach(career => {
-        const indexCareer = this.dataSource.data.findIndex(_career => _career.id == career.id);
-        if (indexCareer != -1) {
-          const existingYears: Year[] = this.dataSource.data[indexCareer].children;
-          if (!existingYears.some(_year => _year.id == year.id)) {
-            this.dataSource.data[indexCareer].children.push(year);
-          }
+      const indexCareer = this.dataSource.data.findIndex(_career => _career.id == year.careerId);
+      if (indexCareer != -1) {
+        const existingYears: Year[] = this.dataSource.data[indexCareer].children;
+        if (!existingYears.some(_year => _year.id == year.id)) {
+          this.dataSource.data[indexCareer].children.push(year);
         }
-      })
+      }
     })
     this.refreshTree();
   }
 
-  addCourses(courses: Course[]) {
+  //TODO: Cambiar logica con parentId
+  addCourses(courses: _Course[]) {
     courses.forEach(course => {
+      const careerIndex = this.dataSource.data.findIndex((career: Career) => career.id == course.careerId);
+      if (careerIndex != -1) {
+        const yearIndex = (this.dataSource.data[careerIndex] as _Career).children.findIndex((year: _Year) => year.id == course.yearId);
+        if (yearIndex != -1) {
+          const existingCourses: _Course[] = this.dataSource.data[careerIndex].children[yearIndex].children;
+          if (!existingCourses.some(_course => _course.id == course.id)) {
+            this.dataSource.data[careerIndex].children[yearIndex].children.push(course);
+          }
+        }
+      }
+    })
+    this.refreshTree();
+  }
 
-      const yearsToUpdate: Year[] = course.relations;
-      yearsToUpdate.forEach(year => {
+  addFiles(files: _File[]) {
+    files.forEach(file => {
+      const careerIndex = this.dataSource.data.findIndex((career: Career) => career.id == file.careerId);
+      if (careerIndex != -1) {
+        const yearIndex = (this.dataSource.data[careerIndex] as _Career).children.findIndex((year: _Year) => year.id == file.yearId);
+        if (yearIndex != -1) {
+          const courseIndex = (this.dataSource.data[careerIndex] as _Career).children[yearIndex].children.findIndex((course: Course) => course.id == file.courseId);
+          if (yearIndex != -1) {
+            const existingFiles: _File[] = this.dataSource.data[careerIndex].children[yearIndex].children[courseIndex].children;
+            if (!existingFiles.some(_file => _file.id == file.id)) {
+              this.dataSource.data[careerIndex].children[yearIndex].children[courseIndex].children.push(file);
+              console.log('File', file);
 
-        const careersToUpdate: Career[] = year.careers;
-        careersToUpdate.forEach(career => {
-          const indexCareer = this.dataSource.data.findIndex(_career => _career.id == career.id);
-          if (indexCareer != -1) {
-            const indexYear = this.dataSource.data[indexCareer].children.findIndex(_year => _year.id == year.id);
-            if (indexYear != -1) {
-              const existingCourses: Course[] = this.dataSource.data[indexCareer].children[indexYear].children;
-              if (!existingCourses.some(_course => _course.id == course.id)) {
-                this.dataSource.data[indexCareer].children[indexYear].children.push(course);
-              }
             }
           }
-        })
-      })
+        }
+      }
     })
     this.refreshTree();
   }
@@ -142,22 +162,7 @@ export class FilesComponent implements OnInit {
   }
 
   // !: Este handler no está en el repo original
-  getFileByCourseService(course: Course): Promise<File[]> {
-    return new Promise(
-      (res, rej) => {
-        this.filesService.getFilesByCourse(course.id).subscribe(
-          archivos => {
-            res(archivos)
-          },
-          error => {
-            rej(error)
-          }
-        );
-      })
-  }
-
-  // !: Este handler no está en el repo original
-  getYearsByCareerService(career: Career): Promise<Year[]> {
+  getYearsByCareerService(career: _Career): Promise<_Year[]> {
     return new Promise(
       (res, rej) => {
         const fb = new FilterBuilder();
@@ -165,7 +170,8 @@ export class FilesComponent implements OnInit {
 
         this.filesService.getYears(filter).subscribe(
           years => {
-            res(years)
+            const yearsMapped: _Year[] = years.map(year => { let _year: _Year = { ...year, careerId: career.id, children: [], type: TREE_TYPES.YEAR }; return _year })
+            res(yearsMapped)
           },
           error => {
             rej(error)
@@ -175,15 +181,15 @@ export class FilesComponent implements OnInit {
   }
 
   // !: Este handler no está en el repo original
-  getCoursesByYearService(year: Year): Promise<Course[]> {
+  getCoursesByYearService(year: _Year): Promise<_Course[]> {
     return new Promise(
       (res, rej) => {
         const fb = new FilterBuilder();
-        const filter = fb.and(fb.where('careerCourseRelation.relation_id', OPERATORS.IS, year.id));
-
+        const filter = fb.and(fb.where('careerCourseRelation.relation_id', OPERATORS.IS, year.id), fb.where('careerCourseRelation.career_id', OPERATORS.IS, year.careerId));
         this.filesService.getCourses(filter).subscribe(
           courses => {
-            res(courses)
+            const coursesMapped: _Course[] = courses.map(course => { let _course: _Course = { ...course, yearId: year.id, careerId: year.careerId, children: [], type: TREE_TYPES.COURSE }; return _course })
+            res(coursesMapped)
           },
           error => {
             rej(error)
@@ -192,7 +198,26 @@ export class FilesComponent implements OnInit {
       })
   }
 
-
+  // !: Este handler no está en el repo original
+  getFilesByCourseService(course: _Course): Promise<_File[]> {
+    return new Promise(
+      (res, rej) => {
+        const fb = new FilterBuilder();
+        const filter =
+          fb.and(
+            fb.where('course.id', OPERATORS.IS, course.id)
+          );
+        this.filesService.getFilesByCourse(filter).subscribe(
+          files => {
+            const filesMapped: _File[] = files.map(file => { let _file: _File = { ...file, careerId: course.careerId, yearId: course.yearId, courseId: course.id, type: TREE_TYPES.FILE }; return _file })
+            res(filesMapped)
+          },
+          error => {
+            rej(error)
+          }
+        );
+      })
+  }
 
   downloadFile(file) {
     console.log(file);

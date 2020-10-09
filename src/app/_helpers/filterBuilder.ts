@@ -23,7 +23,7 @@ export interface AND {
 }
 interface WHERE {
    [key: string]: {
-      [oasd: string]: string | number | Date
+      [key: string]: string | number | Date
    }
 }
 export class FilterBuilder {
