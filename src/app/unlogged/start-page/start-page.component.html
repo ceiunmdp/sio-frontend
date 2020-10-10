@@ -17,8 +17,7 @@
          [resetPasswordInstructionsText]="'Te enviamos un mail a la casilla indicada. Seguí las instrucciones para reestablecer tu contraseña' "
          [messageOnAuthError]="{messageError:'asdasd', messageAlert:'dddd', error:'asdasd', message:'asaaaaaaa'}"
          (onSuccess)="this.onSuccess($event)" [emailConfirmationTitle]="'?' " [emailConfirmationText]="'?' "
-         [registrationEnabled]="false" [resetPasswordEnabled]="false" (onError)="this.onError($event)"
-         [guestEnabled]="false" [providers]="[]">
+         [registrationEnabled]="false" (onError)="this.onError($event)" [guestEnabled]="false" [providers]="[]">
 
       </ngx-auth-firebaseui>
    </div>
