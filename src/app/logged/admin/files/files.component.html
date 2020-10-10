@@ -1,1 +1,302 @@
-<p>files works!</p>
+<div fxLayout="column wrap" class="py-3 px-5">
+  <div *ngIf="this.step === 0" class="mb-5">
+     <mat-card
+        class="card-shadow"
+        fxFlex="100"
+        [ngClass.lt-md]="{ 'border-radius-0': true }"
+     >
+        <mat-card-header>
+           <mat-form-field fxFlex="30%">
+              <input fxFlex="40%"
+                 matInput
+                 (keyup)="applyFilter($event.target.value)"
+                 placeholder="Búsqueda"
+              />
+           </mat-form-field>
+           <div fxLayout="row" fxFlex="80%" fxLayoutAlign="center start">
+            <cei-select-input fxFlex="80%"
+            [name]="this.CAREER"
+            [form]="this.filesForm"
+            [placeholder]="'Seleccione una para filtrar'"
+            [elements]="this.careers"
+            [calculateId]="this.calculateIdCareer"
+            [calculateName]="this.calculateNameCareer"
+            (selected)="this.selectedCareer($event)"
+            >
+            
+            </cei-select-input>
+         </div>
+           <div fxLayout="row" fxFlex="30%" fxLayoutAlign="center start">
+              <button
+                 (click)="this.step = 1"
+                 fxFlex="50%"
+                 mat-raised-button
+                 color="primary"
+              >
+                 Agregar archivo
+              </button>
+           </div>
+        </mat-card-header>
+        <mat-card-content style="padding-bottom: 10%;">
+           <!-- Table list -->
+           <div
+              class="table-container"
+              fxLayout="row wrap"
+              fxLayoutAlign="start start"
+           >
+              <table
+                 fxFlex="100%"
+                 mat-table
+                 [dataSource]="this.dataSourceSubjects"
+                 class="mat-elevation-z6 mb-2"
+              >
+
+                 <!-- Name Column -->
+                 <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Nombre</th>
+                    <td mat-cell *matCellDef="let element">
+                       {{ element.name }}
+                    </td>
+                 </ng-container>
+
+                 <!-- Actions Column -->
+                 <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                    <td mat-cell *matCellDef="let element">
+                       <div class="my-2" fxLayoutAlign="space-around start">
+                          <button
+                             (click)="this.displaySubjectFiles(element)"
+                             mat-icon-button
+                             color="accent"
+                             matTooltip="Editar archivos"
+                             matTooltipPosition="above"
+                          >
+                             <mat-icon>edit</mat-icon>
+                       </button>
+                       </div>
+                    </td>
+                 </ng-container>
+                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                 <tr
+                    mat-row
+                    *matRowDef="let row; columns: displayedColumns"
+                 ></tr>
+              </table>
+           </div>
+        </mat-card-content>
+     </mat-card>
+  </div>
+  <form
+     [formGroup]="filesForm"
+     *ngIf="this.filesForm && this.step === 1"
+     fxLayout="row wrap"
+     fxLayoutAlign="center center"
+     (submit)="this.uploadFiles()"
+  >
+     <mat-card fxFlex>
+        <mat-card-header>
+           <mat-card-title>
+              Añadir nuevo archivo
+           </mat-card-title>
+        </mat-card-header>
+        <mat-divider [inset]="true"></mat-divider>
+        <mat-card-content fxLayout="column">
+          <cei-select-input *ngIf="this.careers"
+          [name]="this.CAREER"
+          [form]="this.filesForm"
+          [placeholder]="'Seleccione una carrera'"
+          [elements]="this.careers"
+          [calculateId]="this.calculateIdCareer"
+          [calculateName]="this.calculateNameCareer"
+          >
+          <!-- (selected)="this.selectedCareer($event)" -->
+          </cei-select-input>
+          <cei-select-input
+          [name]="this.SUBJECT"
+          [form]="this.filesForm"
+          [placeholder]="'Seleccione una materia'"
+          [elements]="this.subjects"
+          [calculateId]="this.calculateIdSubject"
+          [calculateName]="this.calculateNameSubject"
+          >
+          </cei-select-input>
+          <cei-file-input
+            [options]="this.pondOptions"
+            [name]="this.FILES"
+            [form]="this.filesForm"
+            [files]="this.files"
+          ></cei-file-input>
+        </mat-card-content>
+        <mat-card-actions>
+           <button
+              type="button"
+              (click)="backFrom1To0()"
+              fxFlex="50%"
+              mat-raised-button
+              color="warn"
+           >
+              Cancelar
+           </button>
+           <button
+              type="submit"
+              fxFlex="50%"
+              mat-raised-button
+              color="accent"
+              [disabled]="!this.filesForm.valid"
+           >
+              Agregar archivos
+           </button>
+        </mat-card-actions>
+     </mat-card>
+  </form>
+  <mat-card
+        *ngIf="this.step === 2"
+        class="card-shadow"
+        fxFlex="100"
+        [ngClass.lt-md]="{ 'border-radius-0': true }"
+     >
+        <mat-card-header>
+           <mat-form-field fxFlex="50%">
+              <input fxFlex="40%"
+                 matInput
+                 (keyup)="applyFilterFiles($event.target.value)"
+                 placeholder="Búsqueda"
+              />
+           </mat-form-field>
+           <div fxLayout="row" fxFlex="30%" fxLayoutAlign="center start">
+            <button
+               (click)="this.backFrom1To0()"
+               fxFlex="50%"
+               mat-raised-button
+               color="primary"
+            >
+                Volver
+            </button>
+         </div>
+        </mat-card-header>
+        <mat-card-content style="padding-bottom: 10%;">
+           <!-- Table list -->
+           <div
+              class="table-container"
+              fxLayout="row wrap"
+              fxLayoutAlign="start start"
+           >
+              <table
+                 fxFlex="100%"
+                 mat-table
+                 [dataSource]="this.dataSourceFiles"
+                 class="mat-elevation-z6 mb-2"
+              >
+                 <!-- Id Column -->
+                 <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef>Id</th>
+                    <td mat-cell *matCellDef="let element">
+                       {{ element.id }}
+                    </td>
+                 </ng-container>
+
+                 <!-- Name Column -->
+                 <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Nombre</th>
+                    <td mat-cell *matCellDef="let element">
+                       {{ element.name }}
+                    </td>
+                 </ng-container>
+
+                 <!-- Actions Column -->
+                 <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Editar | Borrar</th>
+                    <td mat-cell *matCellDef="let element">
+                       <div class="my-2" fxFlex>
+                          <button
+                             (click)="this.displayEditSubjectFilesForm(element)"
+                             mat-icon-button
+                             color="accent"
+                          >
+                             <mat-icon>edit</mat-icon>
+                       </button>
+                       </div>
+                      <div class="my-2" fxFlex>
+                         <button
+                         [swal]="confirmDeleteSwal"
+
+                            mat-icon-button
+                            color="accent"
+                         >
+                            <mat-icon>delete</mat-icon>
+                      </button>
+                      </div>
+                      <swal
+                           #confirmDeleteSwal
+                           title="Eliminar archivo"
+                           text="¿Seguro que desea eliminar el archivo: {{
+                              element.name
+                           }}?"
+                           type="question"
+                           (confirm)="this.deleteFile(element)"
+                           [showCancelButton]="true"
+                           [confirmButtonText]="'Si'"
+                           [cancelButtonText]="'No'"
+                        >
+                        </swal>
+                   </td>
+                 </ng-container>
+                 <tr mat-header-row *matHeaderRowDef="displayedColumnsFiles"></tr>
+                 <tr
+                    mat-row
+                    *matRowDef="let row; columns: displayedColumnsFiles"
+                 ></tr>
+              </table>
+           </div>
+        </mat-card-content>
+     </mat-card>
+     <form
+     [formGroup]="this.subjectFilesEditForm"
+     *ngIf="this.subjectFilesEditForm && this.step === 3"
+     fxLayout="row wrap"
+     fxLayoutAlign="center center"
+     (submit)="this.onEditSubjectsFiles()"
+  >
+     <mat-card fxFlex="60">
+        <mat-card-header>
+           <mat-card-title>
+              Editar archivos de materia
+           </mat-card-title>
+        </mat-card-header>
+        <mat-divider [inset]="true"></mat-divider>
+        <mat-card-content fxLayout="column">
+
+           <cei-text-input
+              [name]="this.NAME"
+              [form]="this.subjectFilesEditForm"
+              [placeholder]="'Ingrese nombre del archivo'"
+              [clearable]="true"
+           >
+           </cei-text-input>
+        </mat-card-content>
+        <mat-card-actions>
+           <button
+              type="button"
+              (click)="backFrom2To0()"
+              fxFlex="50%"
+              mat-raised-button
+              color="warn"
+           >
+              Cancelar
+           </button>
+           <button
+              type="submit"
+              fxFlex="50%"
+              mat-raised-button
+              color="accent"
+              [disabled]="!this.subjectFilesEditForm.valid"
+           >
+              Editar archivo
+           </button>
+        </mat-card-actions>
+     </mat-card>
+  </form>
+</div>
+<swal #responseSwal [swalOptions]="this.swalOptions">
+</swal>
+<cei-alert-error #alertError></cei-alert-error>

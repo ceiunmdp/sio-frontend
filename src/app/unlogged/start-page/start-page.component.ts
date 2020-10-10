@@ -117,7 +117,7 @@ export class StartPageComponent implements OnInit {
          this.router.navigate([this.authService.redirectUrl]);
          // this.authService.RedirectUrl = null;
       } else {
-         this.router.navigate(["/cei/home"]);
+         this.router.navigate(["/cei"]);
       }
    }
 

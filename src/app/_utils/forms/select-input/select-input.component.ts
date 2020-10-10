@@ -1,6 +1,5 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormElementComponent } from '../form-element/form-element.component';
-import { EventEmitter } from 'events';
 
 @Component({
     selector: 'cei-select-input',
@@ -17,7 +16,7 @@ export class SelectInputComponent extends FormElementComponent implements OnInit
     @Input() calculateId: (element) => string;
     @Input() calculateName: (element) => string;
     // Emit an event every time the select changes
-    @Output() public selected: EventEmitter = new EventEmitter();
+    @Output() public selected: EventEmitter<any> = new EventEmitter();
 
     constructor() {
         super();

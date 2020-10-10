@@ -39,7 +39,7 @@ export class AuthGuardUnlogged implements CanActivate, CanActivateChild, CanLoad
             // console.log('entrooo');
             return true;
         }
-        this.router.navigate(['/cei/home']);
+        this.router.navigate(['/cei']);
         return false;
     }
 

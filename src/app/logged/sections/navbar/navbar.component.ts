@@ -34,7 +34,7 @@ export class NavbarComponent implements OnInit {
       this.isDarkTheme$ = this.generalService.getDarkTheme();
 
       this.user = this.authService.currentUserValue;
-      this.getMenu();
+      //this.getMenu();
    }
 
    getMenu() {

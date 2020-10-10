@@ -6,16 +6,16 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'carreras'
+    redirectTo: 'archivos'
   },
-  {
+  /*{
     path: 'carreras',
     component: CareersComponent,
   },
   {
     path: 'materias',
     component: SubjectsComponent,
-  },
+  },*/
   {
     path: 'archivos',
     component: FilesComponent,

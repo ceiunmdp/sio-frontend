@@ -1,3 +1,4 @@
+import { FilePondModule } from 'ngx-filepond';
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FlexLayoutModule } from "@angular/flex-layout";
@@ -76,6 +77,7 @@ export function playerFactory() {
       MatMenuModule,
       MatRadioModule,
       SweetAlert2Module,
+      FilePondModule,
       LottieModule.forRoot({ player: playerFactory })
 
    ],
@@ -94,7 +96,8 @@ export function playerFactory() {
       SelectInputComponent,
       TextInputComponent,
       SpinnerErrorComponent,
-      SpinnerComponent
+      SpinnerComponent,
+      FileInputComponent
    ],
    entryComponents: [AlertErrorChildComponent]
 })
