@@ -13,17 +13,22 @@
                         <!-- <mat-checkbox [disabled]="!this.previousQuestionRing" (change)="handlerAddFile($event, node)"
                                 class="ml-2 checklist-leaf-node"> -->
                         <!-- <mat-icon color="accent">loupe</mat-icon> -->
-                        <!-- <span class="text-accent mxs-2">
+                        <span class="text-accent mxs-2">
                             •
-                        </span> -->
-                        <span class="text-secondary-ligther">
-                            {{ node.name }}
                         </span>
+                        <!-- <span class="text-secondary-ligther">
+                            {{ node.name }}
+                        </span> -->
+
+                        <a color="primary" (click)="downloadFile(node)">
+                            <!-- {{ node.name }} -->
+                            asd ads asd ads ads asd ads as d ads asd das sda
+                        </a>
                         <!-- </mat-checkbox> -->
-                        <button mat-icon-button [matTooltip]="'Descargar archivo'" class="ml-2"
+                        <!-- <button mat-icon-button [matTooltip]="'Descargar archivo'" class="ml-2"
                             (click)="downloadFile(node)">
-                            <mat-icon>cloud_download</mat-icon>
-                        </button>
+                            <mat-icon class="text-primary">cloud_download</mat-icon>
+                        </button> -->
                     </li>
                 </mat-tree-node>
                 <!-- This is the tree node template for expandable nodes -->
