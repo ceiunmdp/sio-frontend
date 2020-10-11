@@ -78,7 +78,7 @@ export class AuthenticationService {
     }
 
     logout(): Observable<any> {
-        return from(this.afAuth.signOut().then(a => {
+        return from(this.afAuth.auth.signOut().then(a => {
             console.log('cerro sesion', a);
 
         }, err => console.log(err)));

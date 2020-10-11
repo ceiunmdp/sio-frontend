@@ -33,6 +33,7 @@ export var firebaseConfig = {
    appId: "1:993559184474:web:42f65f61de64f8695c8463",
    measurementId: "G-FJ8YG6NC24"
 };
+export function fbfunction() { return 'my_factory' };
 
 
 @NgModule({
@@ -55,7 +56,7 @@ export var firebaseConfig = {
       MatButtonModule,
       ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
       // NgxAuthFirebaseUIModule.forRoot(firebaseConfig),
-      NgxAuthFirebaseUIModule.forRoot(firebaseConfig, () => 'your_app_name_factory',
+      NgxAuthFirebaseUIModule.forRoot(firebaseConfig, fbfunction,
          {
             toastMessageOnAuthSuccess: false, // whether to open/show a snackbar message on auth success - default : true
             toastMessageOnAuthError: false, // whether to open/show a snackbar message on auth error - default : true
@@ -74,3 +75,4 @@ export var firebaseConfig = {
    bootstrap: [AppComponent]
 })
 export class AppModule { }
+
