@@ -18,6 +18,5 @@ export class SpinnerErrorComponent implements OnInit {
    ngOnInit() { }
 
    animationCreated(animationItem: AnimationItem): void {
-      console.log(animationItem);
    }
 }
