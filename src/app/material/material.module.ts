@@ -29,7 +29,8 @@ import {
    MatProgressSpinnerModule,
    MatChipsModule,
    MatAutocompleteModule,
-   MatTreeModule
+   MatTreeModule,
+   MatProgressBarModule
 } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -67,6 +68,7 @@ const material = [
    MatChipsModule,
    MatAutocompleteModule,
    MatTreeModule,
+   MatProgressBarModule
 ];
 
 const flexLayout = [FlexLayoutModule, UtilsModule];

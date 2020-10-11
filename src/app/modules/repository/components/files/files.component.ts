@@ -15,6 +15,7 @@ import { FilterBuilder, OPERATORS } from 'src/app/_helpers/filterBuilder';
 interface Node {
   name: string;
   children?: Node[];
+  isLoading?: boolean
 }
 
 interface _Career extends Career, Node {
@@ -84,18 +85,19 @@ export class FilesComponent implements OnInit {
   // !: Este handler no está en el repo original
   onClickTreeNode(node: _Career | _Course | _Year) {
     if (node.children && node.children.length == 0) {
+      node.isLoading = true;
       switch (node.type) {
         case TREE_TYPES.CAREER:
           // GET relations with career id
-          this.getYearsByCareerService(node).then(years => { console.log('años:', years); this.addYears(years) });
+          this.getYearsByCareerService(node).then(years => { node.isLoading = false; this.addYears(years) });
           break;
         case TREE_TYPES.YEAR:
           // GET relations with career id
-          this.getCoursesByYearService(node).then(courses => { console.log('materias:', courses); this.addCourses(courses) });
+          this.getCoursesByYearService(node).then(courses => { node.isLoading = false; this.addCourses(courses) });
           break;
         case TREE_TYPES.COURSE:
           // GET A relations con career id
-          this.getFilesByCourseService(node).then(files => { console.log('archivos:', files); this.addFiles(files) });
+          this.getFilesByCourseService(node).then(files => { node.isLoading = false; this.addFiles(files) });
           break;
 
         default:
