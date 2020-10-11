@@ -32,7 +32,13 @@ import { SelectInputComponent } from "./forms/select-input/select-input.componen
 import { TextInputComponent } from "./forms/text-input/text-input.component";
 import { MatButtonModule } from "@angular/material/button";
 import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
-
+import { SpinnerErrorComponent } from './spinner-error/spinner-error.component';
+import { SpinnerComponent } from './spinner/spinner.component';
+import { LottieModule } from 'ngx-lottie';
+import player from 'lottie-web';
+export function playerFactory() {
+   return player;
+}
 @NgModule({
    declarations: [
       InputTextComponent,
@@ -49,7 +55,9 @@ import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
       NumberInputComponent,
       PasswordInputComponent,
       SelectInputComponent,
-      TextInputComponent
+      TextInputComponent,
+      SpinnerErrorComponent,
+      SpinnerComponent
    ],
    imports: [
       CommonModule,
@@ -67,7 +75,9 @@ import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
       MatTabsModule,
       MatMenuModule,
       MatRadioModule,
-      SweetAlert2Module
+      SweetAlert2Module,
+      LottieModule.forRoot({ player: playerFactory })
+
    ],
    exports: [
       InputTextComponent,
@@ -82,8 +92,10 @@ import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
       CheckboxInputComponent,
       NumberInputComponent,
       SelectInputComponent,
-      TextInputComponent
+      TextInputComponent,
+      SpinnerErrorComponent,
+      SpinnerComponent
    ],
    entryComponents: [AlertErrorChildComponent]
 })
-export class UtilsModule {}
+export class UtilsModule { }

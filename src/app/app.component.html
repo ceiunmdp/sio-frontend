@@ -1,7 +1,7 @@
-<div fxFlex fxLayout="column" [ngClass]="{'cei-dark-theme': isDarkTheme$ | async}">
+<div fxLayout="column" [ngClass]="{'cei-dark-theme': isDarkTheme$ | async}">
    <!-- mat-typography: aplica la tipografía de Material de manera global -->
    <!-- mat-app-background: aplica el tema seleccionado en theme.scss de manera global -->
-   <div class="mat-app-background mat-typography">
+   <div fxLayoutFill style="min-height: 100vh;" class="mat-app-background mat-typography">
       <router-outlet></router-outlet>
       <!-- <cei-footer></cei-footer> -->
    </div>

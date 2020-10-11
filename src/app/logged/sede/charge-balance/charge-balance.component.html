@@ -8,18 +8,10 @@
          <div fxFlex="100" fxLayout="column wrap">
             <form [formGroup]="this.findUserForm" *ngIf="!!this.findUserForm" (submit)="this.getUsers()">
                <div fxLayout="row wrap" fxLayoutAlign="space-around start">
-                  <cei-text-input
-                     [hint]="'Opcional'"
-                     [form]="this.findUserForm"
-                     [name]="this.NAME"
-                     [label]="'Nombre'"
-                  ></cei-text-input>
-                  <cei-text-input
-                     [hint]="'Opcional'"
-                     [form]="this.findUserForm"
-                     [name]="this.SURNAME"
-                     [label]="'Apellido'"
-                  ></cei-text-input>
+                  <cei-text-input [hint]="'Opcional'" [form]="this.findUserForm" [name]="this.NAME" [label]="'Nombre'">
+                  </cei-text-input>
+                  <cei-text-input [hint]="'Opcional'" [form]="this.findUserForm" [name]="this.SURNAME"
+                     [label]="'Apellido'"></cei-text-input>
                   <cei-number-input [hint]="'Opcional'" [form]="this.findUserForm" [name]="this.DNI" [label]="'DNI'">
                   </cei-number-input>
                   <div>
@@ -30,11 +22,8 @@
                </div>
             </form>
             <!-- Table students -->
-            <div
-               class="mt-3 mb-2"
-               *ngIf="this.step === 1 && !!dataUsers && dataUsers.data.length > 0"
-               fxLayout="column"
-            >
+            <div class="mt-3 mb-2" *ngIf="this.step === 1 && !!dataUsers && dataUsers.data.length > 0"
+               fxLayout="column">
                <div class="separator separator-center mb-1">
                   <span class="mx-2 text-secondary">Listado de estudiantes</span>
                </div>
@@ -103,13 +92,8 @@
    </mat-card>
 </div>
 
-<form
-   [formGroup]="this.chargeBalanceForm"
-   *ngIf="this.step === 2"
-   fxLayout="row wrap"
-   fxLayoutAlign="center center"
-   (submit)="this.chargeBalance()"
->
+<!-- <form [formGroup]="this.chargeBalanceForm" *ngIf="this.step === 2" fxLayout="row wrap" fxLayoutAlign="center center"
+   (submit)="this.chargeBalance()">
    <mat-card fxFlex="80">
       <mat-card-header>
          <mat-card-title>
@@ -123,12 +107,8 @@
       </mat-card-header>
       <mat-divider [inset]="true"></mat-divider>
       <mat-card-content class="mt-3" fxLayout="column">
-         <cei-number-input
-            [form]="this.chargeBalanceForm"
-            [name]="this.MONEY"
-            [minValue]="1"
-            [placeholder]="'Saldo a cargar'"
-         >
+         <cei-number-input [form]="this.chargeBalanceForm" [name]="this.MONEY" [minValue]="1"
+            [placeholder]="'Saldo a cargar'">
          </cei-number-input>
       </mat-card-content>
       <mat-card-actions>
@@ -138,6 +118,6 @@
          </button>
       </mat-card-actions>
    </mat-card>
-</form>
+</form> -->
 
 <swal #responseSwal [swalOptions]="this.swalOptions"> </swal>

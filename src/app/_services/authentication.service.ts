@@ -1,13 +1,15 @@
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of, from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { User } from '../_models/users/user';
 import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 import { Routes } from '../_routes/routes';
 import { API } from '../_api/api';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { GeneralService } from './general.service';
 
 @Injectable({
     providedIn: 'root'
@@ -18,7 +20,7 @@ export class AuthenticationService {
     // tslint:disable-next-line: variable-name
     private _redirectUrl: string;
 
-    constructor(private http: HttpClient, private router: Router) {
+    constructor(private http: HttpClient, private router: Router, private afAuth: AngularFireAuth, private generalService: GeneralService) {
         this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
         this.currentUser$ = this.currentUserSubject.asObservable();
     }
@@ -61,6 +63,10 @@ export class AuthenticationService {
             // Update the BehaviourSubject with the new user
             this.currentUserSubject.next(user);
         }
+
+        if (this.currentUserValue.dark_theme != null && this.currentUserValue.dark_theme != undefined) {
+            this.generalService.setDarkTheme(!!this.currentUserValue.dark_theme);
+        }
     }
 
     removeCurrentUser() {
@@ -71,17 +77,22 @@ export class AuthenticationService {
         this._redirectUrl = null;
     }
 
-    logout(): Observable<string> {
+    logout(): Observable<any> {
+        return from(this.afAuth.auth.signOut().then(a => {
+            console.log('cerro sesion', a);
+
+        }, err => console.log(err)));
         const queryHeaders = new HttpHeaders().append('Content-Type', 'application/json');
 
-        return this.http
-            .get(`${environment.apiUrl}/${API.LOGOUT}`, { headers: queryHeaders, observe: 'response' })
-            .pipe(
-                map<HttpResponse<any>, any>(response => {
-                    this.router.navigate([Routes.LOGIN]);
-                    return response.body.message;
-                })
-            );
+        // return this.http
+        //     .get(`${environment.apiUrl}/${API.LOGOUT}`, { headers: queryHeaders, observe: 'response' })
+        //     .pipe(
+        //         map<HttpResponse<any>, any>(response => {
+        //             this.router.navigate([Routes.LOGIN]);
+        //             return response.body.message;
+        //         })
+        //     );
+
     }
 
     isAuthenticated() {

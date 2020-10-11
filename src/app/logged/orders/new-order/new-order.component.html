@@ -1,9 +1,5 @@
-<mat-horizontal-stepper
-   [linear]="true"
-   (selectionChange)="onTabChange($event)"
-   class="card-shadow"
-   labelPosition="bottom"
->
+<mat-horizontal-stepper [linear]="true" (selectionChange)="onTabChange($event)" class="card-shadow"
+   labelPosition="bottom">
    <!-- Step 1 -->
    <mat-step [completed]="this.formConfiguration && this.getFiles().controls.length > 0" label="Seleccionar archivos">
       <mat-tab-group class="mb-4" fxFlex="100" [color]="'accent'" mat-align-tabs="center">
@@ -15,25 +11,18 @@
                   </button>
                   <span class="text-secondary ml-3">(Se reseteará la configuración del anillado)</span>
                </div>
-               <span
-                  *ngIf="!this.formConfiguration || (this.formConfiguration && this.getFiles().controls.length < 1)"
-                  class="text-warn"
-                  >Debe seleccionar al menos un archivo para continuar</span
-               >
-               <span *ngIf="this.formConfiguration && this.getFiles().controls.length > 0" class="text-primary"
-                  >Archivos seleccionados: {{ this.getFiles().controls.length }}</span
-               >
+               <span *ngIf="!this.formConfiguration || (this.formConfiguration && this.getFiles().controls.length < 1)"
+                  class="text-warn">Debe seleccionar al menos un archivo para continuar</span>
+               <span *ngIf="this.formConfiguration && this.getFiles().controls.length > 0" class="text-primary">Archivos
+                  seleccionados: {{ this.getFiles().controls.length }}</span>
             </div>
             <!-- Buscar archivo -->
             <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
                <!-- This is the tree node template for leaf nodes -->
                <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
                   <li class="mat-tree-node">
-                     <mat-checkbox
-                        [disabled]="!this.previousQuestionRing"
-                        (change)="handlerAddFile($event, node)"
-                        class="ml-2 checklist-leaf-node"
-                     >
+                     <mat-checkbox [disabled]="!this.previousQuestionRing" (change)="handlerAddFile($event, node)"
+                        class="ml-2 checklist-leaf-node">
                         {{ node.name }}
                      </mat-checkbox>
                      <button mat-icon-button class="ml-2" (click)="downloadFile(node)">
@@ -79,24 +68,19 @@
          </div>
          <form *ngIf="this.formConfiguration" [formGroup]="this.formConfiguration" fxFlex="100">
             <mat-accordion class="card-shadow my-1" fxFlex="100%">
-               <mat-expansion-panel
-                  [formArrayName]="this.FORM_CONFIGURATION_VALUES.filesName"
-                  *ngFor="
-                     let file of this.formConfiguration.get(this.FORM_CONFIGURATION_VALUES.filesName).controls;
+               <mat-expansion-panel [formArrayName]="this.FORM_CONFIGURATION_VALUES.filesName" *ngFor="
+                     let file of this.formConfiguration.get(this.FORM_CONFIGURATION_VALUES.filesName)['controls'];
                      let i = index
-                  "
-               >
+                  ">
                   <mat-expansion-panel-header>
                      <mat-panel-title fxLayoutAlign="center start">
                         <h4 class="text-center mt-3" fxLayoutAlign="center start" fxFlex="40">
                            <!-- {{ archivo.name}} ({{this.calcularPrecioArchivo(i) | moneda}}) -->
                            <div class="mr-3">
-                              <span
-                                 *ngIf="
+                              <span *ngIf="
                                     this.getFiles().controls[i].status == 'VALID' ||
                                     this.getFiles().controls[i].disabled
-                                 "
-                              >
+                                 ">
                                  <mat-icon [color]="'primary'">check_circle</mat-icon>
                               </span>
                               <span *ngIf="this.getFiles().controls[i].status == 'INVALID'">
@@ -121,49 +105,34 @@
                         <!-- Row 1 -->
                         <div fxLayout="row wrap" fxLayoutGap="5%">
                            <mat-form-field fxFlex="25%">
-                              <input
-                                 min="1"
-                                 max="10"
-                                 [formControlName]="this.FORM_CONFIGURATION_VALUES.files.copiesQuantity"
-                                 required
-                                 (change)="onChangeCantidad(i)"
-                                 matInput
-                                 ngkey
-                                 (keydown)="onKeyDown()"
-                                 type="number"
-                              />
+                              <input min="1" max="10"
+                                 [formControlName]="this.FORM_CONFIGURATION_VALUES.files.copiesQuantity" required
+                                 (change)="onChangeCantidad(i)" matInput ngkey (keydown)="onKeyDown()" type="number" />
                               <mat-error>Ingrese la cantidad de copias</mat-error>
                               <mat-label>
                                  <b>Cantidad de copias</b>
                               </mat-label>
                            </mat-form-field>
                            <div fxLayoutAlign="center center">
-                              <mat-checkbox
-                                 [formControlName]="this.FORM_CONFIGURATION_VALUES.files.sameConfig"
-                                 (change)="onChangeCopiasMismaConfig(i)"
-                              >
+                              <mat-checkbox [formControlName]="this.FORM_CONFIGURATION_VALUES.files.sameConfig"
+                                 (change)="onChangeCopiasMismaConfig(i)">
                                  Todas las copias tienen la misma configuración
                               </mat-checkbox>
                            </div>
                         </div>
 
-                        <div
-                           fxLayout="column wrap"
-                           [formArrayName]="this.FORM_CONFIGURATION_VALUES.files.configurationsName"
-                           *ngFor="
+                        <div fxLayout="column wrap"
+                           [formArrayName]="this.FORM_CONFIGURATION_VALUES.files.configurationsName" *ngFor="
                               let configuration of file.controls[
                                  this.FORM_CONFIGURATION_VALUES.files.configurationsName
                               ].controls;
                               let z = index
-                           "
-                        >
+                           ">
                            <div [formGroupName]="z">
-                              <div
-                                 *ngIf="
+                              <div *ngIf="
                                     file.value[this.FORM_CONFIGURATION_VALUES.files.sameConfig];
                                     else textoConfiguracionIndiviual
-                                 "
-                              >
+                                 ">
                                  <!-- <h3>
                                     Configuracion de las copias
                                  </h3> -->
@@ -179,16 +148,11 @@
                               <div fxLayout="row wrap" class="mb-3">
                                  <div fxFlex="25%">
                                     <mat-form-field [hideRequiredMarker]="true" [floatLabel]="'auto'">
-                                       <mat-select
-                                          [compareWith]="compareFn"
-                                          [formControlName]="
+                                       <mat-select [compareWith]="compareFn" [formControlName]="
                                              this.FORM_CONFIGURATION_VALUES.files.configurations.slidesPerSheet
-                                          "
-                                       >
-                                          <mat-option
-                                             value="{{ opcion.value }}"
-                                             *ngFor="let opcion of opcionesDiapHoja"
-                                          >
+                                          ">
+                                          <mat-option value="{{ opcion.value }}"
+                                             *ngFor="let opcion of opcionesDiapHoja">
                                              {{ opcion.value }}
                                           </mat-option>
                                        </mat-select>
@@ -199,13 +163,10 @@
                                  </div>
                                  <div fxFlex="25%">
                                     <mat-form-field>
-                                       <mat-select
-                                          (valueChange)="onChangeSelectedSheets($event, configuration)"
+                                       <mat-select (valueChange)="onChangeSelectedSheets($event, configuration)"
                                           [formControlName]="
                                              this.FORM_CONFIGURATION_VALUES.files.configurations.selectedSheets
-                                          "
-                                          [compareWith]="compareFn"
-                                       >
+                                          " [compareWith]="compareFn">
                                           <mat-option value="0">
                                              Todas
                                           </mat-option>
@@ -218,46 +179,31 @@
                                        </mat-label>
                                        <mat-hint>
                                           El archivo contiene
-                                          <b
-                                             >{{
+                                          <b>{{
                                                 file.value[this.FORM_CONFIGURATION_VALUES.files.pagesQuantity]
                                              }}
-                                             páginas</b
-                                          ></mat-hint
-                                       >
+                                             páginas</b></mat-hint>
                                     </mat-form-field>
-                                    <mat-form-field
-                                       class="mt-5"
-                                       (change)="mostrar($event)"
-                                       *ngIf="
+                                    <mat-form-field class="mt-5" (change)="mostrar($event)" *ngIf="
                                           configuration.value[
                                              this.FORM_CONFIGURATION_VALUES.files.configurations.selectedSheets
                                           ] == 1
-                                       "
-                                       [floatLabel]="'auto'"
-                                    >
-                                       <input
-                                          [errorStateMatcher]="matcher"
-                                          pattern="\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*"
-                                          matInput
-                                          type="text"
-                                          [formControlName]="
+                                       " [floatLabel]="'auto'">
+                                       <input [errorStateMatcher]="matcher" pattern="\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*"
+                                          matInput type="text" [formControlName]="
                                              this.FORM_CONFIGURATION_VALUES.files.configurations.fromToInput
-                                          "
-                                       />
+                                          " />
                                        <mat-label>
                                           <b> Desde-Hasta</b>
                                        </mat-label>
                                        <mat-error *ngIf="configuration.errors?.fromToInput">Requerido </mat-error>
-                                       <mat-error *ngIf="!!configuration.controls.desdehastainput.errors?.pattern"
-                                          >Rango de páginas no válido, utiliza p. ej. 1-5, 8, 11-13
+                                       <mat-error *ngIf="!!configuration.controls.desdehastainput.errors?.pattern">Rango
+                                          de páginas no válido, utiliza p. ej. 1-5, 8, 11-13
                                        </mat-error>
-                                       <mat-error
-                                          *ngIf="
+                                       <mat-error *ngIf="
                                              !configuration.controls.desdehastainput.errors?.pattern &&
                                              configuration.errors?.length
-                                          "
-                                          >Rango de máximo superado
+                                          ">Rango de máximo superado
                                        </mat-error>
                                        <mat-hint> <b>p. ej. 1-5, 8, 11-13</b></mat-hint>
                                     </mat-form-field>
@@ -265,14 +211,11 @@
                                  <div fxLayoutAlign="start start" fxFlex="20%">
                                     <div fxLayout="column">
                                        <mat-checkbox
-                                          [formControlName]="this.FORM_CONFIGURATION_VALUES.files.configurations.duplex"
-                                       >
+                                          [formControlName]="this.FORM_CONFIGURATION_VALUES.files.configurations.duplex">
                                           Doble faz
                                        </mat-checkbox>
-                                       <mat-checkbox
-                                          [disabled]="true"
-                                          [formControlName]="this.FORM_CONFIGURATION_VALUES.files.configurations.colour"
-                                       >
+                                       <mat-checkbox [disabled]="true"
+                                          [formControlName]="this.FORM_CONFIGURATION_VALUES.files.configurations.colour">
                                           Color
                                        </mat-checkbox>
                                     </div>
@@ -343,19 +286,13 @@
                               {{ " (" + archivo[this.FORM_CONFIGURATION_VALUES.files.courseName] + ")" }}
                            </span>
                            <div fxFlex="40" fxLayoutAlign="center stretch">
-                              <button
-                                 [disabled]="!configuracion.id_grupo_anillado ? null : true"
-                                 mat-icon-button
+                              <button [disabled]="!configuracion.id_grupo_anillado ? null : true" mat-icon-button
                                  (click)="onRingFile(archivo, j, i)"
-                                 [matTooltip]="'Anillar el archivo ' + archivo.name"
-                              >
-                                 <mat-icon
-                                    [ngClass]="{
+                                 [matTooltip]="'Anillar el archivo ' + archivo.name">
+                                 <mat-icon [ngClass]="{
                                        'text-primary': !configuracion.id_grupo_anillado,
                                        'text-secondary': !!configuracion.id_grupo_anillado
-                                    }"
-                                    >send</mat-icon
-                                 >
+                                    }">send</mat-icon>
                               </button>
                            </div>
                         </mat-list-item>
@@ -371,45 +308,28 @@
                            this.tabs[this.tabAnillados.selectedIndex].ringType
                               ? this.tabs[this.tabAnillados.selectedIndex].ringType.name
                               : "Sin anillado"
-                        }}</span
-                     >
+                        }}</span>
                      <div>
-                        <button
-                           mat-icon-button
-                           [disabled]="isDisabledNewTabAnillado()"
-                           (click)="onAddTabAnillado(true)"
-                           matTooltip="Crear nuevo grupo de anillado"
-                        >
-                           <mat-icon
-                              [ngClass]="{
+                        <button mat-icon-button [disabled]="isDisabledNewTabAnillado()" (click)="onAddTabAnillado(true)"
+                           matTooltip="Crear nuevo grupo de anillado">
+                           <mat-icon [ngClass]="{
                                  'text-primary': !isDisabledNewTabAnillado(),
                                  'text-secondary': isDisabledNewTabAnillado()
-                              }"
-                              >add_circle</mat-icon
-                           >
+                              }">add_circle</mat-icon>
                         </button>
-                        <button
-                           mat-icon-button
-                           [disabled]="tabs.length === 1"
+                        <button mat-icon-button [disabled]="tabs.length === 1"
                            (click)="onRemoveTabAnillado(this.tabAnillados.selectedIndex)"
-                           matTooltip="Eliminar el grupo de anillado"
-                        >
-                           <mat-icon
-                              [ngClass]="{
+                           matTooltip="Eliminar el grupo de anillado">
+                           <mat-icon [ngClass]="{
                                  'text-warn': tabs.length !== 1,
                                  'text-secondary': tabs.length === 1
-                              }"
-                              >delete</mat-icon
-                           >
+                              }">delete</mat-icon>
                         </button>
                      </div>
                   </div>
 
-                  <mat-tab-group
-                     #tabAnillados
-                     [selectedIndex]="selected.value"
-                     (selectedIndexChange)="selected.setValue($event)"
-                  >
+                  <mat-tab-group #tabAnillados [selectedIndex]="selected.value"
+                     (selectedIndexChange)="selected.setValue($event)">
                      <mat-tab *ngFor="let tab of tabs; let index = index" [label]="'Anillado' + ' ' + (index + 1)">
                         <mat-list dense>
                            <div fxLayoutAlign="center stretch" *ngIf="tab.files.length === 0">
@@ -418,16 +338,11 @@
                               </span>
                            </div>
                            <mat-list-item class="mt-1" *ngFor="let file of tab.files; let indexFile = index">
-                              <button
-                                 mat-icon-button
-                                 (click)="
+                              <button mat-icon-button (click)="
                                     this.onRemoveRingFile(file.indexArchivo, file.indexConfiguracion, index, indexFile)
-                                 "
-                                 [matTooltip]="'Quitar ' + file.name + ' del anillado'"
-                              >
-                                 <mat-icon style="transform: rotate(180deg)" [color]="'warn'"
-                                    >cancel_schedule_send</mat-icon
-                                 >
+                                 " [matTooltip]="'Quitar ' + file.name + ' del anillado'">
+                                 <mat-icon style="transform: rotate(180deg)" [color]="'warn'">cancel_schedule_send
+                                 </mat-icon>
                               </button>
                               <div fxFlex="100" fxLayoutAlign="space-between stretch">
                                  <span>
@@ -441,12 +356,9 @@
                                     }}
                                     {{ " (" + file.course + ")" }}
                                  </span>
-                                 <span
-                                    class="text-secondary-darker"
-                                    [matTooltip]="
+                                 <span class="text-secondary-darker" [matTooltip]="
                                        file.name + ' ocupará la ' + (indexFile + 1) + '° posición del anillado'
-                                    "
-                                 >
+                                    ">
                                     <b>
                                        {{ indexFile + 1 + "° " }}
                                     </b>
@@ -485,13 +397,8 @@
       <!-- Tabla de detalles del pedido -->
       <div class="my-4" fxLayout="row wrap">
          <div fxFlex="100%">
-            <table
-               fxFlex="100%"
-               *ngIf="mostrarTabla"
-               mat-table
-               [dataSource]="this.tableTemplate"
-               class="mat-elevation-z8"
-            >
+            <table fxFlex="100%" *ngIf="mostrarTabla" mat-table [dataSource]="this.tableTemplate"
+               class="mat-elevation-z8">
                <!-- Archivo Column -->
                <ng-container matColumnDef="Archivo">
                   <th mat-header-cell *matHeaderCellDef>Archivo</th>
@@ -550,12 +457,8 @@
       </div>
 
       <button mat-button matStepperPrevious>Atrás</button>
-      <button
-         mat-raised-button
-         [color]="'primary'"
-         [disabled]="!this.form || !this.form.valid"
-         (click)="onPostPedido()"
-      >
+      <button mat-raised-button [color]="'primary'" [disabled]="!this.form || !this.form.valid"
+         (click)="onPostPedido()">
          Finalizar
       </button>
    </mat-step>
@@ -570,21 +473,12 @@
 </mat-horizontal-stepper>
 
 <cei-alert-error #alertError></cei-alert-error>
-<swal
-   #orderSuccessSwal
-   title="Pedido solicitado correctamente"
-   text="Podés realizar el seguimiento de su estado en 'Mis pedidos'"
-   icon="success"
-   [confirmButtonText]="'Genial!'"
-   (confirm)="this.router.navigate([routes.LOGIN])"
->
+<swal #orderSuccessSwal title="Pedido solicitado correctamente"
+   text="Podés realizar el seguimiento de su estado en 'Mis pedidos'" icon="success" [confirmButtonText]="'Genial!'"
+   (confirm)="this.router.navigate([routes.LOGIN])">
 </swal>
 
-<swal
-   #ringExceededSwal
-   title="No es posible anillar el documento"
-   text="El documento a anillar excede la máxima cantidad de hojas del grupo de anillado"
-   icon="error"
-   [confirmButtonText]="'Ok'"
->
+<swal #ringExceededSwal title="No es posible anillar el documento"
+   text="El documento a anillar excede la máxima cantidad de hojas del grupo de anillado" icon="error"
+   [confirmButtonText]="'Ok'">
 </swal>

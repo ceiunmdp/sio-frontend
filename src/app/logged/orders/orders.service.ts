@@ -13,12 +13,20 @@ import { Year } from "./../../_models/orders/year";
 import { InternalOrder } from "./new-order/new-order.component";
 import { Campus } from "src/app/_models/campus";
 import { Item } from "src/app/_models/item";
+import { OR, AND } from 'src/app/_helpers/filterBuilder';
 
 export interface ExternalOrder {
    campusId: number;
    totalPrice: number;
    amountPaid: number;
    files: ExternalFile[];
+}
+
+export enum TREE_TYPES {
+   CAREER,
+   YEAR,
+   COURSE,
+   FILE
 }
 
 export interface ExternalFile {
@@ -68,7 +76,7 @@ interface TreeArchivos {
    providedIn: "root"
 })
 export class OrdersService {
-   constructor(private http: HttpClient) {}
+   constructor(private http: HttpClient) { }
 
    getOrders(active?: boolean): Observable<Order[]> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
@@ -122,11 +130,72 @@ export class OrdersService {
          );
    }
 
+
+   // TODO:NUEVO
+   getCareers(): Observable<Career[]> {
+      const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      return this.http.get(environment.apiUrl + '/' + API.CAREERS, { headers: queryHeaders, observe: "response" }).pipe(
+         map<HttpResponse<any>, any>(result => {
+            return result.body.data.items;
+            // return careers.map((careerResponse: CareerResponse) => { const career: any = careerResponse; career.children = []; career.type = TREE_TYPES.CAREER; return career });
+            // return this.buildTreeFiles(result.body.data);
+         })
+      );
+   }
+
+   // TODO:NUEVO
+   getYears(filter: OR | AND): Observable<Year[]> {
+      const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      const queryParams = new HttpParams().append('filter', JSON.stringify(filter));
+      return this.http.get(environment.apiUrl + '/' + API.RELATIONS,
+         {
+            headers: queryHeaders,
+            observe: "response",
+            params: queryParams
+         }).pipe(
+            map<HttpResponse<any>, any>(result => {
+               return result.body.data.items;
+               // return years.map((yearResponse: YearResponse) => { const year: any = yearResponse; year.children = []; year.type = TREE_TYPES.YEAR; return year });
+            })
+         );
+   }
+
+   // TODO:NUEVO
+   getCourses(filter: OR | AND): Observable<Course[]> {
+      const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      const queryParams = new HttpParams().append('filter', JSON.stringify(filter));
+      return this.http.get(environment.apiUrl + '/' + API.COURSES,
+         {
+            headers: queryHeaders,
+            observe: "response",
+            params: queryParams
+         }).pipe(
+            map<HttpResponse<any>, any>(result => {
+               return result.body.data.items;
+               // return courses.map((courseResponse: CourseResponse) => { const course: any = courseResponse; course.children = []; course.type = TREE_TYPES.COURSE; return course });
+            })
+         );
+   }
+
+   // Todo: Nuevo
+   getFilesByCourse(filter: OR | AND): Observable<File[]> {
+      const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      const queryParams = new HttpParams().append("filter", JSON.stringify(filter))
+      return this.http.get(environment.apiUrl + "/files", { headers: queryHeaders, observe: "response", params: queryParams }).pipe(
+         map<HttpResponse<any>, any>(result => {
+            return result.body.data.items;
+         })
+      );
+   }
+
+
+
    getFiles(): Observable<Career[]> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
-      return this.http.get(environment.apiUrl + "/files", { headers: queryHeaders, observe: "response" }).pipe(
+      return this.http.get(environment.apiUrl + '/' + API.CAREERS, { headers: queryHeaders, observe: "response" }).pipe(
          map<HttpResponse<any>, any>(result => {
-            return this.buildTreeFiles(result.body.data);
+            return null;
+            // return this.buildTreeFiles(result.body.data);
          })
       );
    }
@@ -159,6 +228,20 @@ export class OrdersService {
                return result.body.data;
             })
          );
+   }
+
+   getFile(fileId: number): Observable<Career[]> {
+      console.log('entro');
+
+      const queryHeaders = new HttpHeaders().append("Content-Type", 'application/x-www-form-urlencoded');
+      const queryParams = new HttpParams()
+         .append('download', 'true');
+
+      return this.http.get(`${environment.apiUrl}/files/${fileId}/content`, { headers: queryHeaders, responseType: 'blob', observe: "response", params: queryParams }).pipe(
+         map<any, any>(result => {
+            return result.body;
+         })
+      );
    }
 
    getItems(): Observable<Item[]> {
@@ -212,91 +295,93 @@ export class OrdersService {
    }
 
    buildTreeFiles(files: File[]): Career[] {
-      const tree: Career[] = [];
-      let career: Career | undefined;
-      let year: Year | undefined;
-      let course: Course | undefined;
-      let file: File;
+      // const tree: Career[] = [];
+      // let career: Career | undefined;
+      // let year: Year | undefined;
+      // let course: Course | undefined;
+      // let file: File;
 
-      files.forEach(fileDB => {
-         file = this.createObject(fileDB, 4) as File;
+      // files.forEach(fileDB => {
+      //    file = this.createObject(fileDB, 4) as File;
 
-         career = tree.find(career => {
-            return career.id === fileDB.career!.id;
-         });
+      //    career = tree.find(career => {
+      //       return career.id === fileDB.career!.id;
+      //    });
 
-         if (career) {
-            year = career.children.find(year => {
-               return year.id === fileDB.year;
-            });
+      //    if (career) {
+      //       year = career.children.find(year => {
+      //          return year.id === fileDB.year;
+      //       });
 
-            if (year) {
-               course = year.children.find(course => {
-                  return course.id === fileDB.course!.id;
-               });
+      //       if (year) {
+      //          course = year.children.find(course => {
+      //             return course.id === fileDB.course!.id;
+      //          });
 
-               if (course) {
-                  course.children.push(file);
-               } else {
-                  course = this.createObject(fileDB, 3) as Course;
-                  course.children.push(file);
-                  year.children.push(course);
-               }
-            } else {
-               year = this.createObject(fileDB, 2) as Year;
-               course = this.createObject(fileDB, 3) as Course;
-               course.children.push(file);
-               year.children.push(course);
-               career.children.push(year);
-            }
-         } else {
-            career = this.createObject(fileDB, 1) as Career;
-            year = this.createObject(fileDB, 2) as Year;
-            course = this.createObject(fileDB, 3) as Course;
-            course.children.push(file);
-            year.children.push(course);
-            career.children.push(year);
-            tree.push(career);
-         }
-      });
-      return tree;
+      //          if (course) {
+      //             course.children.push(file);
+      //          } else {
+      //             course = this.createObject(fileDB, 3) as Course;
+      //             course.children.push(file);
+      //             year.children.push(course);
+      //          }
+      //       } else {
+      //          year = this.createObject(fileDB, 2) as Year;
+      //          course = this.createObject(fileDB, 3) as Course;
+      //          course.children.push(file);
+      //          year.children.push(course);
+      //          career.children.push(year);
+      //       }
+      //    } else {
+      //       career = this.createObject(fileDB, 1) as Career;
+      //       year = this.createObject(fileDB, 2) as Year;
+      //       course = this.createObject(fileDB, 3) as Course;
+      //       course.children.push(file);
+      //       year.children.push(course);
+      //       career.children.push(year);
+      //       tree.push(career);
+      //    }
+      // });
+      // return tree;
+      return null;
    }
 
    createObject(file: File, type: number): Career | Year | Course | File {
-      switch (type) {
-         // Career
-         case 1:
-            return {
-               id: file.career!.id,
-               name: file.career!.name,
-               children: new Array<Year>()
-            };
-         // Year
-         case 2:
-            return {
-               id: file.year,
-               name: file.year + "° año",
-               children: new Array<Course>()
-            };
-         // Course
-         case 3:
-            return {
-               id: file.course!.id,
-               name: file.course!.name,
-               children: new Array<File>()
-            };
-         // File
-         default:
-            return {
-               id: file.id,
-               name: file.name,
-               format: file.format,
-               numberOfSheets: file.numberOfSheets,
-               course: {
-                  id: file.career.id,
-                  name: file.course.name
-               }
-            };
-      }
+      // switch (type) {
+      //    // Career
+      //    case 1:
+      //       return {
+      //          id: file.career!.id,
+      //          name: file.career!.name,
+      //          children: new Array<Year>()
+      //       };
+      //    // Year
+      //    case 2:
+      //       return {
+      //          id: file.year,
+      //          name: file.year + "° año",
+      //          children: new Array<Course>()
+      //       };
+      //    // Course
+      //    case 3:
+      //       return {
+      //          id: file.course!.id,
+      //          name: file.course!.name,
+      //          children: new Array<File>()
+      //       };
+      //    // File
+      //    default:
+      //       return {
+      //          id: file.id,
+      //          name: file.name,
+      //          format: file.format,
+      //          numberOfSheets: file.numberOfSheets,
+      //          course: {
+      //             id: file.career.id,
+      //             name: file.course.name
+      //          }
+      //       };
+      // }
+      return null
    }
 }

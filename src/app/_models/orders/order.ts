@@ -6,11 +6,17 @@ export interface Order {
     id: number;
     totalPrice: number;
     paidPrice: number;
-    campus: string;
-    state: string;
+    dateOrdered: Date;
+    campus: {
+        name: string
+    };
+    state: {
+        name: string
+    };
     numberOfFiles: number;
     date: Date;
     files?: OrderFile[];
     status?: OrderStatus[];
     user?: User;
+    tracking?;
 }
