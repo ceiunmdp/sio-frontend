@@ -24,9 +24,7 @@ export class FileInputComponent extends FormElementComponent implements OnInit {
   }
 
   pondHandleAddFile(event: any) {
-    console.log('event',event)
-    console.log('file',event.file)
-    this.files.set(event.file.id, {name: event.file.filenameWithoutExtension, dataURL: event.file.getFileEncodeDataURL()});
+    this.files.set(event.file.id, { name: event.file.filename, dataUrl: event.file.getFileEncodeDataURL() });
     this.form.get(this.name).setValue(true);
   }
 

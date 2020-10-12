@@ -1,3 +1,4 @@
+import { SelectSearchingDynamicInputComponent } from './forms/select-searching-dynamic-input/select-searching-dynamic-input.component';
 import { FilePondModule } from 'ngx-filepond';
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
@@ -58,7 +59,8 @@ export function playerFactory() {
       SelectInputComponent,
       TextInputComponent,
       SpinnerErrorComponent,
-      SpinnerComponent
+      SpinnerComponent,
+      SelectSearchingDynamicInputComponent
    ],
    imports: [
       CommonModule,
@@ -79,7 +81,6 @@ export function playerFactory() {
       SweetAlert2Module,
       FilePondModule,
       LottieModule.forRoot({ player: playerFactory })
-
    ],
    exports: [
       InputTextComponent,
@@ -97,7 +98,8 @@ export function playerFactory() {
       TextInputComponent,
       SpinnerErrorComponent,
       SpinnerComponent,
-      FileInputComponent
+      FileInputComponent,
+      SelectSearchingDynamicInputComponent
    ],
    entryComponents: [AlertErrorChildComponent]
 })

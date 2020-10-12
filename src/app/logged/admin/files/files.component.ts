@@ -12,7 +12,7 @@ import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 
 export interface FileUpload {
   name: string;
-  dataURL: string;
+  base64: string;
 }
 
 @Component({
@@ -26,14 +26,22 @@ export class FilesComponent implements OnInit {
   @ViewChild('myPond', {static: false}) myPond: any;
   public readonly SUBJECT = "subject";
   public readonly CAREER = "career";
+  public readonly CAREER_SEARCHING = "career_searching";
   public readonly NAME = "name";
   public readonly ID = "id";
   public readonly FILES = "files";
   step: number;
+  totalFiles: number;
+  totalSubjects: number;
+  selectedSubject: string;
+  selectedCareer: string;
+  filePage: number;
+  subjectPage: number;
   dataSourceSubjects: any;
   dataSourceFiles: any;
   dataSourceCareers: any;
   messageError: any;
+  selectedSubjects: any[];
   @ViewChild('alertError', { static: true }) alertError;
   public readonly TITLE = "Archivos";
   displayedColumns: string[];
@@ -56,7 +64,7 @@ export class FilesComponent implements OnInit {
   filesForm: FormGroup;
   subjects: any[];
   careers: any[];
-  files: Map<string, Object> = new Map();
+  files: Map<string, FileUpload> = new Map();
   subjectFilesEditForm: FormGroup;
   displayedColumnsFiles: string[];
 
@@ -70,12 +78,12 @@ export class FilesComponent implements OnInit {
 
   ngOnInit() {
     this.step = 0;
+    this.selectedSubjects = new Array();
     this.displayedColumns = [
       "name",
       "actions"
     ];
     this.displayedColumnsFiles = [
-      "id",
       "name",
       "actions"
     ];
@@ -85,69 +93,64 @@ export class FilesComponent implements OnInit {
     this.getCareers();
   }
 
-  pondHandleInit() {
-    console.log('FilePond has initialised', this.myPond);
-  }
-
-  pondHandleAddFile(event: any) {
-    console.log("hola");
-    
-    console.log(event.file)
-    this.files.set(event.file.id, event.file);
-  }
-
-  pondHandleRemoveFile(event: any) {
-    this.files.delete(event.file.id);
-  }
-
   createFilesForm(): FormGroup {
     return this.formBuilder.group({
       [this.SUBJECT]: ["", [CustomValidators.required("Materia requeridas")]],
-      [this.CAREER]: ["", [CustomValidators.required("Carrera requeridas")]],
+      [this.CAREER]: [""],
+      [this.CAREER_SEARCHING]: [""],
       [this.FILES]: ["", [CustomValidators.required("Archivos requeridos")]]
    });
   }
 
   applyFilter(filterValue: string) {
     this.dataSourceSubjects.filter = filterValue.trim().toLowerCase();
- }
+  }
 
- applyFilterFiles(filterValue: string) {
-  this.dataSourceFiles.filter = filterValue.trim().toLowerCase();
-}
+  applyFilterFiles(filterValue: string) {
+    this.dataSourceFiles.filter = filterValue.trim().toLowerCase();
+  }
 
   getCareers() {
     this.adminService.getCareers().subscribe(
       careers => {
           this.careers = careers;
           this.dataSourceCareers = new MatTableDataSource(careers);
-
       },
       err => this.handleErrors(err)
     );
   }
 
-
-  selectedCareer(event) {
+  selectCareer(event) {
+    console.log(event)
+    this.selectedCareer = event.id;
     this.getSubjects(event.id);
   }
 
-  getSubjects(careerId?: number) {
-    this.adminService.getSubjects(careerId).subscribe(
-        (subjects: Subject[]) => {
-          this.subjects = subjects;
-          
-          console.log("entro");
-          this.dataSourceSubjects = new MatTableDataSource(subjects);
-          console.log("entro2");
+  getSubjects(careerId?: string, page?: number) {
+    this.adminService.getSubjects(careerId, page).subscribe(
+        (data) => {
+          this.subjects = data.items;
+          this.totalSubjects = data.meta.total_items
+          this.selectedCareer = careerId; 
+          this.dataSourceSubjects = new MatTableDataSource(data.items);
         },
         err => this.handleErrors(err)
     );
   }
 
-  uploadFiles() {
+  getSubjectsFiles(subjectId: any, page?: number) {
+    this.selectedSubject = subjectId;
+    this.adminService.getSubjectsFiles(subjectId, page).subscribe(
+      (data) => {
+        this.totalFiles = data.meta.total_items
+        this.dataSourceFiles = new MatTableDataSource(data.items);
+      },
+      err => this.handleErrors(err)
+    );
+  }
 
-    this.adminService.uploadFiles(this.filesForm.get(this.SUBJECT).value, Array.from(this.files.values())).subscribe(
+  uploadFiles() {
+    this.adminService.uploadFiles(this.selectedSubjects.join(","), Array.from(this.files.values())).subscribe(
       (message) => {
         this.swalOptions = {
           title: 'Carga exitosa',
@@ -184,16 +187,17 @@ export class FilesComponent implements OnInit {
 
   backFrom1To0() {
     this.step = 0;
+    this.selectedSubjects = new Array();
     this.generalService.sendMessage({ title: this.TITLE })
     this.filesForm.reset();
     this.alertError.closeError();
- }
+  }
 
- backFrom2To0() {
+  backFrom2To0() {
     this.step = 2;
     this.subjectFilesEditForm.reset();
     this.alertError.closeError();
- }
+  }
 
   handleErrors(err: HttpErrorResponse) {
     this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
@@ -202,17 +206,7 @@ export class FilesComponent implements OnInit {
     }
   }
 
-  getSubjectsFiles(subjectId: any) {
-    this.adminService.getSubjectsFiles(subjectId).subscribe(
-      (files) => {
-        this.dataSourceFiles = new MatTableDataSource(files);
-      },
-      err => this.handleErrors(err)
-    );
-  }
-
   createSubjectFilesEditForm(subject): FormGroup {
-
     return this.formBuilder.group({
        [this.ID]: [subject.id, [CustomValidators.required("Id requerido")]],
        [this.NAME]: [
@@ -220,9 +214,9 @@ export class FilesComponent implements OnInit {
           [CustomValidators.required("Nombre requerido")]
        ]
     });
- }
+  }
 
- onEditSubjectsFiles() {
+  onEditSubjectsFiles() {
     this.adminService
        .onEditSubjectsFiles(
           this.subjectFilesEditForm.get(this.ID).value,
@@ -246,27 +240,27 @@ export class FilesComponent implements OnInit {
              this.handleErrors(error);
           }
        );
- }
+  }
 
- deleteFile(file: any) {
-  this.adminService.deleteFile(file.id).subscribe(
-    (message) => {
-      this.swalOptions = {
-        title: 'Borrado con éxito',
-        text: message.message,
-        type: 'success',
-        showConfirmButton: true,
-        confirmButtonText: 'Continuar'
-    };
-    // TODO ver como evitar el setTimeout
-    setTimeout(() => this.responseSwal.fire(), 0);
-    this.backFrom1To0();
-    },
-    err => {
-      this.handleErrors(err)
-    }
-  );
-}
+  deleteFile(file: any) {
+    this.adminService.deleteFile(file.id).subscribe(
+      (message) => {
+        this.swalOptions = {
+          title: 'Borrado con éxito',
+          text: message.message,
+          type: 'success',
+          showConfirmButton: true,
+          confirmButtonText: 'Continuar'
+      };
+      // TODO ver como evitar el setTimeout
+      setTimeout(() => this.responseSwal.fire(), 0);
+      this.backFrom1To0();
+      },
+      err => {
+        this.handleErrors(err)
+      }
+    );
+  }
 
   displayEditSubjectFilesForm(subject) {
     this.subjectFilesEditForm = this.createSubjectFilesEditForm(subject);
@@ -278,6 +272,22 @@ export class FilesComponent implements OnInit {
     this.generalService.sendMessage({ title: this.TITLE + " de " + subject.name })
     this.getSubjectsFiles(subject.id)
     this.step = 2;
+  }
+
+  addSubject(event) {
+    this.selectedSubjects.push(event.id)
+  }
+
+  removeSubject(event) {
+    this.selectedSubjects = this.selectedSubjects.filter(item => item !== event.value.id)
+  }
+
+  pageFileEvent(event) {
+    this.getSubjectsFiles(this.selectedSubject, event.pageIndex + 1);
+  }
+
+  pageSubjectEvent(event) {
+    this.getSubjects(this.selectedCareer, event.pageIndex + 1);
   }
 
 }
