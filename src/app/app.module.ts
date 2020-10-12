@@ -24,15 +24,15 @@ registerLocaleData(localeEsAr, "es-Ar");
 
 
 export var firebaseConfig = {
-   apiKey: "AIzaSyAJb55Yooq3ftBhiKwn3Kvzpe4ZmJWALqQ",
-   authDomain: "icei-d3c94.firebaseapp.com",
-   databaseURL: "https://icei-d3c94.firebaseio.com",
-   projectId: "icei-d3c94",
-   storageBucket: "icei-d3c94.appspot.com",
-   messagingSenderId: "993559184474",
-   appId: "1:993559184474:web:42f65f61de64f8695c8463",
-   measurementId: "G-FJ8YG6NC24"
-};
+   apiKey: "AIzaSyCw5zMTIkWzpO_H3AC_Amd4fN18IHYaQqE",
+   authDomain: "sistema-de-impresiones-online.firebaseapp.com",
+   databaseURL: "https://sistema-de-impresiones-online.firebaseio.com",
+   projectId: "sistema-de-impresiones-online",
+   storageBucket: "sistema-de-impresiones-online.appspot.com",
+   messagingSenderId: "257859426167",
+   appId: "1:257859426167:web:e298c699eb573b4b6ff372",
+   measurementId: "G-L1TZQXKKGY"
+}
 export function fbfunction() { return 'my_factory' };
 
 
