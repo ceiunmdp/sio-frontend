@@ -37,6 +37,7 @@ import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
 import { SpinnerErrorComponent } from './spinner-error/spinner-error.component';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { LottieModule } from 'ngx-lottie';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import player from 'lottie-web';
 export function playerFactory() {
    return player;
@@ -80,6 +81,7 @@ export function playerFactory() {
       MatRadioModule,
       SweetAlert2Module,
       FilePondModule,
+      NgxMatSelectSearchModule,
       LottieModule.forRoot({ player: playerFactory })
    ],
    exports: [

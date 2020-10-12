@@ -18,7 +18,7 @@ const loggedRoutes: Routes = [
          {
             path: "",
          //    // Una vez validado el home, debe rederigir a /app/principal.
-            redirectTo: "admin",
+            //redirectTo: "admin",
          //    // loadChildren: () => import("./home/home.module").then(mod => mod.HomeModule)
 
          //    // loadChildren: () =>

@@ -14,7 +14,7 @@
               />
            </mat-form-field>
            <div fxLayout="row" fxFlex="80%" fxLayoutAlign="center start">
-            <!-- <cei-select-input fxFlex="80%"
+            <cei-select-input fxFlex="80%"
             [name]="this.CAREER"
             [form]="this.filesForm"
             [placeholder]="'Seleccione una carrera para filtrar'"
@@ -24,16 +24,7 @@
             (selected)="this.selectCareer($event)"
             >
             
-            </cei-select-input> -->
-            <!-- Select careers -->
-            <cei-select-searching-dynamic-input
-               [name]="this.CAREER" [nameSearching]="this.CAREER_SEARCHING"
-               [form]="this.filesForm" [placeholder]="'Seleccione el prestador'"
-               [calculateId]="this.calculateIdCareer" [calculateName]="this.calculateNameCareer"
-               [placeholderNoValue]="'Sin resultados'" [placeholderSearching]="'Buscar carrera...'"
-               [httpGet]="this.loadProvidersByFullName">
-            </cei-select-searching-dynamic-input>
-
+            </cei-select-input>
          </div>
            <div fxLayout="row" fxFlex="30%" fxLayoutAlign="center start">
               <button
