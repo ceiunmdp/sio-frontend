@@ -10,7 +10,7 @@ import { RoleGuard } from "../_auth/role.guard";
 const loggedRoutes: Routes = [
    {
       path: "",
-      // redirectTo: "admin",
+      // redirectTo: "",
       component: LoggedComponent,
       // Protect all other child routes at one time instead of adding the AuthGuard to each route individually.
       canActivateChild: [AuthGuard],

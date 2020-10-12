@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Routes } from '../_routes/routes';
 import { AuthenticationService } from './authentication.service';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 @Injectable({
     providedIn: 'root'
@@ -14,24 +15,26 @@ export class HttpErrorResponseHandlerService {
     handleError(router: Router, httpErrorResponse: HttpErrorResponse) {
         let message: string;
         const error = httpErrorResponse.error.error;
-
         switch (error.code) {
             case 400: // Bad Request (Business Error)
                 message = error.message;
                 // Show the message in the component from where the call came
                 break;
             case 401: // Unauthorized
-                this.authService.logout().subscribe(
-                    () => {
-                        this.authService.removeCurrentUser();
-                        router.navigate([Routes.LOGIN]);
-                    },
-                    (err) => {
-                        this.authService.removeCurrentUser();
-                        router.navigate([Routes.LOGIN]);
-                    }
-                );
-                message = 'Su sesión ha expirado';
+                // Try to refresh token. Otherwise logout
+                this.authService.refreshToken().catch(e => {
+                    this.authService.logout().subscribe(
+                        () => {
+                            this.authService.removeCurrentUser();
+                            router.navigate([Routes.LOGIN]);
+                        },
+                        (err) => {
+                            this.authService.removeCurrentUser();
+                            router.navigate([Routes.LOGIN]);
+                        }
+                    );
+                    message = 'Su sesión ha expirado';
+                })
                 break;
             case 403: // Forbidden
                 router.navigate([Routes.LOGIN]);

@@ -18,6 +18,9 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
 import { firebaseConfig } from '../app.module';
 
+export function fbfunction() { return 'my_factory' };
+
+
 @NgModule({
     declarations: [StartPageComponent, HeaderComponent],
     imports: [
@@ -35,7 +38,7 @@ import { firebaseConfig } from '../app.module';
         FormRulesModule,
         MatListModule,
         SweetAlert2Module.forRoot(),
-        NgxAuthFirebaseUIModule.forRoot(firebaseConfig, () => 'your_app_name_factory',
+        NgxAuthFirebaseUIModule.forRoot(firebaseConfig, fbfunction,
             {
                 toastMessageOnAuthSuccess: false, // whether to open/show a snackbar message on auth success - default : true
                 toastMessageOnAuthError: false, // whether to open/show a snackbar message on auth error - default : true
@@ -43,4 +46,6 @@ import { firebaseConfig } from '../app.module';
             }),
     ]
 })
+
+
 export class UnloggedModule { }

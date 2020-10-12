@@ -1,14 +1,11 @@
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, of, from } from 'rxjs';
+import { BehaviorSubject, from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { User } from '../_models/users/user';
-import { Message } from '@angular/compiler/src/i18n/i18n_ast';
-import { Routes } from '../_routes/routes';
-import { API } from '../_api/api';
-import { AngularFireAuth } from '@angular/fire/auth';
 import { GeneralService } from './general.service';
 
 @Injectable({
@@ -78,21 +75,20 @@ export class AuthenticationService {
     }
 
     logout(): Observable<any> {
-        return from(this.afAuth.signOut().then(a => {
+        return from(this.afAuth.auth.signOut().then(a => {
             console.log('cerro sesion', a);
 
         }, err => console.log(err)));
-        const queryHeaders = new HttpHeaders().append('Content-Type', 'application/json');
+    }
 
-        // return this.http
-        //     .get(`${environment.apiUrl}/${API.LOGOUT}`, { headers: queryHeaders, observe: 'response' })
-        //     .pipe(
-        //         map<HttpResponse<any>, any>(response => {
-        //             this.router.navigate([Routes.LOGIN]);
-        //             return response.body.message;
-        //         })
-        //     );
-
+    refreshToken(): Promise<any> {
+        return this.afAuth.auth.currentUser.getIdToken(true)
+            .then((idToken) => {
+                const u: User = {
+                    token: idToken,
+                }
+                this.updateCurrentUser(u);
+            });
     }
 
     isAuthenticated() {
