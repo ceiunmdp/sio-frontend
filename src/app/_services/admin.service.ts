@@ -1,3 +1,4 @@
+import { FilterBuilder, OPERATORS } from './../_helpers/filterBuilder';
 import { Subject } from './../_models/subject';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -105,13 +106,12 @@ export class AdminService {
        );
    }
 
-   getSubjects(careerId?: string, page?: number): Observable<any> {
+   getSubjects(careerId?: string): Observable<any> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
       let params = new HttpParams();
       if (!!careerId) {
          params = params.set("careerId", careerId);
       }
-      !!page ? params = params.set("page", page.toString()) : '';
 
       return this.http
          .get(`${environment.apiUrl}/courses`, {
@@ -207,11 +207,12 @@ export class AdminService {
        );
  }
 
- getSubjectsFiles(subjectId: number, page?: number): Observable<any> {
+ getSubjectsFiles(subjectId: number): Observable<any> {
    const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
    let params = new HttpParams();
-   params = params.set("courseId", subjectId.toString());
-   !!page ? params = params.set("page", page.toString()) : '';
+   const fb = new FilterBuilder();
+   const filter = fb.and(fb.where('course_id', OPERATORS.IS, subjectId));
+   params = params.set("filter", JSON.stringify(filter));
 
    return this.http
       .get(`${environment.apiUrl}/files`, {

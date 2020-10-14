@@ -1,4 +1,8 @@
+import { Relation } from './relation';
+
+
 export interface Subject {
-  id: number;
+  id: string;
   name: string;
+  relations: Relation[];
 }

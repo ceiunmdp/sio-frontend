@@ -40,15 +40,16 @@
         <mat-card-content style="padding-bottom: 10%;">
            <!-- Table list -->
            <div
-              class="table-container"
-              fxLayout="row wrap"
-              fxLayoutAlign="start start"
+               class="table-container"
+               fxLayout="row wrap"
+               fxLayoutAlign="start start"
            >
               <table
-                 fxFlex="100%"
-                 mat-table
-                 [dataSource]="this.dataSourceSubjects"
-                 class="mat-elevation-z6 mb-2"
+                  *ngIf="!!this.dataSourceSubjects"
+                  fxFlex="100%"
+                  mat-table
+                  [dataSource]="this.dataSourceSubjects"
+                  class="mat-elevation-z6 mb-2"
               >
 
                  <!-- Name Column -->
@@ -61,7 +62,7 @@
 
                  <!-- Actions Column -->
                  <ng-container matColumnDef="actions">
-                    <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                    <th mat-header-cell *matHeaderCellDef></th>
                     <td mat-cell *matCellDef="let element">
                        <div class="my-2" fxLayoutAlign="space-around start">
                           <button
@@ -82,11 +83,7 @@
                     *matRowDef="let row; columns: displayedColumns"
                  ></tr>
               </table>
-              <mat-paginator
-              (page)="this.pageSubjectEvent($event)"
-              [length]="this.totalSubjects"
-              [pageSize]="10"
-              showFirstLastButtons></mat-paginator>
+              <mat-paginator #subjectsPaginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
            </div>
         </mat-card-content>
      </mat-card>
@@ -107,7 +104,7 @@
         <mat-divider [inset]="true"></mat-divider>
         <mat-card-content fxLayout="column">
          <ng-select
-                   [items]="subjects"
+                   [items]="this.subjects"
                    bindLabel="name"
                    bindValue="id"
                    labelForId="state"
@@ -200,6 +197,8 @@
                        <div class="my-2" fxFlex>
                           <button
                              (click)="this.displayEditSubjectFilesForm(element)"
+                             matTooltip="Editar archivo"
+                             matTooltipPosition="above"
                              mat-icon-button
                              color="accent"
                           >
@@ -209,9 +208,10 @@
                       <div class="my-2" fxFlex>
                          <button
                          [swal]="confirmDeleteSwal"
-
+                         matTooltip="Borrar archivo"
+                         matTooltipPosition="above"
                             mat-icon-button
-                            color="accent"
+                            color="warn"
                          >
                             <mat-icon>delete</mat-icon>
                       </button>
@@ -237,11 +237,7 @@
                     *matRowDef="let row; columns: displayedColumnsFiles"
                  ></tr>
               </table>
-              <mat-paginator
-              (page)="this.pageFileEvent($event)"
-              [length]="this.totalFiles"
-              [pageSize]="10"
-              showFirstLastButtons></mat-paginator>
+              <mat-paginator #filesPaginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
            </div>
         </mat-card-content>
      </mat-card>

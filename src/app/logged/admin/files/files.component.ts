@@ -1,10 +1,11 @@
+import { MatPaginator } from '@angular/material';
 import { Subject } from './../../../_models/subject';
 import { AdminService } from './../../../_services/admin.service';
 import { CustomValidators } from './../../../_validators/custom-validators';
 import { HttpErrorResponseHandlerService } from './../../../_services/http-error-response-handler.service';
 import { GeneralService } from './../../../_services/general.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -21,7 +22,7 @@ export interface FileUpload {
   styleUrls: ['./files.component.scss']
 })
 
-export class FilesComponent implements OnInit {
+export class FilesComponent implements OnInit, AfterViewInit {
 
   @ViewChild('myPond', {static: false}) myPond: any;
   public readonly SUBJECT = "subject";
@@ -30,6 +31,7 @@ export class FilesComponent implements OnInit {
   public readonly NAME = "name";
   public readonly ID = "id";
   public readonly FILES = "files";
+  public readonly CAREERS_SELECT_DEFAULT_VALUE = {id: '0', name: 'Todas'}
   step: number;
   totalFiles: number;
   totalSubjects: number;
@@ -37,12 +39,13 @@ export class FilesComponent implements OnInit {
   selectedCareer: string;
   filePage: number;
   subjectPage: number;
-  dataSourceSubjects: any;
+  dataSourceSubjects: any = new MatTableDataSource();
   dataSourceFiles: any;
-  dataSourceCareers: any;
   messageError: any;
   selectedSubjects: any[];
   @ViewChild('alertError', { static: true }) alertError;
+  @ViewChild('filesPaginator', { read: MatPaginator, static: false }) filesPaginator: MatPaginator;
+  @ViewChild('subjectsPaginator', { read: MatPaginator, static: false }) subjectsPaginator: MatPaginator;
   public readonly TITLE = "Archivos";
   displayedColumns: string[];
   swalOptions: any;
@@ -52,17 +55,13 @@ export class FilesComponent implements OnInit {
     class: 'my-filepond',
     multiple: true,
     labelIdle: 'Arrastre los archivos o haga clic <strong>aquí</strong>',
-    labelInvalidField: 'Archivo inválido',
-    labelFileProcessing: 'Subiendo',
-    labelFileLoadError: 'Error durante la subida',
-    labelFileProcessingError: 'Error durante la subida',
-    labelFileProcessingComplete: 'Carga completada',
+    labelFileTypeNotAllowed: 'Tipo de archivo inválido',
+    fileValidateTypeLabelExpectedTypes: 'Formatos aceptados: pdf',
     acceptedFileTypes: 'application/pdf'
   }
 
-
   filesForm: FormGroup;
-  subjects: any[];
+  subjects: Subject[];
   careers: any[];
   files: Map<string, FileUpload> = new Map();
   subjectFilesEditForm: FormGroup;
@@ -75,6 +74,12 @@ export class FilesComponent implements OnInit {
       public router: Router,
       private httpErrorResponseHandlerService: HttpErrorResponseHandlerService
   ) { }
+
+
+  ngAfterViewInit(): void {
+    !!this.dataSourceFiles ? this.dataSourceFiles.paginator = this.filesPaginator : null;
+    !!this.dataSourceSubjects ? this.dataSourceSubjects.paginator = this.subjectsPaginator : null;
+  }
 
   ngOnInit() {
     this.step = 0;
@@ -114,36 +119,44 @@ export class FilesComponent implements OnInit {
     this.adminService.getCareers().subscribe(
       careers => {
           this.careers = careers;
-          this.dataSourceCareers = new MatTableDataSource(careers);
+          this.careers.unshift(this.CAREERS_SELECT_DEFAULT_VALUE)
       },
       err => this.handleErrors(err)
     );
   }
 
   selectCareer(event) {
-    console.log(event)
-    this.selectedCareer = event.id;
-    this.getSubjects(event.id);
+    if (event === this.CAREERS_SELECT_DEFAULT_VALUE) {
+      this.dataSourceSubjects.data = this.subjects
+    } else {
+      this.dataSourceSubjects.data = this.subjects.filter((subject, _, __) => {
+        return subject.relations.filter((relation, _, __) => relation.careers.some((career, _ ,__) => career.id === event.id)).length > 0
+      })
+    }
   }
 
-  getSubjects(careerId?: string, page?: number) {
-    this.adminService.getSubjects(careerId, page).subscribe(
+  getSubjects(careerId?: string) {
+    this.adminService.getSubjects(careerId).subscribe(
         (data) => {
           this.subjects = data.items;
-          this.totalSubjects = data.meta.total_items
-          this.selectedCareer = careerId; 
           this.dataSourceSubjects = new MatTableDataSource(data.items);
+          this.setSubjectPaginator();
         },
         err => this.handleErrors(err)
     );
   }
 
-  getSubjectsFiles(subjectId: any, page?: number) {
-    this.selectedSubject = subjectId;
-    this.adminService.getSubjectsFiles(subjectId, page).subscribe(
+  getSubjectsFiles(subjectId: any) {
+    
+    this.adminService.getSubjectsFiles(subjectId).subscribe(
       (data) => {
-        this.totalFiles = data.meta.total_items
         this.dataSourceFiles = new MatTableDataSource(data.items);
+        this.dataSourceFiles.paginator = this.filesPaginator;
+        this.filesPaginator._intl.itemsPerPageLabel = 'Registros por página';
+        this.filesPaginator._intl.firstPageLabel = 'Primera página';
+        this.filesPaginator._intl.lastPageLabel = 'Última página';
+        this.filesPaginator._intl.nextPageLabel = 'Página siguiente';
+        this.filesPaginator._intl.previousPageLabel = 'Página anterior';
       },
       err => this.handleErrors(err)
     );
@@ -188,6 +201,7 @@ export class FilesComponent implements OnInit {
   backFrom1To0() {
     this.step = 0;
     this.selectedSubjects = new Array();
+    this.getSubjects()
     this.generalService.sendMessage({ title: this.TITLE })
     this.filesForm.reset();
     this.alertError.closeError();
@@ -282,12 +296,13 @@ export class FilesComponent implements OnInit {
     this.selectedSubjects = this.selectedSubjects.filter(item => item !== event.value.id)
   }
 
-  pageFileEvent(event) {
-    this.getSubjectsFiles(this.selectedSubject, event.pageIndex + 1);
-  }
-
-  pageSubjectEvent(event) {
-    this.getSubjects(this.selectedCareer, event.pageIndex + 1);
+  setSubjectPaginator() {
+    this.dataSourceSubjects.paginator = this.subjectsPaginator;
+    this.subjectsPaginator._intl.itemsPerPageLabel = 'Registros por página';
+    this.subjectsPaginator._intl.firstPageLabel = 'Primera página';
+    this.subjectsPaginator._intl.lastPageLabel = 'Última página';
+    this.subjectsPaginator._intl.nextPageLabel = 'Página siguiente';
+    this.subjectsPaginator._intl.previousPageLabel = 'Página anterior';
   }
 
 }
