@@ -34,6 +34,8 @@
                      }
                   ],
                   "styles": [
+                     "./node_modules/filepond/dist/filepond.min.css",
+                     "./node_modules/@ng-select/ng-select/themes/material.theme.css",
                      "src/styles.scss",
                      "src/theme.scss"
                   ],

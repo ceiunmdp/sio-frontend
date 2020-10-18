@@ -1,8 +1,6 @@
 export interface Functionality {
    id: number;
-   code: CODE;
+   code: string;
    name: string;
    sub_functionalities: Functionality[];
 }
-
-type CODE = 'home';

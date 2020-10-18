@@ -24,7 +24,7 @@ const appRoutes: Routes = [
    {
       path: "repositorio",
       loadChildren: () => import("./modules/repository/repository.module").then(mod => mod.RepositoryModule),
-      // canActivateChild: [AuthGuard] // Avoids loading the module before the user is authenticated
+      canActivate: [AuthGuardUnlogged] // Avoids loading the module if the user is already authenticated
    },
    {
       path: "**",

@@ -1,3 +1,5 @@
+import { SelectSearchingDynamicInputComponent } from './forms/select-searching-dynamic-input/select-searching-dynamic-input.component';
+import { FilePondModule } from 'ngx-filepond';
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FlexLayoutModule } from "@angular/flex-layout";
@@ -35,6 +37,7 @@ import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
 import { SpinnerErrorComponent } from './spinner-error/spinner-error.component';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { LottieModule } from 'ngx-lottie';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import player from 'lottie-web';
 export function playerFactory() {
    return player;
@@ -57,7 +60,8 @@ export function playerFactory() {
       SelectInputComponent,
       TextInputComponent,
       SpinnerErrorComponent,
-      SpinnerComponent
+      SpinnerComponent,
+      SelectSearchingDynamicInputComponent
    ],
    imports: [
       CommonModule,
@@ -76,8 +80,9 @@ export function playerFactory() {
       MatMenuModule,
       MatRadioModule,
       SweetAlert2Module,
+      FilePondModule,
+      NgxMatSelectSearchModule,
       LottieModule.forRoot({ player: playerFactory })
-
    ],
    exports: [
       InputTextComponent,
@@ -94,7 +99,9 @@ export function playerFactory() {
       SelectInputComponent,
       TextInputComponent,
       SpinnerErrorComponent,
-      SpinnerComponent
+      SpinnerComponent,
+      FileInputComponent,
+      SelectSearchingDynamicInputComponent
    ],
    entryComponents: [AlertErrorChildComponent]
 })

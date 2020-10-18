@@ -1,3 +1,4 @@
+import { Routes } from 'src/app/_routes/routes';
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
@@ -37,7 +38,7 @@ export class StartPageComponent implements OnInit {
       if (this.authService.redirectUrl) {
          this.router.navigate([this.authService.redirectUrl]);
       } else {
-         this.router.navigate(["/cei/home"]);
+         this.router.navigate([Routes.FILE_MANAGEMENT]);
       }
    }
 

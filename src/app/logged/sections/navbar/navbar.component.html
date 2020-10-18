@@ -29,7 +29,7 @@
       <span class="title-menu pl-5">{{ mainMenu.name }}</span>
       <div class="my-5">
          <a *ngFor="let functionality of mainMenu.sub_functionalities" class="item-menu" mat-list-item
-            routerLink="{{ routes[functionality.code] }}" [routerLinkActive]="['is-active']">
+            routerLink="{{ routes[functionality.code.toUpperCase()] }}" [routerLinkActive]="['is-active']">
             <div [ngSwitch]="functionality.code" [ngClass]="{
                   'mr-5': true,
                   'text-secondary': true

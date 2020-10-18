@@ -1,6 +1,5 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormElementComponent } from '../form-element/form-element.component';
-import { EventEmitter } from 'events';
 
 @Component({
     selector: 'cei-select-input',
@@ -16,8 +15,9 @@ export class SelectInputComponent extends FormElementComponent implements OnInit
     // Functions provided by the parent that tells the component how to calculate the id and name of the options
     @Input() calculateId: (element) => string;
     @Input() calculateName: (element) => string;
+    @Input() multiple: boolean; // Undefined by default
     // Emit an event every time the select changes
-    @Output() public selected: EventEmitter = new EventEmitter();
+    @Output() public selected: EventEmitter<any> = new EventEmitter();
 
     constructor() {
         super();
@@ -70,6 +70,6 @@ export class SelectInputComponent extends FormElementComponent implements OnInit
 
     change(event) {
         // Called everytime a new value is selected
-        this.selected.emit(this.calculateSelected(event));
+        this.selected.emit(this.calculateSelected(event.value));
     }
 }

@@ -10,20 +10,19 @@ import { RoleGuard } from "../_auth/role.guard";
 const loggedRoutes: Routes = [
    {
       path: "",
-      // redirectTo: "",
       component: LoggedComponent,
       // Protect all other child routes at one time instead of adding the AuthGuard to each route individually.
       canActivateChild: [AuthGuard],
       children: [
          {
             path: "",
-            // Una vez validado el home, debe rederigir a /app/principal.
-            // redirectTo: ""
-            // loadChildren: () => import("./home/home.module").then(mod => mod.HomeModule)
+         //    // Una vez validado el home, debe rederigir a /app/principal.
+            redirectTo: "admin",
+         //    // loadChildren: () => import("./home/home.module").then(mod => mod.HomeModule)
 
-            // loadChildren: () =>
-            //    import('./../../modules/cases/cases.module').then((mod) => mod.CasesModule),
-            // canActivate: [RoleGuard],
+         //    // loadChildren: () =>
+         //    //    import('./../../modules/cases/cases.module').then((mod) => mod.CasesModule),
+            canActivate: [RoleGuard],
          },
          {
             path: "home",
@@ -53,6 +52,12 @@ const loggedRoutes: Routes = [
             canLoad: [RoleGuard],
             data: { expectedRoles: [Roles.Sede] }
             // ¿Preload de este módulo?
+         },
+         {
+            path: "admin",
+            loadChildren: () => import("./admin/admin.module").then(mod => mod.AdminModule),
+            canLoad: [RoleGuard],
+            data: { expectedRoles: [Roles.Admin] }
          }
       ]
    }

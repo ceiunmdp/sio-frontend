@@ -12,5 +12,9 @@ export enum Routes {
    // Sede routes
    STUDENT_LIST = "/cei/sede/estudiantes",
    ACTIVE_ORDERS = "/cei/sede/pedidos",
-   HISTORICAL_ORDERS = "/cei/sede/historico-pedidos"
+   HISTORICAL_ORDERS = "/cei/sede/historico-pedidos",
+
+   // Admin routes
+   ADMIN_HOME = "/cei/admin",
+   FILE_MANAGEMENT = "/cei/admin/archivos"
 }

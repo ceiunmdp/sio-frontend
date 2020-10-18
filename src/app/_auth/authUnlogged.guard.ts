@@ -1,3 +1,4 @@
+import { Routes } from 'src/app/_routes/routes';
 import { Injectable } from '@angular/core';
 import {
     ActivatedRouteSnapshot,
@@ -8,7 +9,6 @@ import {
     Router,
     RouterStateSnapshot
 } from '@angular/router';
-import { Routes } from '../_routes/routes';
 import { AuthenticationService } from '../_services/authentication.service';
 
 @Injectable({
@@ -39,7 +39,7 @@ export class AuthGuardUnlogged implements CanActivate, CanActivateChild, CanLoad
             // console.log('entrooo');
             return true;
         }
-        this.router.navigate(['/cei/home']);
+        this.router.navigate([Routes.ADMIN_HOME]);
         return false;
     }
 
