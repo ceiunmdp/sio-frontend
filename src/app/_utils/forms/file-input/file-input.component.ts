@@ -8,7 +8,7 @@ import { FormElementComponent } from '../form-element/form-element.component';
 })
 export class FileInputComponent extends FormElementComponent implements OnInit {
 
-  @ViewChild('myPond', {static: false}) myPond: any;
+  @ViewChild('myPond', { static: false }) myPond: any;
   @Input() options: any;
   @Input() files: Map<any, any>;
 
@@ -24,16 +24,16 @@ export class FileInputComponent extends FormElementComponent implements OnInit {
   }
 
   pondHandleAddFile(event: any) {
-    this.files.set(event.file.id, { name: event.file.filename, dataUrl: !event.error? event.file.getFileEncodeDataURL(): '' , error: !!event.error});
+    this.files.set(event.file.id, { name: event.file.filename, dataUrl: !event.error ? event.file.getFileEncodeDataURL() : '', error: !!event.error });
     this.form.get(this.name).setValue(Array.from(this.files.values()).findIndex((value, _, __) => value.error) === -1);
   }
 
   pondHandleRemoveFile(event: any) {
     this.files.delete(event.file.id);
-    if(this.files.size === 0)
+    if (this.files.size === 0)
       this.form.get(this.name).setValue(null);
-    else 
-    this.form.get(this.name).setValue(Array.from(this.files.values()).findIndex((value, _, __) => value.error) === -1);
+    else
+      this.form.get(this.name).setValue(Array.from(this.files.values()).findIndex((value, _, __) => value.error) === -1);
   }
 
 }

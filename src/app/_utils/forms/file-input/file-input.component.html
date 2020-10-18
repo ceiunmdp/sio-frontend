@@ -1,19 +1,11 @@
-<file-pond #myPond
-[formControlName] = "name"
-[formGroup]= "form"
-[options]="options"
-(oninit)="pondHandleInit()"
-(onaddfile)="pondHandleAddFile($event)"
-(onremovefile)="pondHandleRemoveFile($event)"
->
+<file-pond #myPond [options]="options" (oninit)="pondHandleInit()" (onaddfile)="pondHandleAddFile($event)"
+   (onremovefile)="pondHandleRemoveFile($event)">
 </file-pond>
-<mat-error
-*ngIf="
-   this.form.get(this.name).errors &&
-   (this.form.get(this.name).dirty || this.form.get(this.name).touched)
-"
->
-<b>
-   {{ objectValues(this.form.get(this.name).errors)[0] }}
-</b>
+<mat-error *ngIf="
+         this.form.get(this.name).errors &&
+         (this.form.get(this.name).dirty || this.form.get(this.name).touched)
+      ">
+   <b>
+      {{ objectValues(this.form.get(this.name).errors)[0] }}
+   </b>
 </mat-error>

@@ -10,6 +10,7 @@ import { MatTableDataSource } from '@angular/material';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
+import Swal from 'sweetalert2';
 
 export interface FileUpload {
   name: string;
@@ -24,14 +25,14 @@ export interface FileUpload {
 
 export class FilesComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('myPond', {static: false}) myPond: any;
+  @ViewChild('myPond', { static: false }) myPond: any;
   public readonly SUBJECT = "subject";
   public readonly CAREER = "career";
   public readonly CAREER_SEARCHING = "career_searching";
   public readonly NAME = "name";
   public readonly ID = "id";
   public readonly FILES = "files";
-  public readonly CAREERS_SELECT_DEFAULT_VALUE = {id: '0', name: 'Todas'}
+  public readonly CAREERS_SELECT_DEFAULT_VALUE = { id: '0', name: 'Todas' }
   step: number;
   totalFiles: number;
   totalSubjects: number;
@@ -48,8 +49,7 @@ export class FilesComponent implements OnInit, AfterViewInit {
   @ViewChild('subjectsPaginator', { read: MatPaginator, static: false }) subjectsPaginator: MatPaginator;
   public readonly TITLE = "Archivos";
   displayedColumns: string[];
-  swalOptions: any;
-  @ViewChild('responseSwal', { static: true }) private responseSwal: SwalComponent;
+  @ViewChild('responseSwal', { static: false }) private responseSwal: SwalComponent;
 
   pondOptions = {
     class: 'my-filepond',
@@ -68,11 +68,11 @@ export class FilesComponent implements OnInit, AfterViewInit {
   displayedColumnsFiles: string[];
 
   constructor(
-      private formBuilder: FormBuilder,
-      private adminService: AdminService,
-      private generalService: GeneralService,
-      public router: Router,
-      private httpErrorResponseHandlerService: HttpErrorResponseHandlerService
+    private formBuilder: FormBuilder,
+    private adminService: AdminService,
+    private generalService: GeneralService,
+    public router: Router,
+    private httpErrorResponseHandlerService: HttpErrorResponseHandlerService
   ) { }
 
 
@@ -104,7 +104,7 @@ export class FilesComponent implements OnInit, AfterViewInit {
       [this.CAREER]: [""],
       [this.CAREER_SEARCHING]: [""],
       [this.FILES]: ["", [CustomValidators.required("Archivos requeridos")]]
-   });
+    });
   }
 
   applyFilter(filterValue: string) {
@@ -118,8 +118,8 @@ export class FilesComponent implements OnInit, AfterViewInit {
   getCareers() {
     this.adminService.getCareers().subscribe(
       careers => {
-          this.careers = careers;
-          this.careers.unshift(this.CAREERS_SELECT_DEFAULT_VALUE)
+        this.careers = careers;
+        this.careers.unshift(this.CAREERS_SELECT_DEFAULT_VALUE)
       },
       err => this.handleErrors(err)
     );
@@ -130,24 +130,24 @@ export class FilesComponent implements OnInit, AfterViewInit {
       this.dataSourceSubjects.data = this.subjects
     } else {
       this.dataSourceSubjects.data = this.subjects.filter((subject, _, __) => {
-        return subject.relations.filter((relation, _, __) => relation.careers.some((career, _ ,__) => career.id === event.id)).length > 0
+        return subject.relations.filter((relation, _, __) => relation.careers.some((career, _, __) => career.id === event.id)).length > 0
       })
     }
   }
 
   getSubjects(careerId?: string) {
     this.adminService.getSubjects(careerId).subscribe(
-        (data) => {
-          this.subjects = data.items;
-          this.dataSourceSubjects = new MatTableDataSource(data.items);
-          this.setSubjectPaginator();
-        },
-        err => this.handleErrors(err)
+      (data) => {
+        this.subjects = data.items;
+        this.dataSourceSubjects = new MatTableDataSource(data.items);
+        this.setSubjectPaginator();
+      },
+      err => this.handleErrors(err)
     );
   }
 
   getSubjectsFiles(subjectId: any) {
-    
+
     this.adminService.getSubjectsFiles(subjectId).subscribe(
       (data) => {
         this.dataSourceFiles = new MatTableDataSource(data.items);
@@ -165,16 +165,15 @@ export class FilesComponent implements OnInit, AfterViewInit {
   uploadFiles() {
     this.adminService.uploadFiles(this.selectedSubjects.join(","), Array.from(this.files.values())).subscribe(
       (message) => {
-        this.swalOptions = {
+        const swalOptions = {
           title: 'Carga exitosa',
           text: message.message,
           type: 'success',
           showConfirmButton: true,
           confirmButtonText: 'Continuar'
-      };
-      // TODO ver como evitar el setTimeout
-      setTimeout(() => this.responseSwal.fire(), 0);
-      this.backFrom1To0();
+        };
+        Swal.fire(swalOptions);
+        this.backFrom1To0();
       },
       err => {
         this.handleErrors(err)
@@ -216,59 +215,57 @@ export class FilesComponent implements OnInit, AfterViewInit {
   handleErrors(err: HttpErrorResponse) {
     this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
     if (this.messageError) {
-       this.alertError.openError(this.messageError);
+      this.alertError.openError(this.messageError);
     }
   }
 
   createSubjectFilesEditForm(subject): FormGroup {
     return this.formBuilder.group({
-       [this.ID]: [subject.id, [CustomValidators.required("Id requerido")]],
-       [this.NAME]: [
-          subject.name,
-          [CustomValidators.required("Nombre requerido")]
-       ]
+      [this.ID]: [subject.id, [CustomValidators.required("Id requerido")]],
+      [this.NAME]: [
+        subject.name,
+        [CustomValidators.required("Nombre requerido")]
+      ]
     });
   }
 
   onEditSubjectsFiles() {
     this.adminService
-       .onEditSubjectsFiles(
-          this.subjectFilesEditForm.get(this.ID).value,
-          this.subjectFilesEditForm.get(this.NAME).value
-       )
-       .subscribe(
-          message => {
-             this.step = 0;
-             this.swalOptions = {
-                title: "Operación exitosa",
-                text: message.message,
-                type: "success",
-                showConfirmButton: true,
-                confirmButtonText: "Continuar"
-             };
-             // TODO ver como evitar el setTimeout
-             setTimeout(() => this.responseSwal.fire(), 0);
-             this.getCareers();
-          },
-          error => {
-             this.handleErrors(error);
-          }
-       );
+      .onEditSubjectsFiles(
+        this.subjectFilesEditForm.get(this.ID).value,
+        this.subjectFilesEditForm.get(this.NAME).value
+      )
+      .subscribe(
+        message => {
+          this.step = 0;
+          const swalOptions = {
+            title: "Operación exitosa",
+            text: message.message,
+            type: "success",
+            showConfirmButton: true,
+            confirmButtonText: "Continuar"
+          };
+          Swal.fire(swalOptions);
+          this.getCareers();
+        },
+        error => {
+          this.handleErrors(error);
+        }
+      );
   }
 
   deleteFile(file: any) {
     this.adminService.deleteFile(file.id).subscribe(
       (message) => {
-        this.swalOptions = {
+        const swalOptions = {
           title: 'Borrado con éxito',
           text: message.message,
           type: 'success',
           showConfirmButton: true,
           confirmButtonText: 'Continuar'
-      };
-      // TODO ver como evitar el setTimeout
-      setTimeout(() => this.responseSwal.fire(), 0);
-      this.backFrom1To0();
+        };
+        Swal.fire(swalOptions)
+        this.backFrom1To0();
       },
       err => {
         this.handleErrors(err)

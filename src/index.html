@@ -31,12 +31,13 @@
    <meta name="theme-color" content="#ffffff">
    <meta name="theme-color" content="#1976d2">
    <!-- CSP -->
-   <!-- <meta http-equiv="Content-Security-Policy" content="
+   <meta http-equiv="Content-Security-Policy" content="
          default-src 'self';
          font-src 'self' https://fonts.gstatic.com;
-         img-src 'self' https://*;
+         img-src 'self' https://www.google.com;
          style-src 'self' https://fonts.googleapis.com 'unsafe-inline';
-         worker-src 'self';"> -->
+         connect-src 'self' https://www.googleapis.com https://firestore.googleapis.com;
+         worker-src 'self';">
 </head>
 
 <body>

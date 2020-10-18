@@ -5,7 +5,17 @@
 export const environment = {
    production: false,
    apiUrl: "http://localhost:3000/api/v1",
-   apiJsonServer: "http://localhost:3004/api/v1"
+   apiJsonServer: "http://localhost:3004/api/v1",
+   firebaseConfig: {
+      apiKey: "AIzaSyAJb55Yooq3ftBhiKwn3Kvzpe4ZmJWALqQ",
+      authDomain: "icei-d3c94.firebaseapp.com",
+      databaseURL: "https://icei-d3c94.firebaseio.com",
+      projectId: "icei-d3c94",
+      storageBucket: "icei-d3c94.appspot.com",
+      messagingSenderId: "993559184474",
+      appId: "1:993559184474:web:42f65f61de64f8695c8463",
+      measurementId: "G-FJ8YG6NC24"
+   }
 };
 
 /*
