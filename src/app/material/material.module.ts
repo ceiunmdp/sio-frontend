@@ -30,11 +30,14 @@ import {
    MatChipsModule,
    MatAutocompleteModule,
    MatTreeModule,
-   MatProgressBarModule
+   MatProgressBarModule,
 } from '@angular/material';
+import { MatRippleModule } from '@angular/material/core';
+
 import { ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { UtilsModule } from '../_utils/utils.module';
+
 
 const material = [
    MatButtonModule,
@@ -68,7 +71,8 @@ const material = [
    MatChipsModule,
    MatAutocompleteModule,
    MatTreeModule,
-   MatProgressBarModule
+   MatProgressBarModule,
+   MatRippleModule
 ];
 
 const flexLayout = [FlexLayoutModule, UtilsModule];

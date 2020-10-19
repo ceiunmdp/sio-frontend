@@ -134,7 +134,8 @@ export class OrdersService {
    // TODO:NUEVO
    getCareers(): Observable<Career[]> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
-      return this.http.get(environment.apiUrl + '/' + API.CAREERS, { headers: queryHeaders, observe: "response" }).pipe(
+      const params = new HttpParams().append('sort', 'career.name ASC');
+      return this.http.get(environment.apiUrl + '/' + API.CAREERS, { headers: queryHeaders, observe: "response", params }).pipe(
          map<HttpResponse<any>, any>(result => {
             return result.body.data.items;
             // return careers.map((careerResponse: CareerResponse) => { const career: any = careerResponse; career.children = []; career.type = TREE_TYPES.CAREER; return career });
@@ -146,12 +147,13 @@ export class OrdersService {
    // TODO:NUEVO
    getYears(filter: OR | AND): Observable<Year[]> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
-      const queryParams = new HttpParams().append('filter', JSON.stringify(filter));
+      const params = new HttpParams().append('filter', JSON.stringify(filter)).append('sort', 'relation.name ASC')
+
       return this.http.get(environment.apiUrl + '/' + API.RELATIONS,
          {
             headers: queryHeaders,
             observe: "response",
-            params: queryParams
+            params
          }).pipe(
             map<HttpResponse<any>, any>(result => {
                return result.body.data.items;
@@ -180,7 +182,7 @@ export class OrdersService {
    // Todo: Nuevo
    getFilesByCourse(filter: OR | AND): Observable<File[]> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
-      const queryParams = new HttpParams().append("filter", JSON.stringify(filter))
+      const queryParams = new HttpParams().append("filter", JSON.stringify(filter)).append('sort', 'file.name ASC')
       return this.http.get(environment.apiUrl + "/files", { headers: queryHeaders, observe: "response", params: queryParams }).pipe(
          map<HttpResponse<any>, any>(result => {
             return result.body.data.items;

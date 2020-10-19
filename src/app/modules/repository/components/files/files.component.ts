@@ -11,6 +11,7 @@ import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-re
 import { File } from 'src/app/_models/orders/file';
 import { Year } from 'src/app/_models/orders/year';
 import { FilterBuilder, OPERATORS } from 'src/app/_helpers/filterBuilder';
+import { GeneralService } from 'src/app/_services/general.service';
 
 interface Node {
   name: string;
@@ -58,7 +59,7 @@ export class FilesComponent implements OnInit {
   loadingResponse = false;
 
 
-  constructor(private filesService: OrdersService, private cd: ChangeDetectorRef, public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService) { }
+  constructor(public generalService: GeneralService, private filesService: OrdersService, private cd: ChangeDetectorRef, public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService) { }
 
   ngOnInit() {
     this.getCareers();
@@ -222,10 +223,11 @@ export class FilesComponent implements OnInit {
   }
 
   downloadFile(file) {
-    console.log(file);
+    file.isLoading = true;
     this.filesService.getFile(file.id).subscribe(
-      blob => { console.log(blob); saveAs(blob, file.name) },
-      error => { console.log('entro en error', error); this.handleErrors(error) }
+      blob => { saveAs(blob, file.name) },
+      error => { this.handleErrors(error) },
+      () => file.isLoading = false
     );
   }
 

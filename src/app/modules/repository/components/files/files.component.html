@@ -23,6 +23,8 @@
                         <a class="text-primary" style="cursor: pointer;" (click)="downloadFile(node)">
                             {{ node.name }}
                         </a>
+                        <span class="text-secondary mls-2">[{{this.generalService.formatBytes(node.size,1)}}]</span>
+                        <mat-spinner *ngIf="node.isLoading" class="mls-2" diameter="20"></mat-spinner>
                         <!-- </mat-checkbox> -->
                         <!-- <button mat-icon-button [matTooltip]="'Descargar archivo'" class="ml-2"
                             (click)="downloadFile(node)">
@@ -34,15 +36,15 @@
                 <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
                     <li>
                         <div class="mat-tree-node">
-                            <button (click)="onClickTreeNode(node)" mat-button matTreeNodeToggle
-                                [attr.aria-label]="'toggle ' + node.name">
+                            <a matRipple fxLayoutAlign="start center" (click)="onClickTreeNode(node)" matTreeNodeToggle
+                                style="cursor: pointer;" class="mls-2 pys-2">
                                 <mat-icon>
                                     {{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}
                                 </mat-icon>
                                 <span class="mls-1">
                                     {{ node.name }}
                                 </span>
-                            </button>
+                            </a>
                             <div fxFlex="1 1 auto" class="mls-3">
                                 <mat-progress-bar *ngIf="node.isLoading" mode="indeterminate">
                                 </mat-progress-bar>
