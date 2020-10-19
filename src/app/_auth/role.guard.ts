@@ -17,11 +17,11 @@ import { AuthenticationService } from '../_services/authentication.service';
    providedIn: 'root'
 })
 export class RoleGuard implements CanActivate, CanActivateChild, CanLoad {
-   constructor(public authService: AuthenticationService, public router: Router) {}
+   constructor(public authService: AuthenticationService, public router: Router) { }
 
    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
       // This will be passed from the route config on the data property
-      const expectedRoles: number[] = route.data.expectedRoles;
+      const expectedRoles: string[] = route.data.expectedRoles;
 
       return this.checkRole(expectedRoles, state.url);
    }
@@ -32,7 +32,7 @@ export class RoleGuard implements CanActivate, CanActivateChild, CanLoad {
 
    canLoad(route: Route): boolean {
       // This will be passed from the route config on the data property
-      const expectedRoles: number[] = route.data.expectedRoles;
+      const expectedRoles: string[] = route.data.expectedRoles;
 
       // Save the url the user was trying to access
       const url = `/${route.path}`;
@@ -40,16 +40,14 @@ export class RoleGuard implements CanActivate, CanActivateChild, CanLoad {
       return this.checkRole(expectedRoles, url);
    }
 
-   checkRole(expectedRoles: number[], url: string): boolean {
+   checkRole(expectedRoles: string[], url: string): boolean {
       // Get the user to find its token and decode it
-      const token = this.authService.currentUserValue.token;
-
-      // Decode the token to get its payload
-      const payload: Payload = jwt_decode(token);
+      const role = this.authService.currentUserValue.type;
+      console.log(role, expectedRoles);
 
       // Here we don't need to verify if the user is authenticated
       // It's not part of the responsibility of this guard
-      if (expectedRoles.includes(payload.role)) {
+      if (expectedRoles.includes(role)) {
          return true;
       } else {
          // If the user's role is not allowed on this route, redirect to HOME

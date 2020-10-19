@@ -15,6 +15,6 @@ export enum Routes {
    HISTORICAL_ORDERS = "/cei/sede/historico-pedidos",
 
    // Admin routes
-   ADMIN_HOME = "/cei/admin",
+   ADMIN = "/cei/admin",
    FILE_MANAGEMENT = "/cei/admin/archivos"
 }

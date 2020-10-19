@@ -13,10 +13,14 @@
          [guestButtonText]="'Continuar como invitado' " [resetPasswordTabText]="'Resetear contraseña' "
          [resetPasswordInputText]="'Ingrese su e-mail' " [resetPasswordErrorRequiredText]="'El e-mail es requerido' "
          [resetPasswordErrorPatternText]="'El formato del e-mail no es válido'"
-         [resetPasswordActionButtonText]="'Resetear' "
+         [resetPasswordActionButtonText]="'Resetear'"
          [resetPasswordInstructionsText]="'Te enviamos un mail a la casilla indicada. Seguí las instrucciones para reestablecer tu contraseña' "
+         [sendNewVerificationEmailText]="'Enviar un nuevo e-mail de confirmación'" [messageOnEmailConfirmationSuccess]="'
+         Se ha enviado un nuevo correo electrónico de confirmación.'" [signOutText]="'Salir'"
+         [verifyEmailGoBackText]="'Volver'" [verifyEmailTitleText]="'¡Sólo falta confirmar tu dirección de correo!'"
+         [verifyEmailConfirmationText]="'Te acabamos de enviar un correo electrónico de confirmación. Para validar tu cuenta, revisá la bandeja de entrada y hacé clic en el enlace adjunto.'"
          (onSuccess)="this.onSuccess($event)" [emailConfirmationTitle]="'?' " [emailConfirmationText]="'?' "
-         [registrationEnabled]="false" (onError)="this.onError($event)" [guestEnabled]="false" [providers]="[]">
+         (onError)="this.onError($event)" [guestEnabled]="false" [providers]="[]">
 
       </ngx-auth-firebaseui>
    </div>

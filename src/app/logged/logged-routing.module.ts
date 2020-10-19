@@ -12,27 +12,23 @@ const loggedRoutes: Routes = [
       path: "",
       component: LoggedComponent,
       // Protect all other child routes at one time instead of adding the AuthGuard to each route individually.
-      canActivateChild: [AuthGuard],
+      // canActivateChild: [AuthGuard],
       children: [
          {
             path: "",
-         //    // Una vez validado el home, debe rederigir a /app/principal.
-            redirectTo: "admin",
-         //    // loadChildren: () => import("./home/home.module").then(mod => mod.HomeModule)
+            //    // Una vez validado el home, debe rederigir a /app/principal.
+            redirectTo: "asdads",
+            //    // loadChildren: () => import("./home/home.module").then(mod => mod.HomeModule)
 
-         //    // loadChildren: () =>
-         //    //    import('./../../modules/cases/cases.module').then((mod) => mod.CasesModule),
-            canActivate: [RoleGuard],
-         },
-         {
-            path: "home",
-            loadChildren: () => import("./home/home.module").then(mod => mod.HomeModule)
+            //    // loadChildren: () =>
+            //    //    import('./../../modules/cases/cases.module').then((mod) => mod.CasesModule),
             // canActivate: [RoleGuard],
          },
          {
             path: "movimientos",
-            component: MovementsComponent
-            // canActivate: [RoleGuard],
+            component: MovementsComponent,
+            canActivate: [RoleGuard],
+            data: { expectedRoles: [Roles.Estudiante] }
          },
          {
             path: "cargar-saldo",
@@ -58,7 +54,11 @@ const loggedRoutes: Routes = [
             loadChildren: () => import("./admin/admin.module").then(mod => mod.AdminModule),
             canLoad: [RoleGuard],
             data: { expectedRoles: [Roles.Admin] }
-         }
+         },
+         {
+            path: "home",
+            loadChildren: () => import("./home/home.module").then(mod => mod.HomeModule),
+         },
       ]
    }
 ];
