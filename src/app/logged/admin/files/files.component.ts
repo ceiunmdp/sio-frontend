@@ -36,7 +36,7 @@ export class FilesComponent implements OnInit, AfterViewInit {
   step: number;
   totalFiles: number;
   totalSubjects: number;
-  selectedSubject: string;
+  selectedSubject: number;
   selectedCareer: string;
   filePage: number;
   subjectPage: number;
@@ -203,6 +203,7 @@ export class FilesComponent implements OnInit, AfterViewInit {
     this.getSubjects()
     this.generalService.sendMessage({ title: this.TITLE })
     this.filesForm.reset();
+    this.files.clear();
     this.alertError.closeError();
   }
 
@@ -265,7 +266,9 @@ export class FilesComponent implements OnInit, AfterViewInit {
           confirmButtonText: 'Continuar'
         };
         Swal.fire(swalOptions)
-        this.backFrom1To0();
+        this.getSubjectsFiles(this.selectedSubject)
+        this.backFrom2To0();
+        
       },
       err => {
         this.handleErrors(err)
@@ -282,6 +285,7 @@ export class FilesComponent implements OnInit, AfterViewInit {
   displaySubjectFiles(subject) {
     this.generalService.sendMessage({ title: this.TITLE + " de " + subject.name })
     this.getSubjectsFiles(subject.id)
+    this.selectedSubject = subject.id;
     this.step = 2;
   }
 
