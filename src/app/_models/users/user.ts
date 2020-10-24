@@ -8,5 +8,5 @@ export interface User {
    balance?: number;
    token?: string;
    dni?: number;
-   type?: number;
+   type?: string;
 }

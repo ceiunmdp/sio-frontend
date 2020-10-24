@@ -6,6 +6,7 @@ import { CODE_FIREBASE_AUTH } from 'src/app/_api/codeFirebaseAuth';
 import { User } from "src/app/_models/users/user";
 import { AuthenticationService } from "src/app/_services/authentication.service";
 import { HttpErrorResponseHandlerService } from "src/app/_services/http-error-response-handler.service";
+import { AngularFireAuth } from '@angular/fire/auth';
 
 @Component({
    selector: "cei-start-page",
@@ -22,9 +23,15 @@ export class StartPageComponent implements OnInit {
       private authService: AuthenticationService,
       private router: Router,
       private httpErrorResponseHandlerService: HttpErrorResponseHandlerService,
+      private afAuth: AngularFireAuth
    ) { }
 
    ngOnInit() {
+      this.afAuth.authState.subscribe(user => {
+         if (!!user.email && !!user.emailVerified) {
+            this.onSuccess(user);
+         }
+      })
    }
 
    onSuccess(e) {
@@ -32,24 +39,30 @@ export class StartPageComponent implements OnInit {
          token: e.xa,
       }
       this.authService.updateCurrentUser(u);
-      this.authService.getUserData().subscribe((u: Partial<User>) => {
-         this.authService.updateCurrentUser(u);
-      });
-      if (this.authService.redirectUrl) {
-         this.router.navigate([this.authService.redirectUrl]);
-      } else {
-         this.router.navigate([Routes.FILE_MANAGEMENT]);
-      }
+      this.authService.getUserData().toPromise()
+         .then((u: Partial<User>) => {
+            this.authService.updateCurrentUser(u);
+            if (this.authService.redirectUrl) {
+               this.router.navigate([this.authService.redirectUrl]);
+            } else {
+               this.router.navigate([Routes.HOME]);
+            }
+         })
    }
 
    onError(e) {
       let message: string;
+      console.log('entro en error');
+
       switch (e.code) {
          case CODE_FIREBASE_AUTH.EMAIL_NOT_FOUND:
             message = 'Usuario no encontrado'
             break;
          case CODE_FIREBASE_AUTH.INVALID_PASSWORD:
             message = 'Contraseña incorrecta'
+            break;
+         case CODE_FIREBASE_AUTH.EMAIL_EXISTS:
+            message = 'El e-mail ya existe'
             break;
          default:
             message = 'Ha ocurrido un error'

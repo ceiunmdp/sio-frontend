@@ -1,2 +1,2 @@
 <cei-home-estudiante *ngIf="this.user.type == this.userType.ESTUDIANTE"></cei-home-estudiante>
-<cei-home-sede *ngIf="this.user.type == this.userType.SEDE"></cei-home-sede>
+<cei-home-sede *ngIf="this.user.type == this.userType.SEDE || this.user.type == this.userType.ADMIN"></cei-home-sede>

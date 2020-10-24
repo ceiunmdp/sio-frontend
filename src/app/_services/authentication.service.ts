@@ -3,10 +3,12 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { BehaviorSubject, from, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, mergeMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { User } from '../_models/users/user';
 import { GeneralService } from './general.service';
+import { USER_TYPES } from '../_users/types';
+import { API as APIS } from '../_api/api';
 
 @Injectable({
     providedIn: 'root'
@@ -36,9 +38,47 @@ export class AuthenticationService {
 
     getUserData(): Observable<User> {
         const queryHeaders = new HttpHeaders().append('Content-Type', 'application/json');
-
+        let basicUser: Partial<User>;
         return this.http
-            .get(environment.apiUrl + '/user', { headers: queryHeaders, observe: 'response' })
+            .get(environment.apiUrl + APIS.USER, { headers: queryHeaders, observe: 'response' })
+            .pipe(
+                map<HttpResponse<any>, any>(response => {
+                    basicUser = { ...response.body.data };
+                    return response.body.data;
+                }),
+                // Acá pedir al usuario particular
+                mergeMap(basicUser => { console.log(basicUser); return this.getSpecificUserData(basicUser) }),
+                map(user => { return { ...basicUser, ...user } }),
+                tap(user => console.log('usuario final:', user))
+            );
+    }
+
+    // TODO: Validarlo
+    private getSpecificUserData(basicUser: Partial<User>): Observable<User> {
+        const queryHeaders = new HttpHeaders().append('Content-Type', 'application/json');
+        const type = basicUser.type;
+        var url;
+        switch (type) {
+            case USER_TYPES.ADMIN:
+                url = `${APIS.USERS_ADMINS}/${basicUser.id}`
+                break;
+            case USER_TYPES.ESTUDIANTE:
+                url = `${APIS.USERS_STUDENTS}/${basicUser.id}`
+                break;
+            case USER_TYPES.BECADO:
+                url = `${APIS.USERS_SCHOLARSHIPS}/${basicUser.id}`
+                break;
+            case USER_TYPES.CATEDRA:
+                url = `${APIS.USERS_PROFESSORSHIPS}/${basicUser.id}`
+                break;
+            case USER_TYPES.SEDE:
+                url = `${APIS.USERS_CAMPUS}/${basicUser.id}`
+                break;
+            default:
+                break;
+        }
+        return this.http
+            .get(environment.apiUrl + url, { headers: queryHeaders, observe: 'response' })
             .pipe(
                 map<HttpResponse<any>, any>(response => {
                     return response.body.data;
@@ -82,13 +122,19 @@ export class AuthenticationService {
     }
 
     refreshToken(): Promise<any> {
-        return this.afAuth.auth.currentUser.getIdToken(true)
-            .then((idToken) => {
-                const u: User = {
-                    token: idToken,
-                }
-                this.updateCurrentUser(u);
-            });
+        console.log('tratando de refrescar token', this.afAuth);
+        if (!!this.afAuth.auth && !!this.afAuth.auth.currentUser) {
+            return this.afAuth.auth.currentUser.getIdToken(true)
+                .then((idToken) => {
+                    const u: User = {
+                        token: idToken,
+                    }
+                    this.updateCurrentUser(u);
+                });
+
+        } else {
+            return new Promise((res, rej) => rej())
+        }
     }
 
     isAuthenticated() {

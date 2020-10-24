@@ -33,13 +33,13 @@ export class AuthGuardUnlogged implements CanActivate, CanActivateChild, CanLoad
     }
 
     checkUnlogged(url: string): boolean {
-      //   console.log('revisando para el usuario:', this.authService.currentUserValue);
-      //   console.log('Autenticado:', this.authService.isAuthenticated());
+        //   console.log('revisando para el usuario:', this.authService.currentUserValue);
+        //   console.log('Autenticado:', this.authService.isAuthenticated());
         if (!this.authService.isAuthenticated()) {
             // console.log('entrooo');
             return true;
         }
-        this.router.navigate([Routes.ADMIN_HOME]);
+        this.router.navigate([Routes.HOME]);
         return false;
     }
 

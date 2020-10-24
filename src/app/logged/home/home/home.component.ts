@@ -16,11 +16,11 @@ export class HomeComponent implements OnInit {
    public user: User;
    public userType = USER_TYPES;
 
-   constructor(private generalService: GeneralService, private authService: AuthenticationService) {}
+   constructor(private generalService: GeneralService, private authService: AuthenticationService) { }
 
    ngOnInit() {
+      console.log('Entro en home');
       this.generalService.sendMessage({ title: this.TITLE });
       this.user = this.authService.currentUserValue;
-      console.log(this.user);
    }
 }

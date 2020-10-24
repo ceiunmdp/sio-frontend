@@ -60,9 +60,11 @@ export class LoggedComponent implements OnInit, OnDestroy {
       // this.prevScrollpos = currentScrollPos;
    }
 
-   constructor(private generalService: GeneralService, public mediaObserver: MediaObserver) {}
+   constructor(private generalService: GeneralService, public mediaObserver: MediaObserver) { }
 
    ngOnInit() {
+      console.log('entro en cei');
+
       this.isDarkTheme$ = this.generalService.getDarkTheme();
       this.isDarkTheme$.subscribe(isDark => (this.isDarkTheme = isDark));
 

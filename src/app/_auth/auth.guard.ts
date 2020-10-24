@@ -26,23 +26,28 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
         return this.canActivate(route, state);
     }
 
-    canLoad(route: Route): boolean {
-        const url = `/${route.path}`;
+    // canLoad(route: Route): boolean {
+    //     const url = `/${route.path}`;
 
+    //     return this.checkLogin(url);
+    // }
+
+    canLoad(route: Route): boolean {
+        const url: string = route.path;
         return this.checkLogin(url);
     }
 
     checkLogin(url: string): boolean {
-      //   console.log(url);
+        //   console.log(url);
         if (this.authService.isAuthenticated()) {
             return true;
         }
         // Store the attempted URL for redirecting
         // Once the user is authenticated, the app will redirect him to the redirectUrl
-        this.authService.redirectUrl = url;
+        // this.authService.redirectUrl = url;
 
         // Navigate to the login page with extras
-        this.router.navigate(['/']);
+        this.router.navigate([Routes.LOGIN]);
         return false;
     }
 }
