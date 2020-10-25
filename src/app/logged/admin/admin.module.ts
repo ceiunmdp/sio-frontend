@@ -11,11 +11,12 @@ import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
 import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
 import { AdminRoutingModule } from './admin-routing.module';
 import { FilesComponent } from './files/files.component';
+import { CoursesComponent } from './courses/courses.component';
 registerPlugin(FilePondPluginFileValidateType);
 registerPlugin(FilePondPluginFileEncode);
 
 @NgModule({
-  declarations: [FilesComponent],
+  declarations: [FilesComponent, CoursesComponent],
   imports: [
     CommonModule,
     AdminRoutingModule,

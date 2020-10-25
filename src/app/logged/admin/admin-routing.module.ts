@@ -1,6 +1,7 @@
 import { FilesComponent } from './files/files.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { CoursesComponent } from './courses/courses.component';
 
 
 const routes: Routes = [
@@ -8,14 +9,14 @@ const routes: Routes = [
     path: '',
     redirectTo: 'archivos'
   },
-  /*{
-    path: 'carreras',
-    component: CareersComponent,
-  },
+  // {
+  //   path: 'carreras',
+  //   component: CareersComponent,
+  // },
   {
     path: 'materias',
-    component: SubjectsComponent,
-  },*/
+    component: CoursesComponent,
+  },
   {
     path: 'archivos',
     component: FilesComponent,

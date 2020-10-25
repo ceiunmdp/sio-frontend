@@ -35,6 +35,7 @@ import { TextInputComponent } from "./forms/text-input/text-input.component";
 import { MatButtonModule } from "@angular/material/button";
 import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
 import { SpinnerErrorComponent } from './spinner-error/spinner-error.component';
+import { MultiSelectInputComponent } from './forms/multi-select-input/multi-select-input.component';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { LottieModule } from 'ngx-lottie';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
@@ -61,7 +62,8 @@ export function playerFactory() {
       TextInputComponent,
       SpinnerErrorComponent,
       SpinnerComponent,
-      SelectSearchingDynamicInputComponent
+      SelectSearchingDynamicInputComponent,
+      MultiSelectInputComponent,
    ],
    imports: [
       CommonModule,
@@ -101,7 +103,8 @@ export function playerFactory() {
       SpinnerErrorComponent,
       SpinnerComponent,
       FileInputComponent,
-      SelectSearchingDynamicInputComponent
+      SelectSearchingDynamicInputComponent,
+      MultiSelectInputComponent,
    ],
    entryComponents: [AlertErrorChildComponent]
 })
