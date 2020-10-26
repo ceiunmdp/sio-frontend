@@ -1,0 +1,77 @@
+<form fxFlex="100" (submit)="onSubmitCourseForm()"
+    *ngIf="!!this.courseForm && !!this.careers && !!this.years ; else loadingDiv" fxLayoutGap="2%" fxFlex="100"
+    class=" mxs-2" [formGroup]="courseForm" fxLayout="column">
+    <cei-text-input [clearable]="true" [name]="this.NAMES_FORM_POST_COURSE.COURSE_NAME" [form]="this.courseForm"
+        [placeholder]="'Nombre de la materia'">
+    </cei-text-input>
+    <!-- Relations FormArray -->
+    <div fxFlex="100">
+        <div class="separator separator-center mts-2" fxLayoutAlign="center center">
+            <div class="mx-2" fxLayoutAlign="center center">
+                <mat-icon class="text-primary mrs-1">shuffle</mat-icon>
+                <span class="text-secondary m-0">Relaciones de la materia</span>
+            </div>
+        </div>
+        <div class="mts-2" fxLayout="row" fxLayoutAlign="space-between center"
+            [formArrayName]="this.NAMES_FORM_POST_COURSE.RELATIONS"
+            *ngFor="let relations of this.relationsFormArray['controls']; let i = index;">
+            <div fxFlex="100" [formGroupName]="i" fxLayout="row" fxLayoutGap="15px">
+                <!-- Select relation -->
+                <cei-select-input fxFlex="1 1 auto" [name]="this.NAMES_FORM_POST_COURSE.relations.RELATION_ID"
+                    [form]="this.relationsFormArray['controls'][i]" [placeholder]="'Año'"
+                    [elements]="this.getYearsElements(i)">
+                </cei-select-input>
+                <!-- Select careers -->
+                <cei-multi-select-input fxFlex="1 1 auto" [name]="this.NAMES_FORM_POST_COURSE.relations.CAREERS_IDS"
+                    [form]="this.relationsFormArray['controls'][i]" [placeholder]="'Carreras'"
+                    [elements]="this.careers">
+                </cei-multi-select-input>
+
+
+                <div fxLayoutAlign="center center">
+                    <button mat-icon-button type="button" [disabled]="relationsFormArray['controls'].length < 2"
+                        (click)="this.removeRelation(i)" [color]="'warn'">
+                        <mat-icon>remove_circle</mat-icon>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <div fxLayoutAlign="end start">
+            <button matTooltip="Agregar relación" mat-icon-button [color]="'primary'" type="button"
+                [disabled]="!relationsFormArray.valid" (click)="this.addRelation()">
+                <mat-icon>add_circle</mat-icon>
+            </button>
+        </div>
+    </div>
+    <!-- Actions Buttons -->
+    <div fxLayoutAlign="space-around stretch" class="mts-5">
+        <button mat-raised-button [color]="'warn'" [disabled]="isLoadingPostCourse" (click)="this.onClickCancel()"
+            type="button">
+            <span>
+                Cancelar
+            </span>
+        </button>
+        <button mat-raised-button [color]="'primary'" [disabled]="!courseForm.valid || this.isLoadingPostCourse"
+            type="submit">
+            <mat-icon *ngIf="!courseForm.valid; else saveIcon">lock</mat-icon>
+            <ng-template #saveIcon>
+                <mat-icon *ngIf="courseForm.valid && !isLoadingPostCourse; else loadingIcon">save</mat-icon>
+            </ng-template>
+            <span>
+                Confirmar
+            </span>
+            <ng-template #loadingIcon>
+                <mat-icon>
+                    <mat-spinner color="accent" diameter="20">
+                    </mat-spinner>
+                </mat-icon>
+            </ng-template>
+        </button>
+    </div>
+</form>
+
+<ng-template #loadingDiv>
+    <app-spinner fxFlex="100" fxLayoutAlign="center start"></app-spinner>
+</ng-template>

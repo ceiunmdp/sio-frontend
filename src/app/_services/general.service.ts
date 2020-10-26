@@ -66,4 +66,10 @@ export class GeneralService {
             })
          );
    }
+
+   stopPropagation(e: Event) {
+      e.cancelBubble = true;
+      if (e.stopPropagation) e.stopPropagation();
+      e.stopPropagation();
+   }
 }

@@ -3,10 +3,10 @@ import { AbstractControl, ValidatorFn, FormControl, FormGroup } from "@angular/f
 export class CustomValidators {
    static required(message: string): ValidatorFn {
       return (control: AbstractControl): { [key: string]: any } | null => {
-         return control && !control.value
+         return control && (!control.value || (typeof control.value !== "number" ? control.value.length < 1 : false))
             ? {
-                 required: message
-              }
+               required: message
+            }
             : null;
       };
    }
@@ -15,8 +15,8 @@ export class CustomValidators {
       return (control: AbstractControl): { [key: string]: any } | null => {
          return control && !/^\d+$/.test(control.value)
             ? {
-                 number: message
-              }
+               number: message
+            }
             : null;
       };
    }
@@ -26,14 +26,14 @@ export class CustomValidators {
          if (typeof control.value !== "number") {
             return control && control.value.trim().length < minLength
                ? {
-                    minLength: message
-                 }
+                  minLength: message
+               }
                : null;
          } else {
             return control && control.value.toString().length < minLength
                ? {
-                    minLength: message
-                 }
+                  minLength: message
+               }
                : null;
          }
       };
@@ -44,14 +44,14 @@ export class CustomValidators {
          if (typeof control.value !== "number") {
             return control && control.value.trim().length > maxLength
                ? {
-                    maxLength: message
-                 }
+                  maxLength: message
+               }
                : null;
          } else {
             return control && control.value.toString().length > maxLength
                ? {
-                    maxLength: message
-                 }
+                  maxLength: message
+               }
                : null;
          }
       };
@@ -66,8 +66,8 @@ export class CustomValidators {
             ).test(control.value.trim())
             ? null
             : {
-                 email: message
-              };
+               email: message
+            };
       };
    }
 
@@ -77,8 +77,8 @@ export class CustomValidators {
             new RegExp(/^^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=*().,_]).*$/, "i").test(control.value.trim())
             ? null
             : {
-                 password: message
-              };
+               password: message
+            };
       };
    }
 
@@ -89,8 +89,8 @@ export class CustomValidators {
 
          return prefix && suffix && prefix.value.trim().length + suffix.value.trim().length !== 10
             ? {
-                 phoneNumberInvalid: message
-              }
+               phoneNumberInvalid: message
+            }
             : null;
       };
    }

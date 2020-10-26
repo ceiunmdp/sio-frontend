@@ -17,6 +17,7 @@ import { OR, AND } from 'src/app/_helpers/filterBuilder';
 import { ResponseAPI } from 'src/app/_models/response-api';
 import { Sort } from 'src/app/_models/sort';
 import { RestUtilitiesService } from 'src/app/_services/rest-utilities.service';
+import { Pagination } from 'src/app/_models/pagination';
 
 export interface ExternalOrder {
    campusId: number;
@@ -170,9 +171,9 @@ export class OrdersService {
    }
 
    // TODO:NUEVO
-   getCourses(filter?: OR | AND, sort?: Sort[]): Observable<ResponseAPI<Course[]>> {
+   getCourses(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<Course[]>> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
-      const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort })
+      const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort, pagination })
       return this.http.get(environment.apiUrl + API.COURSES,
          {
             headers: queryHeaders,

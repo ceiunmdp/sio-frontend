@@ -9,7 +9,12 @@ export class RestUtilitiesService {
 
    constructor() { }
 
-   formatQPs = (qps: {}): { param: string, value: string }[] => {
+   formatQPs = (qps): { param: string, value: string }[] => {
+      if (!!qps.pagination) {
+         !!qps.pagination.page ? qps['page'] = qps.pagination.page : null;
+         !!qps.pagination.limit ? qps['limit'] = qps.pagination.limit : null;
+         delete qps['pagination'];
+      }
       return _.map(qps, (value, key): { param: string, value: string } => {
          if (key == 'sort') value = value.map(sort => sort.field + ' ' + sort.sort).join(',');
          return {

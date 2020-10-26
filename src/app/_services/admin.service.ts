@@ -110,6 +110,23 @@ export class AdminService {
          );
    }
 
+   patchCourse(body: CoursePost, courseId: string): Observable<Course> {
+      const queryHeaders = new HttpHeaders().append(
+         "Content-Type",
+         "application/json"
+      );
+      return this.http
+         .patch<any>(`${environment.apiUrl}${API.COURSES}/${courseId}`, body, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
    getSubjects(careerId?: string): Observable<any> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
       let params = new HttpParams();
