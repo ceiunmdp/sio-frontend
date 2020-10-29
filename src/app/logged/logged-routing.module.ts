@@ -53,7 +53,7 @@ const loggedRoutes: Routes = [
             path: "admin",
             loadChildren: () => import("./admin/admin.module").then(mod => mod.AdminModule),
             canLoad: [RoleGuard],
-            data: { expectedRoles: [Roles.Admin] }
+            data: { expectedRoles: [Roles.Admin], breadcumb: 'Admin' }
          },
          {
             path: "home",

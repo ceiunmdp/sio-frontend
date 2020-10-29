@@ -1,16 +1,18 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { MatPaginator, MatTableDataSource, PageEvent } from '@angular/material';
 import { from, Observable, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
+import { AND, FilterBuilder, OPERATORS, OR } from 'src/app/_helpers/filterBuilder';
 import { Career } from 'src/app/_models/orders/career';
 import { Course } from 'src/app/_models/orders/course';
 import { Year } from 'src/app/_models/orders/year';
-import { Sort } from 'src/app/_models/sort';
-import { OrdersService } from '../../orders/orders.service';
-import { MetadataAPI, LinksAPI } from 'src/app/_models/response-api';
 import { Pagination } from 'src/app/_models/pagination';
-import { AND, OR } from 'src/app/_helpers/filterBuilder';
+import { LinksAPI, MetadataAPI } from 'src/app/_models/response-api';
+import { Sort } from 'src/app/_models/sort';
+import { AdminService } from 'src/app/_services/admin.service';
 import { GeneralService } from 'src/app/_services/general.service';
+import Swal from 'sweetalert2';
+import { OrdersService } from '../../orders/orders.service';
 
 enum STEPS {
   LIST,
@@ -23,7 +25,7 @@ enum STEPS {
 })
 export class CoursesComponent implements OnInit {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-
+  inputFilterValue = ''
   public STEPS = STEPS;
   step: STEPS;
   careers: Career[]; isLoadingGetCareers = false; _careers: Subscription;
@@ -31,8 +33,8 @@ export class CoursesComponent implements OnInit {
   selectedCourse: Course; // .. !null when edit button is clicked 
   dataSourceCourses: MatTableDataSource<Course>; isLoadingGetCourses = false;
   displayedColumns: string[] = [
-    'courseId',
     'courseName',
+    'careers',
     'actions',
   ];
   // metadata from api
@@ -42,12 +44,15 @@ export class CoursesComponent implements OnInit {
   pagination: Pagination;
   filter: OR | AND;
   sort: Sort[];
+  fb: FilterBuilder;
 
-  constructor(private orderService: OrdersService, public generalService: GeneralService) { }
+  constructor(private adminService: AdminService, private orderService: OrdersService, public generalService: GeneralService) { }
 
   ngOnInit() {
+    this.fb = new FilterBuilder();
     this.step = STEPS.LIST;
-    this.getCourses().subscribe(courses => this.dataSourceCourses.data = courses);
+    this.sort = [{ field: 'course.name', sort: "ASC" }]
+    this.getCourses(this.filter, this.sort, this.pagination);
     this.dataSourceCourses = new MatTableDataSource();
     this.getCareers();
     this.getYears();
@@ -58,26 +63,18 @@ export class CoursesComponent implements OnInit {
     this._years.unsubscribe();
   }
 
-  setDataSourceAttributes() {
-    if (this.paginator != null && this.paginator != undefined) {
-      this.paginator.pageIndex = this.metaDataCourses.current_page - 1;
-      this.paginator.pageSize = this.metaDataCourses.items_per_page;
-      this.paginator.length = this.metaDataCourses.total_items;
-      this.paginator._intl.itemsPerPageLabel = 'Registros por página';
-      this.paginator._intl.firstPageLabel = 'Primera página';
-      this.paginator._intl.lastPageLabel = 'Última páginaa';
-      this.paginator._intl.nextPageLabel = 'Página siguiente';
-      this.paginator._intl.previousPageLabel = 'Página anterior';
-    }
-  }
-
-  onPaginatorEvent() {
-    this.pagination = { limit: this.paginator.pageSize, page: this.paginator.pageIndex + 1 }
-    this.getCourses(this.filter, this.sort, this.pagination).subscribe(courses => this.dataSourceCourses.data = courses);
+  onPaginatorEvent(event: PageEvent) {
+    this.pagination = { limit: event.pageSize, page: event.pageIndex + 1 }
+    this.getCourses(this.filter, this.sort, this.pagination);
   }
 
   onRefresh(): Promise<Course[]> {
-    return this.getCourses(this.filter, this.sort, this.pagination).toPromise().then(courses => this.dataSourceCourses.data = courses);
+    return this.getCourses(this.filter, this.sort, this.pagination).toPromise();
+  }
+
+  onSearch(st: string) {
+    this.filter = this.fb.and(this.fb.where('course.name', OPERATORS.CONTAINS, st));
+    this.getCourses(this.filter)
   }
 
   onClickEditCourse(course: Course) {
@@ -85,14 +82,32 @@ export class CoursesComponent implements OnInit {
     this.step = STEPS.CREATE_OR_EDIT;
   }
 
-  fromCreateOrEditToList() {
+  onClickDeleteCourse(course: Course) {
+    Swal.fire({
+      title: `¿Seguro desea eliminar la materia ${course.name}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      reverseButtons: true,
+      confirmButtonColor: '#d33',
+      confirmButtonText: 'Eliminar',
+      cancelButtonText: 'Cancelar',
+      showLoaderOnConfirm: true,
+      preConfirm: () => {
+        return this.deleteCourse(course.id).then(deletedCourse => {
+          Swal.fire({
+            text: 'Materia borrada correctamente',
+            icon: 'success'
+          })
+        }).catch(e => console.log('error', e))
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    })
+  }
+
+  fromCreateOrEditToList(refresh = false) {
     this.step = STEPS.LIST;
     this.selectedCourse = null; // Reset selectedCourse
-    this.onRefresh().then(_ => {
-      setTimeout(() => {
-        this.setDataSourceAttributes()
-      }, 300);
-    })
+    if (refresh) this.onRefresh();
   }
 
   // Services
@@ -119,14 +134,18 @@ export class CoursesComponent implements OnInit {
       this.orderService.getCourses(filter, sort, pagination).pipe(
         finalize(() => {
           this.isLoadingGetCourses = false; setTimeout(() => {
-            this.setDataSourceAttributes();
+            // this.setDataSourceAttributes();
           }, 400)
         })
       ).subscribe(
-        (data) => { this.metaDataCourses = data.data.meta; this.linksCourses = data.data.links; res(data.data.items) },
+        (data) => { this.metaDataCourses = data.data.meta; this.linksCourses = data.data.links; this.dataSourceCourses.data = data.data.items; res(data.data.items) },
         (e) => { rej(e) },
       )
     })
     return from(promise);
+  }
+
+  deleteCourse(courseId: string): Promise<Course> {
+    return this.adminService.deleteCourse(courseId).toPromise().then(res => { this.onRefresh(); return res })
   }
 }

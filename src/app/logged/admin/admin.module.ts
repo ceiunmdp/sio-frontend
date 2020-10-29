@@ -13,6 +13,7 @@ import { AdminRoutingModule } from './admin-routing.module';
 import { FilesComponent } from './files/files.component';
 import { CoursesComponent } from './courses/courses.component';
 import { CreateEditCourseComponent } from './courses/create-edit-course/create-edit-course.component';
+import { FormsModule } from '@angular/forms';
 registerPlugin(FilePondPluginFileValidateType);
 registerPlugin(FilePondPluginFileEncode);
 
@@ -22,6 +23,7 @@ registerPlugin(FilePondPluginFileEncode);
     CommonModule,
     AdminRoutingModule,
     MaterialModule,
+    FormsModule,
     UtilsModule,
     NgSelectModule,
     SweetAlert2Module.forRoot()

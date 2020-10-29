@@ -17,6 +17,7 @@ export class RestUtilitiesService {
       }
       return _.map(qps, (value, key): { param: string, value: string } => {
          if (key == 'sort') value = value.map(sort => sort.field + ' ' + sort.sort).join(',');
+         if (key == 'filter') value = JSON.stringify(value);
          return {
             param: key,
             value: value.toString()

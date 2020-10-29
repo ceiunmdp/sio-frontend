@@ -1,0 +1,6 @@
+<mat-form-field fxFlex="100">
+    <mat-label>
+        {{this.label}}
+    </mat-label>
+    <input [(ngModel)]="inputFilterValue" matInput [placeholder]="this.placeholder" #inputSearch />
+</mat-form-field>

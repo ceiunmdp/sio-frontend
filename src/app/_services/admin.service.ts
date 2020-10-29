@@ -127,6 +127,23 @@ export class AdminService {
          );
    }
 
+   deleteCourse(courseId: string): Observable<Course> {
+      const queryHeaders = new HttpHeaders().append(
+         "Content-Type",
+         "application/json"
+      );
+      return this.http
+         .delete<any>(`${environment.apiUrl}${API.COURSES}/${courseId}`, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
    getSubjects(careerId?: string): Observable<any> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
       let params = new HttpParams();

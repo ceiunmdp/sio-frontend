@@ -21,6 +21,7 @@ import { LoggedComponent } from './logged.component';
 import { MovementsComponent } from './movements/movements.component';
 import { NavbarComponent } from './sections/navbar/navbar.component';
 import { MaterialModule } from '../material/material.module';
+import { BreadcrumbModule } from 'xng-breadcrumb';
 
 @NgModule({
    declarations: [LoggedComponent, NavbarComponent, MovementsComponent, BalanceComponent],
@@ -43,7 +44,8 @@ import { MaterialModule } from '../material/material.module';
       UtilsModule,
       MatBadgeModule,
       DirectivesModule,
-      SectionsModule
+      SectionsModule,
+      BreadcrumbModule
    ]
 })
 export class LoggedModule { }

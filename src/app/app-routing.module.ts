@@ -19,12 +19,12 @@ const appRoutes: Routes = [
    {
       path: "login",
       loadChildren: () => import("./unlogged/unlogged.module").then(mod => mod.UnloggedModule),
-      canActivate: [AuthGuardUnlogged] // Avoids loading the module if the user is already authenticated
+      canActivate: [AuthGuardUnlogged], // Avoids loading the module if the user is already authenticated
    },
    {
       path: "cei",
       loadChildren: () => import("./logged/logged.module").then(mod => mod.LoggedModule),
-      canActivateChild: [AuthGuard] // Avoids loading the module before the user is authenticated
+      canActivateChild: [AuthGuard], // Avoids loading the module before the user is authenticated
    },
    {
       path: "**",

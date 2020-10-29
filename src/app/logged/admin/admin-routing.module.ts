@@ -15,6 +15,9 @@ const routes: Routes = [
   // },
   {
     path: 'materias',
+    data: {
+      breadcrumb: 'Materias'
+    },
     component: CoursesComponent,
   },
   {

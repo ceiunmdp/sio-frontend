@@ -3,7 +3,7 @@ import { FilePondModule } from 'ngx-filepond';
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FlexLayoutModule } from "@angular/flex-layout";
-import { ReactiveFormsModule } from "@angular/forms";
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import {
    MatIconModule,
    MatSelectModule,
@@ -11,7 +11,8 @@ import {
    MatBottomSheetModule,
    MatTabsModule,
    MatMenuModule,
-   MatRadioModule
+   MatRadioModule,
+   MatPaginatorModule
 } from "@angular/material";
 import { MatCardModule } from "@angular/material/card";
 import { MatInputModule } from "@angular/material/input";
@@ -40,6 +41,8 @@ import { SpinnerComponent } from './spinner/spinner.component';
 import { LottieModule } from 'ngx-lottie';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import player from 'lottie-web';
+import { TextSearchingInputComponent } from './forms/text-searching-input/text-searching-input.component';
+import { CardTableComponent } from './card-table/card-table.component';
 export function playerFactory() {
    return player;
 }
@@ -64,6 +67,8 @@ export function playerFactory() {
       SpinnerComponent,
       SelectSearchingDynamicInputComponent,
       MultiSelectInputComponent,
+      TextSearchingInputComponent,
+      CardTableComponent,
    ],
    imports: [
       CommonModule,
@@ -83,7 +88,9 @@ export function playerFactory() {
       MatRadioModule,
       SweetAlert2Module,
       FilePondModule,
+      FormsModule,
       NgxMatSelectSearchModule,
+      MatPaginatorModule,
       LottieModule.forRoot({ player: playerFactory })
    ],
    exports: [
@@ -105,6 +112,9 @@ export function playerFactory() {
       FileInputComponent,
       SelectSearchingDynamicInputComponent,
       MultiSelectInputComponent,
+      TextSearchingInputComponent,
+      CardTableComponent,
+
    ],
    entryComponents: [AlertErrorChildComponent]
 })
