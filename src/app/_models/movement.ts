@@ -1,10 +1,14 @@
+import { MovementType } from './orders/movementType';
+
 export interface Movement {
-   id: number;
-   usuarioOrigen: string;
-   usuarioDestino: string;
-   importe: number;
-   tipo: string;
-   description: string;
-   icon: string;
-   fecha: Date;
+   id: string;
+   amount: number,
+   date: Date,
+   source: {
+      id: string
+   },
+   target: {
+      id: string
+   },
+   type: MovementType
 }

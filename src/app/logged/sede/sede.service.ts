@@ -4,12 +4,20 @@ import { Order } from "src/app/_models/orders/order";
 import { HttpParams, HttpHeaders, HttpResponse, HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+import { OR, AND } from 'src/app/_helpers/filterBuilder';
+import { ResponseAPI } from 'src/app/_models/response-api';
+import { RestUtilitiesService } from 'src/app/_services/rest-utilities.service';
+import { API } from 'src/app/_api/api';
+import { Student } from 'src/app/_models/users/user';
+import { Pagination } from 'src/app/_models/pagination';
+import { Sort } from 'src/app/_models/sort';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
 
 @Injectable({
    providedIn: "root"
 })
 export class SedeService {
-   constructor(private http: HttpClient) { }
+   constructor(private http: HttpClient, private restService: RestUtilitiesService, private authService: AuthenticationService) { }
 
    getOrders(active?: boolean): Observable<Order[]> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
@@ -30,46 +38,38 @@ export class SedeService {
          );
    }
 
-   getUsers(name?: string, surname?: string, dni?: string, email?: string): Observable<any> {
+   getStudents(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<Student[]>> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
-      let params = new HttpParams();
-
-      if (name) {
-         params = params.append("name", name);
-      }
-      if (surname) {
-         params = params.append("surname", surname);
-      }
-      if (dni) {
-         params = params.append("dni", dni);
-      }
-      if (email) {
-         params = params.append("email", email);
-      }
-
-      return this.http
-         .get<any>(`${environment.apiUrl}/students`, {
+      const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort, pagination })
+      return this.http.get(environment.apiUrl + API.USERS_STUDENTS,
+         {
             headers: queryHeaders,
             observe: "response",
             params
-         })
-         .pipe(
-            map<HttpResponse<any>, any>(response => {
-               return response.body.data;
+         }).pipe(
+            map<HttpResponse<ResponseAPI<Student[]>>, ResponseAPI<Student[]>>(result => {
+               return result.body;
+               // return careers.map((careerResponse: CareerResponse) => { const career: any = careerResponse; career.children = []; career.type = TREE_TYPES.CAREER; return career });
+               // return this.buildTreeFiles(result.body.data);
             })
          );
    }
 
-   chargeBalance(idUser: number, balance: number): Observable<any> {
+   chargeBalance(idUser: number, amount: number): Observable<any> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
       let body;
 
       body = {
-         balance
+         amount,
+         type: {
+            // TODO: Pasar a enum
+            code: "top_up"
+         },
+         source_id: this.authService.currentUserValue.id,
+         target_id: idUser,
       };
-
       return this.http
-         .patch<any>(`${environment.apiUrl}/students/${idUser}`, JSON.stringify(body), {
+         .post<any>(`${environment.apiUrl}${API.MOVEMENTS}`, JSON.stringify(body), {
             headers: queryHeaders,
             observe: "response"
          })
