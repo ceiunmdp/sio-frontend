@@ -7,7 +7,7 @@ export enum API {
    ORDERS = "user/orders",
    CAREERS = "careers",
    RELATIONS = "relations",
-   COURSES = "courses",
+   COURSES = "/courses",
    USER = "/user",
    USERS_ADMINS = "/users/admins",
    USERS_STUDENTS = "/users/students",

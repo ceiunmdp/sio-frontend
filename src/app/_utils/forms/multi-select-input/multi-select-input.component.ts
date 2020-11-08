@@ -2,11 +2,11 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormElementComponent } from '../form-element/form-element.component';
 
 @Component({
-    selector: 'cei-select-input',
-    templateUrl: './select-input.component.html',
-    styleUrls: ['./select-input.component.scss']
+    selector: 'cei-multi-select-input',
+    templateUrl: './multi-select-input.component.html',
+    styleUrls: ['./multi-select-input.component.scss']
 })
-export class SelectInputComponent extends FormElementComponent implements OnInit {
+export class MultiSelectInputComponent extends FormElementComponent implements OnInit {
 
     @Input() elements: Array<any>;
     @Input() defaultValue: string;
@@ -40,12 +40,12 @@ export class SelectInputComponent extends FormElementComponent implements OnInit
 
     // Proxy that calls the proxyCalculate function with a function or string that tells this component how to calculate the Id
     proxyCalculateId(): (element) => string {
-        return SelectInputComponent.proxyCalculate(this.calculateId);
+        return MultiSelectInputComponent.proxyCalculate(this.calculateId);
     }
 
     // Proxy that calls the proxyCalculate function with a function or string that tells this component how to calculate the Name
     proxyCalculateName(): (element) => string {
-        return SelectInputComponent.proxyCalculate(this.calculateName);
+        return MultiSelectInputComponent.proxyCalculate(this.calculateName);
     }
 
     ngOnInit() {

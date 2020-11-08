@@ -2,8 +2,9 @@ import { Course } from './course';
 import { TREE_TYPES } from 'src/app/logged/orders/orders.service';
 import { Career } from './career';
 
+// TODO: DEPRECATED -> USE RELATION
 export interface Year {
     id: string;
     name: string;
-    careers?: Career[];
+    careers: Career[];
 }

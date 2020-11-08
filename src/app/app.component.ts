@@ -1,6 +1,10 @@
 import { Component, OnInit, HostListener } from "@angular/core";
 import { Observable } from "rxjs";
 import { GeneralService } from "./_services/general.service";
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { isNullOrUndefined } from 'util';
+import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
    selector: "cei-root",

@@ -14,6 +14,10 @@ import { InternalOrder } from "./new-order/new-order.component";
 import { Campus } from "src/app/_models/campus";
 import { Item } from "src/app/_models/item";
 import { OR, AND } from 'src/app/_helpers/filterBuilder';
+import { ResponseAPI } from 'src/app/_models/response-api';
+import { Sort } from 'src/app/_models/sort';
+import { RestUtilitiesService } from 'src/app/_services/rest-utilities.service';
+import { Pagination } from 'src/app/_models/pagination';
 
 export interface ExternalOrder {
    campusId: number;
@@ -76,7 +80,7 @@ interface TreeArchivos {
    providedIn: "root"
 })
 export class OrdersService {
-   constructor(private http: HttpClient) { }
+   constructor(private http: HttpClient, private restService: RestUtilitiesService) { }
 
    getOrders(active?: boolean): Observable<Order[]> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
@@ -132,46 +136,52 @@ export class OrdersService {
 
 
    // TODO:NUEVO
-   getCareers(): Observable<Career[]> {
+   getCareers(filter?: OR | AND, sort?: Sort[]): Observable<ResponseAPI<Career[]>> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
-      return this.http.get(environment.apiUrl + '/' + API.CAREERS, { headers: queryHeaders, observe: "response" }).pipe(
-         map<HttpResponse<any>, any>(result => {
-            return result.body.data.items;
-            // return careers.map((careerResponse: CareerResponse) => { const career: any = careerResponse; career.children = []; career.type = TREE_TYPES.CAREER; return career });
-            // return this.buildTreeFiles(result.body.data);
-         })
-      );
+      const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort })
+      return this.http.get(environment.apiUrl + '/' + API.CAREERS,
+         {
+            headers: queryHeaders,
+            observe: "response",
+            params
+         }).pipe(
+            map<HttpResponse<ResponseAPI<Career[]>>, ResponseAPI<Career[]>>(result => {
+               return result.body;
+               // return careers.map((careerResponse: CareerResponse) => { const career: any = careerResponse; career.children = []; career.type = TREE_TYPES.CAREER; return career });
+               // return this.buildTreeFiles(result.body.data);
+            })
+         );
    }
 
    // TODO:NUEVO
-   getYears(filter: OR | AND): Observable<Year[]> {
+   getYears(filter?: OR | AND, sort?: Sort[]): Observable<ResponseAPI<Year[]>> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
-      const queryParams = new HttpParams().append('filter', JSON.stringify(filter));
+      const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort })
       return this.http.get(environment.apiUrl + '/' + API.RELATIONS,
          {
             headers: queryHeaders,
             observe: "response",
-            params: queryParams
+            params
          }).pipe(
-            map<HttpResponse<any>, any>(result => {
-               return result.body.data.items;
+            map<HttpResponse<ResponseAPI<Year[]>>, ResponseAPI<Year[]>>(result => {
+               return result.body;
                // return years.map((yearResponse: YearResponse) => { const year: any = yearResponse; year.children = []; year.type = TREE_TYPES.YEAR; return year });
             })
          );
    }
 
    // TODO:NUEVO
-   getCourses(filter: OR | AND): Observable<Course[]> {
+   getCourses(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<Course[]>> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
-      const queryParams = new HttpParams().append('filter', JSON.stringify(filter));
-      return this.http.get(environment.apiUrl + '/' + API.COURSES,
+      const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort, pagination })
+      return this.http.get(environment.apiUrl + API.COURSES,
          {
             headers: queryHeaders,
             observe: "response",
-            params: queryParams
+            params
          }).pipe(
             map<HttpResponse<any>, any>(result => {
-               return result.body.data.items;
+               return result.body;
                // return courses.map((courseResponse: CourseResponse) => { const course: any = courseResponse; course.children = []; course.type = TREE_TYPES.COURSE; return course });
             })
          );
