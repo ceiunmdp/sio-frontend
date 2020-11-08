@@ -21,7 +21,7 @@ export interface OR {
 export interface AND {
    AND: OR[] | AND[] | WHERE[]
 }
-interface WHERE {
+export interface WHERE {
    [key: string]: {
       [key: string]: string | number | Date
    }

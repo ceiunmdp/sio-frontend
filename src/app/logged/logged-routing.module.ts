@@ -46,7 +46,7 @@ const loggedRoutes: Routes = [
             path: "sede",
             loadChildren: () => import("./sede/sede.module").then(mod => mod.SedeModule),
             canLoad: [RoleGuard],
-            data: { expectedRoles: [Roles.Sede] }
+            data: { expectedRoles: [Roles.Sede, Roles.Admin] }
             // ¿Preload de este módulo?
          },
          {

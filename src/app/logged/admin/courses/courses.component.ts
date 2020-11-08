@@ -24,7 +24,6 @@ enum STEPS {
   styleUrls: ['./courses.component.scss']
 })
 export class CoursesComponent implements OnInit {
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   inputFilterValue = ''
   public STEPS = STEPS;
   step: STEPS;
@@ -51,7 +50,8 @@ export class CoursesComponent implements OnInit {
   ngOnInit() {
     this.fb = new FilterBuilder();
     this.step = STEPS.LIST;
-    this.sort = [{ field: 'course.name', sort: "ASC" }]
+    this.sort = [{ field: 'course.name', sort: "ASC" }];
+    this.pagination = { page: 0, limit: 10 }
     this.getCourses(this.filter, this.sort, this.pagination);
     this.dataSourceCourses = new MatTableDataSource();
     this.getCareers();

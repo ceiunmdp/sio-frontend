@@ -57,6 +57,22 @@ export class CustomValidators {
       };
    }
 
+   static minValue(minValue: number, message: string): ValidatorFn {
+      return (control: AbstractControl): { [key: string]: any } | null => {
+         if (typeof control.value !== 'number') {
+            return {
+               minValue: message,
+            }
+         } else {
+            return control && control.value && control.value < minValue
+               ? {
+                  minValue: message,
+               }
+               : null;
+         }
+      };
+   }
+
    static email(message: string): ValidatorFn {
       return (control: AbstractControl): { [key: string]: any } | null => {
          return control &&
