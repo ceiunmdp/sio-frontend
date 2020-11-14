@@ -1,3 +1,4 @@
+import { CareersComponent } from './careers/careers.component';
 import { FilesComponent } from './files/files.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -9,10 +10,14 @@ const routes: Routes = [
     path: '',
     redirectTo: 'archivos'
   },
-  // {
-  //   path: 'carreras',
-  //   component: CareersComponent,
-  // },
+  {
+    path: 'carreras',
+    data: {
+      breadcrumb: 'Carreras'
+    },
+    component: CareersComponent,
+
+  },
   {
     path: 'materias',
     data: {

@@ -1,0 +1,44 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>{{!!this.career ? 'Editar Carrera' : 'Crear Carrera'}}</mat-card-title>
+        <mat-card-subtitle>{{!!this.career ? this.career.name : ''}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <form fxFlex="100" class="mts-3" (submit)="onSubmitCareerForm()"
+            *ngIf="!!this.careerForm ; else loadingDiv" fxLayoutGap="2%" fxFlex="100"
+            class=" mxs-2" [formGroup]="careerForm" fxLayout="column">
+            <cei-text-input [clearable]="true" [name]="this.NAMES_FORM_POST_CAREER.CAREER_NAME" [form]="this.careerForm"
+                [placeholder]="'Nombre de la carrera'">
+            </cei-text-input>
+            <!-- Actions Buttons -->
+            <div fxLayoutAlign="space-around stretch" class="mts-5">
+                <button mat-raised-button [color]="'warn'" [disabled]="isLoadingPostCareer"
+                    (click)="this.onClickCancel()" type="button">
+                    <span>
+                        Cancelar
+                    </span>
+                </button>
+                <button mat-raised-button [color]="'primary'" [disabled]="!careerForm.valid || this.isLoadingPostCareer"
+                    type="submit">
+                    <mat-icon *ngIf="!careerForm.valid; else saveIcon">lock</mat-icon>
+                    <ng-template #saveIcon>
+                        <mat-icon *ngIf="careerForm.valid && !isLoadingPostCareer; else loadingIcon">save</mat-icon>
+                    </ng-template>
+                    <span>
+                        Confirmar
+                    </span>
+                    <ng-template #loadingIcon>
+                        <mat-icon>
+                            <mat-spinner color="accent" diameter="20">
+                            </mat-spinner>
+                        </mat-icon>
+                    </ng-template>
+                </button>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>
+
+<ng-template #loadingDiv>
+    <app-spinner fxFlex="100" fxLayoutAlign="center start"></app-spinner>
+</ng-template>

@@ -136,9 +136,9 @@ export class OrdersService {
 
 
    // TODO:NUEVO
-   getCareers(filter?: OR | AND, sort?: Sort[]): Observable<ResponseAPI<Career[]>> {
+   getCareers(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<Career[]>> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
-      const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort })
+      const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort, pagination })
       return this.http.get(environment.apiUrl + '/' + API.CAREERS,
          {
             headers: queryHeaders,

@@ -1,3 +1,4 @@
+import { Career } from './../_models/orders/career';
 import { FilterBuilder, OPERATORS } from './../_helpers/filterBuilder';
 import { Subject } from './../_models/subject';
 import { Injectable } from '@angular/core';
@@ -19,6 +20,10 @@ export interface CoursePost {
    }[]
 }
 
+export interface CareerPost {
+   name: string
+}
+
 @Injectable({
    providedIn: 'root'
 })
@@ -26,7 +31,7 @@ export class AdminService {
 
    constructor(private http: HttpClient) { }
 
-   getCareers(subjectId?: number): Observable<any[]> {
+   getCareers(subjectId?: number): Observable<Career[]> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
       let params = new HttpParams();
       if (subjectId) {
@@ -45,21 +50,14 @@ export class AdminService {
          );
    }
 
-   editCareer(
-      idCareer: number,
-      name: string,
-      code: string,
-   ): Observable<any> {
+   postCareer(body: CareerPost): Observable<Career> {
       const queryHeaders = new HttpHeaders().append(
          "Content-Type",
          "application/json"
       );
-      const body = {
-         name, code
-      };
 
       return this.http
-         .patch<any>(`${environment.apiUrl}/careers/${idCareer}`, body, {
+         .post<any>(`${environment.apiUrl}/${API.CAREERS}`, body, {
             headers: queryHeaders,
             observe: "response"
          })
@@ -70,18 +68,35 @@ export class AdminService {
          );
    }
 
-   addCareer(name: string, code: string): Observable<any> {
+
+   patchCareer(
+      body: CareerPost,
+      idCareer: string
+   ): Observable<Career> {
       const queryHeaders = new HttpHeaders().append(
          "Content-Type",
          "application/json"
       );
-      const body = {
-         name,
-         code
-      };
 
       return this.http
-         .post<any>(`${environment.apiUrl}/careers`, body, {
+         .patch<any>(`${environment.apiUrl}/${API.CAREERS}/${idCareer}`, body, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
+   deleteCareer(careerId: string): Observable<Career> {
+      const queryHeaders = new HttpHeaders().append(
+         "Content-Type",
+         "application/json"
+      );
+      return this.http
+         .delete<any>(`${environment.apiUrl}/${API.CAREERS}/${careerId}`, {
             headers: queryHeaders,
             observe: "response"
          })

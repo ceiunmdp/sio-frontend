@@ -14,11 +14,13 @@ import { FilesComponent } from './files/files.component';
 import { CoursesComponent } from './courses/courses.component';
 import { CreateEditCourseComponent } from './courses/create-edit-course/create-edit-course.component';
 import { FormsModule } from '@angular/forms';
+import { CareersComponent } from './careers/careers.component';
+import { CreateEditCareerComponent } from './careers/create-edit-career/create-edit-career.component';
 registerPlugin(FilePondPluginFileValidateType);
 registerPlugin(FilePondPluginFileEncode);
 
 @NgModule({
-  declarations: [FilesComponent, CoursesComponent, CreateEditCourseComponent],
+  declarations: [FilesComponent, CoursesComponent, CreateEditCourseComponent, CareersComponent, CreateEditCareerComponent],
   imports: [
     CommonModule,
     AdminRoutingModule,
