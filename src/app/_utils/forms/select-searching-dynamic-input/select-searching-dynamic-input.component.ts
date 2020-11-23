@@ -24,8 +24,8 @@ export class SelectSearchingDynamicInputComponent extends FormElementComponent
     // Input provided that indicates if the values of the mat-options will be computed as strings or numbers
     @Input() forceNumber: string;
     // Functions provided by the parent that tells the component how to calculate the id and name of the options
-    @Input() calculateId: (element) => string;
-    @Input() calculateName: (element) => string;
+    @Input() calculateId: (element) => string = (e) => !!e && !!e.id ? e.id : null;
+    @Input() calculateName: (element) => string = (e) => !!e && !!e.name ? e.name : null;
     // Emit an event every time the select changes
     @Output() public selected: EventEmitter<any> = new EventEmitter();
     /** Subject that emits when the component has been destroyed. */
@@ -33,6 +33,7 @@ export class SelectSearchingDynamicInputComponent extends FormElementComponent
     searchPipe = new StringFilterByPipe();
     searchingSpinner = false;
     storedValue;
+    selectedElement
     public filteredValues;
     protected _onDestroy = new Subject<void>();
     get searchCtrl() {
@@ -93,7 +94,13 @@ export class SelectSearchingDynamicInputComponent extends FormElementComponent
                 tap(_ => { this.searchingSpinner = false; this.storedValue = temporalValue }),
                 switchAll()
             ).subscribe(values => {
-                this.filteredValues = values
+                const id = this.form.get(this.name).value;
+                this.selectedElement = !!this.filteredValues ? this.filteredValues.find(
+                    element =>
+                        this.proxyCalculateId()(element) ==
+                        (this.forceNumber ? Number(id) : id)
+                ) : null;
+                this.filteredValues = !!this.selectedElement ? [...values, this.selectedElement] : values;
             });
     }
 
@@ -105,13 +112,14 @@ export class SelectSearchingDynamicInputComponent extends FormElementComponent
     calculateSelected(id) {
         let elementSelected = null;
         if (this.elements) {
+            console.log(this.elements);
+
             elementSelected = this.elements.find(
                 element =>
                     this.proxyCalculateId()(element) ==
                     (this.forceNumber ? Number(id) : id)
             );
         }
-
         return elementSelected;
     }
 

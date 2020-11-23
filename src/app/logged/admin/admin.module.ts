@@ -17,11 +17,12 @@ import { FormsModule } from '@angular/forms';
 import { CareersComponent } from './careers/careers.component';
 import { CreateEditCareerComponent } from './careers/create-edit-career/create-edit-career.component';
 import { UsersComponent } from './users/users.component';
+import { CreateEditUserComponent } from './users/create-edit-user/create-edit-user.component';
 registerPlugin(FilePondPluginFileValidateType);
 registerPlugin(FilePondPluginFileEncode);
 
 @NgModule({
-  declarations: [FilesComponent, CoursesComponent, CreateEditCourseComponent, CareersComponent, CreateEditCareerComponent, UsersComponent],
+  declarations: [FilesComponent, CoursesComponent, CreateEditCourseComponent, CareersComponent, CreateEditCareerComponent, UsersComponent, CreateEditUserComponent],
   imports: [
     CommonModule,
     AdminRoutingModule,

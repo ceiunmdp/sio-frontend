@@ -9,6 +9,8 @@ export class AlertService {
    constructor(private _alertError: MatSnackBar) { }
 
    openError(message: string) {
+      console.log('entro bien');
+
       this._alertError.openFromComponent(AlertErrorComponent, {
          duration: 5000,
          data: { message },

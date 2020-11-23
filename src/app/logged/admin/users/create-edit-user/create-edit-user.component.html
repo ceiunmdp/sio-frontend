@@ -1,0 +1,148 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>{{!!this?.user ? 'Editar Usuario' : 'Crear Usuario' }}</mat-card-title>
+        <mat-card-subtitle>{{!!this?.user?.display_name ? this.user.display_name: ''}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <span [ngSwitch]="this.typeUserSelected">
+            <div *ngSwitchCase="typeUsers.ADMIN">
+                <form fxFlex="100" class="mts-3" fxLayoutGap="2%" fxFlex="100" class=" mxs-2" [formGroup]="userForm"
+                    fxLayout="column">
+                    <cei-text-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.NAME" [form]="this.userForm"
+                        [placeholder]="'Nombre del usuario'">
+                    </cei-text-input>
+                    <cei-email-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.EMAIL" [form]="this.userForm"
+                        [placeholder]="'Email'">
+                    </cei-email-input>
+                    <cei-password-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.PASSWORD"
+                        [form]="this.userForm" [placeholder]="'Contraseña'">
+                    </cei-password-input>
+                    <!-- Actions Buttons -->
+                    <div fxLayoutAlign="space-around stretch" class="mts-5">
+                        <button mat-raised-button [color]="'warn'" [disabled]="isLoadingPostUser"
+                            (click)="this.onClickCancel()" type="button">
+                            <span>
+                                Cancelar
+                            </span>
+                        </button>
+                        <button mat-raised-button [color]="'primary'" (click)="onSubmitForm(this.typeUsers.ADMIN)"
+                            [disabled]="!userForm.valid || this.isLoadingPostUser">
+                            <mat-icon *ngIf="!userForm.valid; else saveIcon">lock</mat-icon>
+                            <ng-template #saveIcon>
+                                <mat-icon *ngIf="userForm.valid && !isLoadingPostUser; else loadingIcon">save
+                                </mat-icon>
+                            </ng-template>
+                            <span>
+                                Confirmar
+                            </span>
+                            <ng-template #loadingIcon>
+                                <mat-icon>
+                                    <mat-spinner color="accent" diameter="20">
+                                    </mat-spinner>
+                                </mat-icon>
+                            </ng-template>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div *ngSwitchCase="typeUsers.PROFESSOR_SHIP">
+                <form fxFlex="100" class="mts-3" fxLayoutGap="2%" fxFlex="100" class=" mxs-2" [formGroup]="userForm"
+                    fxLayout="column">
+                    <cei-text-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.NAME" [form]="this.userForm"
+                        [placeholder]="'Nombre del usuario'">
+                    </cei-text-input>
+                    <cei-email-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.EMAIL" [form]="this.userForm"
+                        [placeholder]="'Email'">
+                    </cei-email-input>
+                    <cei-password-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.PASSWORD"
+                        [form]="this.userForm" [placeholder]="'Contraseña'">
+                    </cei-password-input>
+                    <cei-select-searching-dynamic-input fxFlex.lt-md="1 1 auto" fxFlex.gt-xs="50"
+                        [name]="this.NAMES_FORM_POST_USER.COURSE"
+                        [nameSearching]="this.NAMES_FORM_POST_USER.COURSE_SEARCHING" [form]="this.userForm"
+                        [placeholder]="'Seleccione la materia asociada'" [placeholderNoValue]="'Sin resultados'"
+                        [placeholderSearching]="'Buscar materia...'" [httpGet]="this.getCoursesByNameAndSurname">
+                    </cei-select-searching-dynamic-input>
+                    <!-- Actions Buttons -->
+                    <div fxLayoutAlign="space-around stretch" class="mts-5">
+                        <button mat-raised-button [color]="'warn'" [disabled]="isLoadingPostUser"
+                            (click)="this.onClickCancel()" type="button">
+                            <span>
+                                Cancelar
+                            </span>
+                        </button>
+                        <button mat-raised-button [color]="'primary'"
+                            [disabled]="!userForm.valid || this.isLoadingPostUser" type="button"
+                            (click)="onSubmitForm(this.typeUsers.PROFESSOR_SHIP)">
+                            <mat-icon *ngIf="!userForm.valid; else saveIcon">lock</mat-icon>
+                            <ng-template #saveIcon>
+                                <mat-icon *ngIf="userForm.valid && !isLoadingPostUser; else loadingIcon">save
+                                </mat-icon>
+                            </ng-template>
+                            <span>
+                                Confirmar
+                            </span>
+                            <ng-template #loadingIcon>
+                                <mat-icon>
+                                    <mat-spinner color="accent" diameter="20">
+                                    </mat-spinner>
+                                </mat-icon>
+                            </ng-template>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div *ngSwitchCase="typeUsers.CAMPUS_USER">
+                <form fxFlex="100" *ngIf="!!this.userForm && !!this.campuses; else loadingDiv" class="mts-3"
+                    fxLayoutGap="2%" fxFlex="100" class=" mxs-2" [formGroup]="userForm" fxLayout="column">
+                    <cei-text-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.NAME" [form]="this.userForm"
+                        [placeholder]="'Nombre del usuario'">
+                    </cei-text-input>
+                    <cei-email-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.EMAIL" [form]="this.userForm"
+                        [placeholder]="'Email'">
+                    </cei-email-input>
+                    <cei-password-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.PASSWORD"
+                        [form]="this.userForm" [placeholder]="'Contraseña'">
+                    </cei-password-input>
+                    <cei-select-input fxFlex="1 1 auto" [name]="this.NAMES_FORM_POST_USER.CAMPUS" [form]="this.userForm"
+                        [placeholder]="'Sede'" [elements]="this.campuses">
+                    </cei-select-input>
+                    <!-- Actions Buttons -->
+                    <div fxLayoutAlign="space-around stretch" class="mts-5">
+                        <button mat-raised-button [color]="'warn'" [disabled]="isLoadingPostUser"
+                            (click)="this.onClickCancel()" type="button">
+                            <span>
+                                Cancelar
+                            </span>
+                        </button>
+                        <button mat-raised-button [color]="'primary'"
+                            [disabled]="!userForm.valid || this.isLoadingPostUser"
+                            (click)="onSubmitForm(this.typeUsers.CAMPUS_USER)">
+                            <mat-icon *ngIf="!userForm.valid; else saveIcon">lock</mat-icon>
+                            <ng-template #saveIcon>
+                                <mat-icon *ngIf="userForm.valid && !isLoadingPostUser; else loadingIcon">save
+                                </mat-icon>
+                            </ng-template>
+                            <span>
+                                Confirmar
+                            </span>
+                            <ng-template #loadingIcon>
+                                <mat-icon>
+                                    <mat-spinner color="accent" diameter="20">
+                                    </mat-spinner>
+                                </mat-icon>
+                            </ng-template>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <p *ngSwitchDefault>
+                Tipo de usuario inválido
+            </p>
+        </span>
+    </mat-card-content>
+</mat-card>
+
+<ng-template #loadingDiv>
+    <app-spinner fxFlex="100" fxLayoutAlign="center start"></app-spinner>
+</ng-template>

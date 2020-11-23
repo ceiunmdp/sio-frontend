@@ -1,14 +1,14 @@
-<div fxFlex="100">
+<div *ngIf="this.step == STEPS.LIST" fxFlex="100">
     <cei-card-table [metaData]="this.metaDataUsers" [title]="this.typeUserFilterSelected"
         (page)="onPaginatorEvent($event)">
         <div controlButtons fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="15px">
-            <button mat-icon-button matTooltip="Nueva materia">
+            <button mat-icon-button matTooltip="Crear usuario" [matMenuTriggerFor]="menuCreate">
                 <mat-icon>add</mat-icon>
             </button>
             <button mat-icon-button matTooltip="Refrescar la búsqueda" (click)="this.onRefresh()">
                 <mat-icon>refresh</mat-icon>
             </button>
-            <mat-icon style="cursor: pointer;" class="text-secondary-darker" [matMenuTriggerFor]="menuAttentions">
+            <mat-icon style="cursor: pointer;" class="text-secondary-darker" [matMenuTriggerFor]="menuSelect">
                 more_vert
             </mat-icon>
         </div>
@@ -51,7 +51,7 @@
                 <ng-container matColumnDef="role" sticky>
                     <th mat-header-cell *matHeaderCellDef>Rol</th>
                     <td mat-cell *matCellDef="let user">
-                        {{ user?.type }}
+                        {{ user?.typeText }}
                     </td>
                 </ng-container>
                 <!-- Disabled Column -->
@@ -75,6 +75,17 @@
                         </mat-icon>
                     </td>
                 </ng-container>
+                <!-- Actions Column -->
+                <ng-container matColumnDef="actions" sticky>
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let user">
+                        <button mat-button (click)="onEditUser(user)">
+                            <mat-icon class="text-primary" [matTooltip]="'Editar usuario'">
+                                edit
+                            </mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
                 <!-- Campus Column -->
                 <ng-container matColumnDef="campus" sticky>
                     <th mat-header-cell *matHeaderCellDef>Sede</th>
@@ -91,6 +102,12 @@
     </cei-card-table>
 </div>
 
+<div fxFlex="100" *ngIf="this.step == STEPS.CREATE_OR_EDIT">
+    <cei-create-edit-user [typeUserSelected]="this.typeUserFilterSelectedPost" fxFlex="100" [user]="this.selectedUser"
+        (created)="this.fromCreateOrEditToList(true)" (cancelled)="this.fromCreateOrEditToList(false)">
+    </cei-create-edit-user>
+</div>
+
 <ng-template #loadingDiv>
     <app-spinner fxFlex="100" fxLayoutAlign="center start"></app-spinner>
 </ng-template>
@@ -100,7 +117,7 @@
     </span>
 </ng-template>
 
-<mat-menu #menuAttentions="matMenu">
+<mat-menu #menuSelect="matMenu">
     <button mat-menu-item [disabled]="this.typeUserFilterSelected == typeUserFilter.ALL"
         (click)="onTypeUserFilter(typeUserFilter.ALL)">
         <mat-icon>person</mat-icon>
@@ -128,6 +145,23 @@
     </button>
     <button mat-menu-item [disabled]="this.typeUserFilterSelected == typeUserFilter.CAMPUS_USER"
         (click)="onTypeUserFilter(typeUserFilter.CAMPUS_USER)">
+        <mat-icon>group</mat-icon>
+        <span>{{typeUserFilter.CAMPUS_USER}}</span>
+    </button>
+</mat-menu>
+<mat-menu #menuCreate="matMenu">
+    <button mat-menu-item
+        (click)="this.typeUserFilterSelectedPost = typeUserFilter.ADMIN; this.step = STEPS.CREATE_OR_EDIT">
+        <mat-icon>group</mat-icon>
+        <span>{{typeUserFilter.ADMIN}}</span>
+    </button>
+    <button mat-menu-item
+        (click)="this.typeUserFilterSelectedPost = typeUserFilter.PROFESSOR_SHIP; this.step = STEPS.CREATE_OR_EDIT">
+        <mat-icon>group</mat-icon>
+        <span>{{typeUserFilter.PROFESSOR_SHIP}}</span>
+    </button>
+    <button mat-menu-item
+        (click)="this.typeUserFilterSelectedPost = typeUserFilter.CAMPUS_USER; this.step = STEPS.CREATE_OR_EDIT">
         <mat-icon>group</mat-icon>
         <span>{{typeUserFilter.CAMPUS_USER}}</span>
     </button>

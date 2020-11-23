@@ -54,6 +54,7 @@ export class JwtInterceptor implements HttpInterceptor {
                   // Llamar al handle error service
                   const messageError = this.handlerErrorService.handleError(null, err);
                   if (messageError) {
+                     console.log(messageError);
                      this.alertService.openError(messageError);
                   } else {
                      this.alertService.openError('Ha ocurrido un error');

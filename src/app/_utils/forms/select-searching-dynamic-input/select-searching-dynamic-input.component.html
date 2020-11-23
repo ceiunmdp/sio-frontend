@@ -26,10 +26,11 @@
          </mat-option>
          <!-- Para que cuando no se encuentre la busqueda quede seleccionado el elemento previo, sino se resetea 
          el select, pero no el form, y queda inconsistente -->
-         <mat-option *ngIf="filteredValues && filteredValues.length < 1"
-            value="{{ proxyCalculateId()(this.calculateSelected(this.form.get(this.name).value)) }}" hidden>
-            {{proxyCalculateName()(this.calculateSelected(this.form.get(this.name).value))}}
+         <mat-option *ngIf="filteredValues && filteredValues.length < 1 && !!this.selectedElement"
+            value="this.selectedElement?.id" hidden>
+            {{this.selectedElement?.name}}
          </mat-option>
+         {{ proxyCalculateId()(this.calculateSelected(this.form.get(this.name).value)) }}
       </mat-select>
       <mat-error *ngIf=" this.form.get(this.name).errors && (this.form.get(this.name).dirty ||
             this.form.get(this.name).touched) ">

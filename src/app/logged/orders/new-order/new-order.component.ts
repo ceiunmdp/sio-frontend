@@ -199,7 +199,7 @@ export class NewOrderComponent implements OnInit {
       private authService: AuthenticationService,
       public router: Router,
       private httpErrorResponseHandlerService: HttpErrorResponseHandlerService
-   ) {}
+   ) { }
 
    ngOnInit() {
       this.generalService.sendMessage({ title: this.title });
@@ -425,9 +425,9 @@ export class NewOrderComponent implements OnInit {
          this.formConfiguration.value[this.FORM_CONFIGURATION_VALUES.filesName][indexArchivo][
             this.FORM_CONFIGURATION_VALUES.files.configurationsName
          ][indexConfiguracion][this.FORM_CONFIGURATION_VALUES.files.configurations.fromTo].length /
-            this.formConfiguration.value[this.FORM_CONFIGURATION_VALUES.filesName][indexArchivo][
-               this.FORM_CONFIGURATION_VALUES.files.configurationsName
-            ][indexConfiguracion][this.FORM_CONFIGURATION_VALUES.files.configurations.slidesPerSheet]
+         this.formConfiguration.value[this.FORM_CONFIGURATION_VALUES.filesName][indexArchivo][
+         this.FORM_CONFIGURATION_VALUES.files.configurationsName
+         ][indexConfiguracion][this.FORM_CONFIGURATION_VALUES.files.configurations.slidesPerSheet]
       );
       const ringType = this.calculateRingType(
          this.fromVeenersToPages(tab.quantityVeeners) + this.fromVeenersToPages(quantityVeenersByConfiguration)
@@ -1001,7 +1001,7 @@ export class NewOrderComponent implements OnInit {
                   configuracion["controls"][this.FORM_CONFIGURATION_VALUES.files.configurations.fromTo].setValue(
                      this.splitRange(
                         file["value"][this.FORM_CONFIGURATION_VALUES.files.configurationsName][index][
-                           this.FORM_CONFIGURATION_VALUES.files.configurations.fromToInput
+                        this.FORM_CONFIGURATION_VALUES.files.configurations.fromToInput
                         ]
                      )
                   );
@@ -1045,7 +1045,7 @@ export class NewOrderComponent implements OnInit {
                   this.FORM_CONFIGURATION_VALUES.files.configurations.fromTo
                ] = this.splitRange(
                   file[this.FORM_CONFIGURATION_VALUES.files.configurationsName][index][
-                     this.FORM_CONFIGURATION_VALUES.files.configurations.fromToInput
+                  this.FORM_CONFIGURATION_VALUES.files.configurations.fromToInput
                   ]
                );
             } else {
@@ -1058,9 +1058,9 @@ export class NewOrderComponent implements OnInit {
                file[this.FORM_CONFIGURATION_VALUES.files.configurationsName][index][
                   this.FORM_CONFIGURATION_VALUES.files.configurations.fromTo
                ].length /
-                  file[this.FORM_CONFIGURATION_VALUES.files.configurationsName][index][
-                     this.FORM_CONFIGURATION_VALUES.files.configurations.slidesPerSheet
-                  ]
+               file[this.FORM_CONFIGURATION_VALUES.files.configurationsName][index][
+               this.FORM_CONFIGURATION_VALUES.files.configurations.slidesPerSheet
+               ]
             );
             // Son carillas
             quantityVeenersByFile += quantityVeenersByConfiguration;
@@ -1153,7 +1153,7 @@ export class NewOrderComponent implements OnInit {
    }
 
    // Calcula el precio de cada copia de un archivo
-   calcularPrecioArchivoConfiguracion() {}
+   calcularPrecioArchivoConfiguracion() { }
 
    // Calcula el precio final (todas las copias) de cada archivo
    calcularPrecioArchivo(i) {
@@ -1273,7 +1273,7 @@ export class NewOrderComponent implements OnInit {
    getCampuses(): Promise<Campus[]> {
       return new Promise((resolve, reject) => {
          this.service.getCampuses().subscribe(
-            (campuses: Campus[]) => {
+            (campuses: any) => {
                resolve(campuses);
             },
             error => {

@@ -2,16 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource, PageEvent } from '@angular/material';
 import { from, Observable, Subscription } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
-import { AND, FilterBuilder, OR, OPERATORS } from 'src/app/_helpers/filterBuilder';
+import { AND, FilterBuilder, OPERATORS, OR } from 'src/app/_helpers/filterBuilder';
 import { Pagination } from 'src/app/_models/pagination';
 import { LinksAPI, MetadataAPI, ResponseAPI } from 'src/app/_models/response-api';
 import { Sort } from 'src/app/_models/sort';
 import { User } from 'src/app/_models/users/user';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
-import { Roles } from 'src/app/_roles/roles';
 import { USER_TYPES } from 'src/app/_users/types';
 
-enum typeUserFilter {
+export enum typeUserFilter {
   ALL = 'Todos los usuarios',
   ADMIN = 'Administradores',
   STUDENT = 'Estudiantes',
@@ -20,15 +19,24 @@ enum typeUserFilter {
   PROFESSOR_SHIP = 'Cátedras'
 }
 
+enum STEPS {
+  LIST,
+  CREATE_OR_EDIT
+}
+
 @Component({
   selector: 'cei-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss']
 })
 export class UsersComponent implements OnInit {
+  public STEPS = STEPS;
+  step: STEPS;
+
   typeUserFilter = typeUserFilter;
   inputFilterValue = ''
   users: User[]; isLoadingGetUsers = false; _users: Subscription;
+  selectedUser;
   dataSourceUsers: MatTableDataSource<User>;
   displayedColumns: string[];
   displayedUsersColumns: string[] = [
@@ -61,12 +69,12 @@ export class UsersComponent implements OnInit {
     'email',
     'verified',
     'disabled',
+    'actions'
   ];
   displayedCampusColumns: string[] = [
     'id',
     'name',
     'email',
-    'campus',
     'verified',
     'disabled',
   ];
@@ -79,6 +87,7 @@ export class UsersComponent implements OnInit {
   ];
 
   typeUserFilterSelected: typeUserFilter;
+  typeUserFilterSelectedPost: typeUserFilter; //Only for child component
   // metadata from api
   metaDataUsers: MetadataAPI;
   linksUsers: LinksAPI;
@@ -91,6 +100,7 @@ export class UsersComponent implements OnInit {
   constructor(private authService: AuthenticationService, ) { }
 
   ngOnInit() {
+    this.step = STEPS.LIST;
     this.fb = new FilterBuilder();
     this.typeUserFilterSelected = typeUserFilter.ALL;
     this.dataSourceUsers = new MatTableDataSource();
@@ -108,11 +118,14 @@ export class UsersComponent implements OnInit {
   }
 
   onSearch(st: string) {
-    this.filter = this.fb.and(this.fb.where('dni', OPERATORS.CONTAINS, st));
+    const filterqp = this.typeUserFilterSelected == typeUserFilter.ALL ? 'display_name' : 'full_name';
+    this.filter = this.fb.and(this.fb.where(filterqp, OPERATORS.CONTAINS, st));
     this.getUsers(this.typeUserFilterSelected, this.filter)
   }
 
   onTypeUserFilter(typeUserFilter: typeUserFilter) {
+    this.inputFilterValue = '';
+    this.filter = null;
     this.getUsers(typeUserFilter, this.filter, this.sort, this.pagination)
     switch (typeUserFilter) {
       case this.typeUserFilter.ALL:
@@ -138,6 +151,22 @@ export class UsersComponent implements OnInit {
     }
   }
 
+  onEditUser(user) {
+    this.selectedUser = user;
+    if (this.typeUserFilterSelected == typeUserFilter.ALL) {
+      this.typeUserFilterSelectedPost = user.type;
+    } else {
+      this.typeUserFilterSelectedPost = this.typeUserFilterSelected;
+    }
+    this.step = STEPS.CREATE_OR_EDIT;
+  }
+
+  fromCreateOrEditToList(refresh = false) {
+    this.step = STEPS.LIST;
+    this.selectedUser = null; // Reset selectedCourse
+    if (refresh) this.onRefresh();
+  }
+
   // Services
 
   getUsers(typeUser: typeUserFilter = typeUserFilter.ALL, filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<User[]> {
@@ -153,19 +182,19 @@ export class UsersComponent implements OnInit {
                 const newUser = { ...user };
                 switch (user.type) {
                   case USER_TYPES.ADMIN:
-                    newUser.type = 'Administrador';
+                    newUser['typeText'] = 'Administrador';
                     break;
                   case USER_TYPES.BECADO:
-                    newUser.type = 'Becado';
+                    newUser['typeText'] = 'Becado';
                     break;
                   case USER_TYPES.CATEDRA:
-                    newUser.type = 'Cátedra';
+                    newUser['typeText'] = 'Cátedra';
                     break;
                   case USER_TYPES.ESTUDIANTE:
-                    newUser.type = 'Estudiante';
+                    newUser['typeText'] = 'Estudiante';
                     break;
                   case USER_TYPES.SEDE:
-                    newUser.type = 'Sede';
+                    newUser['typeText'] = 'Sede';
                     break;
                   default:
                     break;

@@ -1,7 +1,7 @@
 export enum API {
    LOGIN = "login",
    LOGOUT = "logout",
-   CAMPUSES = "campuses",
+   CAMPUSES = "/campus",
    ITEMS = "items",
    MENU = "menu",
    ORDERS = "user/orders",

@@ -15,6 +15,8 @@ export class HttpErrorResponseHandlerService {
     handleError(a, httpErrorResponse: HttpErrorResponse) {
         let message: string = '';
         const error = httpErrorResponse.error;
+        console.log(httpErrorResponse);
+
         if (!!error && !!error.status_code) {
             switch (error.status_code) {
                 case 400: // Bad Request (Business Error)
@@ -50,7 +52,7 @@ export class HttpErrorResponseHandlerService {
                 case 422: // Unprocessable Entity (parameters invalid)
                     // Check how does the response comes
                     // Show the response in the appropiate form fields
-                    message = error.errors[0].msg;
+                    message = error.message[0];
                     break;
                 case 500: // Internal Server Error
                     // Show a message telling that the server had a problem

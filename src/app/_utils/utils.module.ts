@@ -23,8 +23,8 @@ import { AlertComponent } from "./forms/alert/alert.component";
 import { FormElementComponent } from "./forms/form-element/form-element.component";
 import { InputTextComponent } from "./forms/input-text/input-text.component";
 import { MonedaPipe } from "./moneda.pipe";
-import { AlertErrorComponent } from "./forms/alert-error/alert-error.component";
-import { AlertErrorChildComponent } from "./forms/alert-error/alert-error-child/alert-error-child.component";
+// import { AlertErrorComponent } from "./forms/alert-error/alert-error.component";
+// import { AlertErrorChildComponent } from "./forms/alert-error/alert-error-child/alert-error-child.component";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { CheckboxInputComponent } from "./forms/checkbox-input/checkbox-input.component";
 import { EmailInputComponent } from "./forms/email-input/email-input.component";
@@ -54,8 +54,8 @@ export function playerFactory() {
       CardIconComponent,
       AlertComponent,
       MonedaPipe,
-      AlertErrorComponent,
-      AlertErrorChildComponent,
+      // AlertErrorComponent,
+      // AlertErrorChildComponent,
       CheckboxInputComponent,
       EmailInputComponent,
       FileInputComponent,
@@ -99,8 +99,8 @@ export function playerFactory() {
       CardIconComponent,
       AlertComponent,
       MonedaPipe,
-      AlertErrorComponent,
-      AlertErrorChildComponent,
+      // AlertErrorComponent,
+      // AlertErrorChildComponent,
       EmailInputComponent,
       PasswordInputComponent,
       CheckboxInputComponent,
@@ -116,6 +116,6 @@ export function playerFactory() {
       CardTableComponent,
 
    ],
-   entryComponents: [AlertErrorChildComponent]
+   // entryComponents: [AlertErrorComponent]
 })
 export class UtilsModule { }

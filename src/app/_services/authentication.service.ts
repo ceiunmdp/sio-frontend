@@ -15,6 +15,24 @@ import { Pagination } from '../_models/pagination';
 import { ResponseAPI } from '../_models/response-api';
 import { RestUtilitiesService } from './rest-utilities.service';
 
+export interface AdminPost {
+    display_name: string,
+    email: string,
+    password: string
+}
+export interface CampusUserPost {
+    display_name: string,
+    email: string,
+    password: string,
+    campus_id: string
+}
+export interface ProfessorShipPost {
+    display_name: string,
+    email: string,
+    password: string,
+    course_id: string
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -115,6 +133,72 @@ export class AuthenticationService {
             }).pipe(
                 map<HttpResponse<ResponseAPI<Student[]>>, ResponseAPI<Student[]>>(result => {
                     return result.body;
+                })
+            );
+    }
+
+    postCampusUser(body: CampusUserPost): Observable<any> {
+        const queryHeaders = new HttpHeaders().append(
+            "Content-Type",
+            "application/json"
+        );
+        return this.http
+            .post<any>(`${environment.apiUrl}${API.USERS_CAMPUS}`, body, {
+                headers: queryHeaders,
+                observe: "response"
+            })
+            .pipe<any>(
+                map<HttpResponse<any>, any>(response => {
+                    return response.body;
+                })
+            );
+    }
+    postProfessorShip(body: ProfessorShipPost): Observable<any> {
+        const queryHeaders = new HttpHeaders().append(
+            "Content-Type",
+            "application/json"
+        );
+        return this.http
+            .post<any>(`${environment.apiUrl}${API.USERS_PROFESSORSHIPS}`, body, {
+                headers: queryHeaders,
+                observe: "response"
+            })
+            .pipe<any>(
+                map<HttpResponse<any>, any>(response => {
+                    return response.body;
+                })
+            );
+    }
+    postAdmin(body: AdminPost): Observable<any> {
+        const queryHeaders = new HttpHeaders().append(
+            "Content-Type",
+            "application/json"
+        );
+        return this.http
+            .post<any>(`${environment.apiUrl}${API.USERS_ADMINS}`, body, {
+                headers: queryHeaders,
+                observe: "response"
+            })
+            .pipe<any>(
+                map<HttpResponse<any>, any>(response => {
+                    return response.body;
+                })
+            );
+    }
+
+    patchAdmin(body: Partial<AdminPost>, adminId: string): Observable<any> {
+        const queryHeaders = new HttpHeaders().append(
+            "Content-Type",
+            "application/json"
+        );
+        return this.http
+            .patch<any>(`${environment.apiUrl}${API.USERS_ADMINS}/${adminId}`, body, {
+                headers: queryHeaders,
+                observe: "response"
+            })
+            .pipe<any>(
+                map<HttpResponse<any>, any>(response => {
+                    return response.body;
                 })
             );
     }
