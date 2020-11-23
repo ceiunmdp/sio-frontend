@@ -1,9 +1,8 @@
 import { CustomValidators } from './../../../../_validators/custom-validators';
 import { Item } from 'src/app/_models/item';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { AdminService } from 'src/app/_services/admin.service';
-import { CustomValidators } from 'src/app/_validators/custom-validators';
 
 @Component({
   selector: 'cei-edit-item',
