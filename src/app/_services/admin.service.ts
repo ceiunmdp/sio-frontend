@@ -1,3 +1,4 @@
+import { Item } from 'src/app/_models/item';
 import { Career } from './../_models/orders/career';
 import { FilterBuilder, OPERATORS } from './../_helpers/filterBuilder';
 import { Subject } from './../_models/subject';
@@ -22,6 +23,10 @@ export interface CoursePost {
 
 export interface CareerPost {
    name: string
+}
+
+export interface ItemPost {
+   price: number;
 }
 
 @Injectable({
@@ -312,6 +317,27 @@ export class AdminService {
 
       return this.http
          .delete<any>(`${environment.apiUrl}/files/${fileId}`, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
+   patchItem(
+      body: ItemPost,
+      idItem: string
+   ): Observable<Career> {
+      const queryHeaders = new HttpHeaders().append(
+         "Content-Type",
+         "application/json"
+      );
+
+      return this.http
+         .patch<any>(`${environment.apiUrl}/${API.ITEMS}/${idItem}`, body, {
             headers: queryHeaders,
             observe: "response"
          })
