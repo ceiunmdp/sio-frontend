@@ -3,6 +3,7 @@ export enum API {
    LOGOUT = "logout",
    CAMPUSES = "campuses",
    ITEMS = "items",
+   BINDINGS = "bindings",
    MENU = "menu",
    ORDERS = "user/orders",
    CAREERS = "careers",

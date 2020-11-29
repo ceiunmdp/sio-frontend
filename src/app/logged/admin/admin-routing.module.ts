@@ -4,6 +4,7 @@ import { FilesComponent } from './files/files.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CoursesComponent } from './courses/courses.component';
+import { BindingsComponent } from './bindings/bindings.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,13 @@ const routes: Routes = [
       breadcrumb: 'Artículos'
     },
     component: ItemsComponent,
+  },
+  {
+    path: 'anillados',
+    data: {
+      breadcrumb: 'Anillados'
+    },
+    component: BindingsComponent,
   },
   {
     path: 'archivos',

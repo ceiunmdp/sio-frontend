@@ -4,13 +4,11 @@ import { MatPaginator, MatTableDataSource, PageEvent } from '@angular/material';
 import { from, Observable, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { AND, FilterBuilder, OPERATORS, OR } from 'src/app/_helpers/filterBuilder';
-import { Year } from 'src/app/_models/orders/year';
 import { Pagination } from 'src/app/_models/pagination';
 import { LinksAPI, MetadataAPI } from 'src/app/_models/response-api';
 import { Sort } from 'src/app/_models/sort';
 import { AdminService } from 'src/app/_services/admin.service';
 import { GeneralService } from 'src/app/_services/general.service';
-import Swal from 'sweetalert2';
 import { OrdersService } from '../../orders/orders.service';
 
 enum STEPS {
