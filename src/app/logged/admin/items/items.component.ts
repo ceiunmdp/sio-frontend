@@ -46,8 +46,9 @@ export class ItemsComponent implements OnInit {
 
   ngOnInit() {
     this.fb = new FilterBuilder();
+    this.filter = this.fb.and(this.fb.where('item.type', OPERATORS.IS, 'Item'))
     this.step = STEPS.LIST;
-    this.sort = [{ field: 'item.name', sort: "ASC" }]
+    this.sort = [{ field: 'name', sort: "ASC" }]
     this.getItems(this.filter, this.sort, this.pagination);
     this.dataSourceItems = new MatTableDataSource();
   }
