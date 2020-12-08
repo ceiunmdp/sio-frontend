@@ -186,6 +186,23 @@ export class AuthenticationService {
             );
     }
 
+    patchUser(body, userId: string): Observable<any> {
+        const queryHeaders = new HttpHeaders().append(
+            "Content-Type",
+            "application/json"
+        );
+        return this.http
+            .patch<any>(`${environment.apiUrl}${API.USERS}/${userId}`, body, {
+                headers: queryHeaders,
+                observe: "response"
+            })
+            .pipe<any>(
+                map<HttpResponse<any>, any>(response => {
+                    return response.body;
+                })
+            );
+    }
+
     patchAdmin(body: Partial<AdminPost>, adminId: string): Observable<any> {
         const queryHeaders = new HttpHeaders().append(
             "Content-Type",

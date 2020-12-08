@@ -12,10 +12,15 @@
                 more_vert
             </mat-icon>
         </div>
-        <cei-text-searching-input filterInputs fxFlex="100" [placeholder]="'Búsqueda rápida'"
-            [label]="'Buscar por nombre de usuario o email'" [inputFilterValue]="this.inputFilterValue"
-            (onSearch)="this.inputFilterValue = $event;this.onSearch($event)">
-        </cei-text-searching-input>
+        <div filterInputs fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5%">
+            <cei-text-searching-input fxFlex="100" [placeholder]="'Búsqueda rápida'"
+                [label]="'Buscar por nombre de usuario o email'" [inputFilterValue]="this.inputFilterValue"
+                (onSearch)="this.inputFilterValue = $event;this.onSearch($event)">
+            </cei-text-searching-input>
+            <mat-checkbox [(ngModel)]="allUsersCheckbox" (change)="onChangeAllUsersCheckbox($event.checked)">
+                Incluir usuarios deshabilitados
+            </mat-checkbox>
+        </div>
         <ng-container table *ngIf="!this.isLoadingGetUsers; else loadingDiv">
             <table fxFlex="100" mat-table *ngIf="this?.dataSourceUsers?.data?.length > 0; else emptyTable"
                 [dataSource]="dataSourceUsers">
@@ -58,10 +63,12 @@
                 <ng-container matColumnDef="disabled" sticky>
                     <th mat-header-cell *matHeaderCellDef></th>
                     <td mat-cell *matCellDef="let user">
-                        <mat-icon [ngClass]="{'text-warn': user?.disabled, 'text-primary': !user?.disabled }"
-                            [matTooltip]="user?.disabled ? 'Usuario deshabilitado':'Usuario habilitado'">
-                            {{ user?.disabled ? 'highlight_alt' : 'done'}}
-                        </mat-icon>
+                        <button mat-icon-button (click)="onChangeEnabledUser(user)">
+                            <mat-icon [ngClass]="{'text-warn': user?.disabled, 'text-primary': !user?.disabled }"
+                                [matTooltip]="user?.disabled ? 'Usuario deshabilitado':'Usuario habilitado'">
+                                {{ user?.disabled ? 'highlight_off' : 'done'}}
+                            </mat-icon>
+                        </button>
                     </td>
                 </ng-container>
                 <!-- Verified Column -->
@@ -120,49 +127,49 @@
 <mat-menu #menuSelect="matMenu">
     <button mat-menu-item [disabled]="this.typeUserFilterSelected == typeUserFilter.ALL"
         (click)="onTypeUserFilter(typeUserFilter.ALL)">
-        <mat-icon>person</mat-icon>
+        <!-- <mat-icon>person</mat-icon> -->
         <span>{{typeUserFilter.ALL}}</span>
     </button>
     <button mat-menu-item [disabled]="this.typeUserFilterSelected == typeUserFilter.ADMIN"
         (click)="onTypeUserFilter(typeUserFilter.ADMIN)">
-        <mat-icon>group</mat-icon>
+        <!-- <mat-icon>group</mat-icon> -->
         <span>{{typeUserFilter.ADMIN}}</span>
     </button>
     <button mat-menu-item [disabled]="this.typeUserFilterSelected == typeUserFilter.STUDENT"
         (click)="onTypeUserFilter(typeUserFilter.STUDENT)">
-        <mat-icon>group</mat-icon>
+        <!-- <mat-icon>group</mat-icon> -->
         <span>{{typeUserFilter.STUDENT}}</span>
     </button>
     <button mat-menu-item [disabled]="this.typeUserFilterSelected == typeUserFilter.PROFESSOR_SHIP"
         (click)="onTypeUserFilter(typeUserFilter.PROFESSOR_SHIP)">
-        <mat-icon>group</mat-icon>
+        <!-- <mat-icon>group</mat-icon> -->
         <span>{{typeUserFilter.PROFESSOR_SHIP}}</span>
     </button>
     <button mat-menu-item [disabled]="this.typeUserFilterSelected == typeUserFilter.SCHOLARSHIP"
         (click)="onTypeUserFilter(typeUserFilter.SCHOLARSHIP)">
-        <mat-icon>group</mat-icon>
+        <!-- <mat-icon>group</mat-icon> -->
         <span>{{typeUserFilter.SCHOLARSHIP}}</span>
     </button>
     <button mat-menu-item [disabled]="this.typeUserFilterSelected == typeUserFilter.CAMPUS_USER"
         (click)="onTypeUserFilter(typeUserFilter.CAMPUS_USER)">
-        <mat-icon>group</mat-icon>
+        <!-- <mat-icon>group</mat-icon> -->
         <span>{{typeUserFilter.CAMPUS_USER}}</span>
     </button>
 </mat-menu>
 <mat-menu #menuCreate="matMenu">
     <button mat-menu-item
         (click)="this.typeUserFilterSelectedPost = typeUserFilter.ADMIN; this.step = STEPS.CREATE_OR_EDIT">
-        <mat-icon>group</mat-icon>
+        <!-- <mat-icon>group</mat-icon> -->
         <span>{{typeUserFilter.ADMIN}}</span>
     </button>
     <button mat-menu-item
         (click)="this.typeUserFilterSelectedPost = typeUserFilter.PROFESSOR_SHIP; this.step = STEPS.CREATE_OR_EDIT">
-        <mat-icon>group</mat-icon>
+        <!-- <mat-icon>group</mat-icon> -->
         <span>{{typeUserFilter.PROFESSOR_SHIP}}</span>
     </button>
     <button mat-menu-item
         (click)="this.typeUserFilterSelectedPost = typeUserFilter.CAMPUS_USER; this.step = STEPS.CREATE_OR_EDIT">
-        <mat-icon>group</mat-icon>
+        <!-- <mat-icon>group</mat-icon> -->
         <span>{{typeUserFilter.CAMPUS_USER}}</span>
     </button>
 </mat-menu>

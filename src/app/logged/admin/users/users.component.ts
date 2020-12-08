@@ -9,6 +9,7 @@ import { Sort } from 'src/app/_models/sort';
 import { User } from 'src/app/_models/users/user';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { USER_TYPES } from 'src/app/_users/types';
+import Swal from 'sweetalert2';
 
 export enum typeUserFilter {
   ALL = 'Todos los usuarios',
@@ -99,7 +100,7 @@ export class UsersComponent implements OnInit {
   filter: OR | AND;
   sort: Sort[];
   fb: FilterBuilder;
-
+  allUsersCheckbox;
   constructor(private authService: AuthenticationService, ) { }
 
   ngOnInit() {
@@ -108,6 +109,8 @@ export class UsersComponent implements OnInit {
     this.typeUserFilterSelected = typeUserFilter.ALL;
     this.dataSourceUsers = new MatTableDataSource();
     this.displayedColumns = this.displayedUsersColumns;
+    this.filter = this.fb.and(this.fb.where('disabled', OPERATORS.IS, 'false'));
+    this.allUsersCheckbox = false;
     this.getUsers(this.typeUserFilterSelected, this.filter, this.sort, this.pagination);
   }
 
@@ -124,6 +127,16 @@ export class UsersComponent implements OnInit {
     const filterqp = this.typeUserFilterSelected == typeUserFilter.ALL ? 'display_name' : 'full_name';
     // TODO: no anda el filtro por email.
     this.filter = this.fb.and(this.fb.where(filterqp, OPERATORS.CONTAINS, st));
+    this.getUsers(this.typeUserFilterSelected, this.filter)
+  }
+
+  onChangeAllUsersCheckbox(allUsers: boolean) {
+    this.inputFilterValue = '';
+    if (!allUsers) {
+      this.filter = this.fb.and(this.fb.where('disabled', OPERATORS.CONTAINS, 'false'));
+    }
+    console.log(this.filter);
+
     this.getUsers(this.typeUserFilterSelected, this.filter)
   }
 
@@ -163,6 +176,31 @@ export class UsersComponent implements OnInit {
       this.typeUserFilterSelectedPost = this.typeUserFilterSelected;
     }
     this.step = STEPS.CREATE_OR_EDIT;
+  }
+
+  onChangeEnabledUser(user) {
+    Swal.fire({
+      title: `Atención`,
+      text: `¿Seguro desea ${!user.disabled ? 'deshabilitar' : 'habilitar'} el usuario ${user.display_name}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      reverseButtons: true,
+      confirmButtonColor: '#d33',
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar',
+      showLoaderOnConfirm: true,
+      allowOutsideClick: false,
+      preConfirm: () => {
+        return this.authService.patchUser({ disabled: !user.disabled }, user.id).toPromise().then(newUser => {
+          console.log(newUser);
+          Swal.fire({
+            title: `Usuario ${!user.disabled ? 'deshabilitado' : 'habilitado'} correctamente`,
+            icon: 'success'
+          })
+          this.onRefresh();
+        })
+      }
+    })
   }
 
   fromCreateOrEditToList(refresh = false) {
