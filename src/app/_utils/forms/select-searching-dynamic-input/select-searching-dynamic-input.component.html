@@ -30,7 +30,7 @@
             value="this.selectedElement?.id" hidden>
             {{this.selectedElement?.name}}
          </mat-option>
-         {{ proxyCalculateId()(this.calculateSelected(this.form.get(this.name).value)) }}
+         <!-- {{ proxyCalculateId()(this.calculateSelected(this.form.get(this.name).value)) }} -->
       </mat-select>
       <mat-error *ngIf=" this.form.get(this.name).errors && (this.form.get(this.name).dirty ||
             this.form.get(this.name).touched) ">

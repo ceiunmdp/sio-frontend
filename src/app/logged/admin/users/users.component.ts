@@ -77,6 +77,8 @@ export class UsersComponent implements OnInit {
     'email',
     'verified',
     'disabled',
+    'actions'
+
   ];
   displayedProfessorshipsColumns: string[] = [
     'id',
@@ -84,6 +86,7 @@ export class UsersComponent implements OnInit {
     'email',
     'verified',
     'disabled',
+    'actions'
   ];
 
   typeUserFilterSelected: typeUserFilter;
@@ -119,6 +122,7 @@ export class UsersComponent implements OnInit {
 
   onSearch(st: string) {
     const filterqp = this.typeUserFilterSelected == typeUserFilter.ALL ? 'display_name' : 'full_name';
+    // TODO: no anda el filtro por email.
     this.filter = this.fb.and(this.fb.where(filterqp, OPERATORS.CONTAINS, st));
     this.getUsers(this.typeUserFilterSelected, this.filter)
   }

@@ -1,12 +1,13 @@
 <mat-card>
     <mat-card-header>
-        <mat-card-title>{{!!this?.user ? 'Editar Usuario' : 'Crear Usuario' }}</mat-card-title>
-        <mat-card-subtitle>{{!!this?.user?.display_name ? this.user.display_name: ''}}</mat-card-subtitle>
+        <mat-card-title>{{(!!this?.user ? 'Editar Usuario' : 'Crear Usuario') }}</mat-card-title>
+        <!-- <mat-card-subtitle>{{!!this?.user?.display_name ? this.user.display_name: ''}}</mat-card-subtitle> -->
+        <mat-card-subtitle>{{this.typeUserSelected}}</mat-card-subtitle>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content class="mts-5">
         <span [ngSwitch]="this.typeUserSelected">
             <div *ngSwitchCase="typeUsers.ADMIN">
-                <form fxFlex="100" class="mts-3" fxLayoutGap="2%" fxFlex="100" class=" mxs-2" [formGroup]="userForm"
+                <form fxFlex="100" class="mts-3" fxLayoutGap="5px" fxFlex="100" class=" mxs-2" [formGroup]="userForm"
                     fxLayout="column">
                     <cei-text-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.NAME" [form]="this.userForm"
                         [placeholder]="'Nombre del usuario'">
@@ -46,8 +47,8 @@
                 </form>
             </div>
             <div *ngSwitchCase="typeUsers.PROFESSOR_SHIP">
-                <form fxFlex="100" class="mts-3" fxLayoutGap="2%" fxFlex="100" class=" mxs-2" [formGroup]="userForm"
-                    fxLayout="column">
+                <form *ngIf="!!this.userForm && !loadingElementsCourses; else loadingDiv" fxFlex="100" class="mts-3" fxLayoutGap="2%" fxFlex="100" class=" mxs-2"
+                    [formGroup]="userForm" fxLayout="column">
                     <cei-text-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.NAME" [form]="this.userForm"
                         [placeholder]="'Nombre del usuario'">
                     </cei-text-input>
@@ -58,7 +59,8 @@
                         [form]="this.userForm" [placeholder]="'Contraseña'">
                     </cei-password-input>
                     <cei-select-searching-dynamic-input fxFlex.lt-md="1 1 auto" fxFlex.gt-xs="50"
-                        [name]="this.NAMES_FORM_POST_USER.COURSE"
+                        [elements]="this.elementsCourses" [name]="this.NAMES_FORM_POST_USER.COURSE"
+                        [defaultValue]="this?.elementsCourses?.length > 0 ? this.elementsCourses[0].id:null"
                         [nameSearching]="this.NAMES_FORM_POST_USER.COURSE_SEARCHING" [form]="this.userForm"
                         [placeholder]="'Seleccione la materia asociada'" [placeholderNoValue]="'Sin resultados'"
                         [placeholderSearching]="'Buscar materia...'" [httpGet]="this.getCoursesByNameAndSurname">

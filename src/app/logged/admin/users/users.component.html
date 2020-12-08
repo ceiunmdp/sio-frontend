@@ -13,7 +13,7 @@
             </mat-icon>
         </div>
         <cei-text-searching-input filterInputs fxFlex="100" [placeholder]="'Búsqueda rápida'"
-            [label]="'Buscar por nombre de usuario'" [inputFilterValue]="this.inputFilterValue"
+            [label]="'Buscar por nombre de usuario o email'" [inputFilterValue]="this.inputFilterValue"
             (onSearch)="this.inputFilterValue = $event;this.onSearch($event)">
         </cei-text-searching-input>
         <ng-container table *ngIf="!this.isLoadingGetUsers; else loadingDiv">
@@ -71,7 +71,7 @@
                         <mat-icon
                             [ngClass]="{'text-warn': !user?.email_verified, 'text-primary': user?.email_verified }"
                             [matTooltip]="user?.email_verified ? 'Email verificado':'Email no verificado'">
-                            {{ user?.email_verified ? 'verified_user': 'unpublished'}}
+                            {{ user?.email_verified ? 'mark_email_read': 'mark_email_unread'}}
                         </mat-icon>
                     </td>
                 </ng-container>
@@ -79,8 +79,8 @@
                 <ng-container matColumnDef="actions" sticky>
                     <th mat-header-cell *matHeaderCellDef></th>
                     <td mat-cell *matCellDef="let user">
-                        <button mat-button (click)="onEditUser(user)">
-                            <mat-icon class="text-primary" [matTooltip]="'Editar usuario'">
+                        <button mat-icon-button (click)="onEditUser(user)">
+                            <mat-icon class="text-secondary m-0 mat-icon-medium" [matTooltip]="'Editar usuario'">
                                 edit
                             </mat-icon>
                         </button>

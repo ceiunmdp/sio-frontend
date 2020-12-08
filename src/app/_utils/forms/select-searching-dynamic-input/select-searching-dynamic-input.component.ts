@@ -72,6 +72,8 @@ export class SelectSearchingDynamicInputComponent extends FormElementComponent
 
     ngOnInit() {
         this.form.get(this.name).setValue(this.defaultValue);
+        console.log(this.form, this.elements);
+
         if (this.forceNumber) {
             // Subscribe at any change in the select form control and everytime a new option is
             // selected, convert the value to Number if it isn't
@@ -95,12 +97,15 @@ export class SelectSearchingDynamicInputComponent extends FormElementComponent
                 switchAll()
             ).subscribe(values => {
                 const id = this.form.get(this.name).value;
+                console.log(id);
                 this.selectedElement = !!this.filteredValues ? this.filteredValues.find(
                     element =>
                         this.proxyCalculateId()(element) ==
                         (this.forceNumber ? Number(id) : id)
                 ) : null;
                 this.filteredValues = !!this.selectedElement ? [...values, this.selectedElement] : values;
+                console.log(this.filteredValues);
+
             });
     }
 
@@ -112,8 +117,6 @@ export class SelectSearchingDynamicInputComponent extends FormElementComponent
     calculateSelected(id) {
         let elementSelected = null;
         if (this.elements) {
-            console.log(this.elements);
-
             elementSelected = this.elements.find(
                 element =>
                     this.proxyCalculateId()(element) ==
