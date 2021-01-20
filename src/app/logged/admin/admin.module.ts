@@ -16,15 +16,13 @@ import { CreateEditCourseComponent } from './courses/create-edit-course/create-e
 import { FormsModule } from '@angular/forms';
 import { CareersComponent } from './careers/careers.component';
 import { CreateEditCareerComponent } from './careers/create-edit-career/create-edit-career.component';
-import { ItemsComponent } from './items/items.component';
-import { EditItemComponent } from './items/edit-item/edit-item.component';
-import { BindingsComponent } from './bindings/bindings.component';
-import { CreateEditBindingsComponent } from './bindings/create-edit-bindings/create-edit-bindings.component';
+import { UsersComponent } from './users/users.component';
+import { CreateEditUserComponent } from './users/create-edit-user/create-edit-user.component';
 registerPlugin(FilePondPluginFileValidateType);
 registerPlugin(FilePondPluginFileEncode);
 
 @NgModule({
-  declarations: [FilesComponent, CoursesComponent, CreateEditCourseComponent, CareersComponent, CreateEditCareerComponent, ItemsComponent, EditItemComponent, BindingsComponent, CreateEditBindingsComponent],
+  declarations: [FilesComponent, CoursesComponent, CreateEditCourseComponent, CareersComponent, CreateEditCareerComponent, UsersComponent, CreateEditUserComponent],
   imports: [
     CommonModule,
     AdminRoutingModule,

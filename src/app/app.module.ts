@@ -18,6 +18,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { NotFoundComponent } from "./not-found/not-found.component";
 import { JwtInterceptor } from "./_helpers/jwt.interceptor";
+import { AlertErrorComponent } from './_utils/forms/alert-error/alert-error.component';
 
 // import * as firebase from 'firebase/app';
 // import * as firebaseui from 'firebaseui';
@@ -29,7 +30,7 @@ export function fbfunction() { return 'my_factory' };
 
 
 @NgModule({
-   declarations: [AppComponent, NotFoundComponent],
+   declarations: [AppComponent, NotFoundComponent, AlertErrorComponent],
    imports: [
       CommonModule,
       BrowserModule,
@@ -56,6 +57,8 @@ export function fbfunction() { return 'my_factory' };
             authGuardLoggedInURL: '/cei', // url for authenticated users - to use in combination with canActivate feature on a route
          }),
    ],
+   exports: [AlertErrorComponent],
+   entryComponents: [AlertErrorComponent],
    providers: [
       {
          provide: HTTP_INTERCEPTORS,

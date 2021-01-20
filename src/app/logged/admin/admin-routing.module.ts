@@ -4,7 +4,9 @@ import { FilesComponent } from './files/files.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CoursesComponent } from './courses/courses.component';
+import { UsersComponent } from './users/users.component';
 import { BindingsComponent } from './bindings/bindings.component';
+
 
 const routes: Routes = [
   {
@@ -43,6 +45,10 @@ const routes: Routes = [
   {
     path: 'archivos',
     component: FilesComponent,
+  },
+  {
+    path: 'usuarios',
+    component: UsersComponent,
   }
 ];
 

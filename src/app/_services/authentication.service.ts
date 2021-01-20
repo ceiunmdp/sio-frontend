@@ -1,14 +1,37 @@
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { User } from '../_models/users/user';
+import { User, Student } from '../_models/users/user';
 import { GeneralService } from './general.service';
 import { USER_TYPES } from '../_users/types';
-import { API as APIS } from '../_api/api';
+import { API as APIS, API } from '../_api/api';
+import { OR, AND } from '../_helpers/filterBuilder';
+import { Sort } from '../_models/sort';
+import { Pagination } from '../_models/pagination';
+import { ResponseAPI } from '../_models/response-api';
+import { RestUtilitiesService } from './rest-utilities.service';
+
+export interface AdminPost {
+    display_name: string,
+    email: string,
+    password: string
+}
+export interface CampusUserPost {
+    display_name: string,
+    email: string,
+    password: string,
+    campus_id: string
+}
+export interface ProfessorShipPost {
+    display_name: string,
+    email: string,
+    password: string,
+    course_id: string
+}
 
 @Injectable({
     providedIn: 'root'
@@ -19,9 +42,182 @@ export class AuthenticationService {
     // tslint:disable-next-line: variable-name
     private _redirectUrl: string;
 
-    constructor(private http: HttpClient, private router: Router, private afAuth: AngularFireAuth, private generalService: GeneralService) {
+    constructor(private http: HttpClient, private restService: RestUtilitiesService, private router: Router, private afAuth: AngularFireAuth, private generalService: GeneralService) {
         this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
         this.currentUser$ = this.currentUserSubject.asObservable();
+    }
+
+    getUsers(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<User[]>> {
+        const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+        const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort, pagination })
+        return this.http.get(environment.apiUrl + API.USERS,
+            {
+                headers: queryHeaders,
+                observe: "response",
+                params
+            }).pipe(
+                map<HttpResponse<ResponseAPI<User[]>>, ResponseAPI<User[]>>(result => {
+                    return result.body;
+                })
+            );
+    }
+
+    getStudents(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<Student[]>> {
+        const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+        const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort, pagination })
+        return this.http.get(environment.apiUrl + API.USERS_STUDENTS,
+            {
+                headers: queryHeaders,
+                observe: "response",
+                params
+            }).pipe(
+                map<HttpResponse<ResponseAPI<Student[]>>, ResponseAPI<Student[]>>(result => {
+                    return result.body;
+                })
+            );
+    }
+
+    getAdmins(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<Student[]>> {
+        const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+        const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort, pagination })
+        return this.http.get(environment.apiUrl + API.USERS_ADMINS,
+            {
+                headers: queryHeaders,
+                observe: "response",
+                params
+            }).pipe(
+                map<HttpResponse<ResponseAPI<Student[]>>, ResponseAPI<Student[]>>(result => {
+                    return result.body;
+                })
+            );
+    }
+
+    getScholarships(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<Student[]>> {
+        const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+        const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort, pagination })
+        return this.http.get(environment.apiUrl + API.USERS_SCHOLARSHIPS,
+            {
+                headers: queryHeaders,
+                observe: "response",
+                params
+            }).pipe(
+                map<HttpResponse<ResponseAPI<Student[]>>, ResponseAPI<Student[]>>(result => {
+                    return result.body;
+                })
+            );
+    }
+
+    getCampuses(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<Student[]>> {
+        const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+        const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort, pagination })
+        return this.http.get(environment.apiUrl + API.USERS_CAMPUS,
+            {
+                headers: queryHeaders,
+                observe: "response",
+                params
+            }).pipe(
+                map<HttpResponse<ResponseAPI<Student[]>>, ResponseAPI<Student[]>>(result => {
+                    return result.body;
+                })
+            );
+    }
+
+    getProfessorships(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<Student[]>> {
+        const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+        const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort, pagination })
+        return this.http.get(environment.apiUrl + API.USERS_PROFESSORSHIPS,
+            {
+                headers: queryHeaders,
+                observe: "response",
+                params
+            }).pipe(
+                map<HttpResponse<ResponseAPI<Student[]>>, ResponseAPI<Student[]>>(result => {
+                    return result.body;
+                })
+            );
+    }
+
+    postCampusUser(body: CampusUserPost): Observable<any> {
+        const queryHeaders = new HttpHeaders().append(
+            "Content-Type",
+            "application/json"
+        );
+        return this.http
+            .post<any>(`${environment.apiUrl}${API.USERS_CAMPUS}`, body, {
+                headers: queryHeaders,
+                observe: "response"
+            })
+            .pipe<any>(
+                map<HttpResponse<any>, any>(response => {
+                    return response.body;
+                })
+            );
+    }
+    postProfessorShip(body: ProfessorShipPost): Observable<any> {
+        const queryHeaders = new HttpHeaders().append(
+            "Content-Type",
+            "application/json"
+        );
+        return this.http
+            .post<any>(`${environment.apiUrl}${API.USERS_PROFESSORSHIPS}`, body, {
+                headers: queryHeaders,
+                observe: "response"
+            })
+            .pipe<any>(
+                map<HttpResponse<any>, any>(response => {
+                    return response.body;
+                })
+            );
+    }
+    postAdmin(body: AdminPost): Observable<any> {
+        const queryHeaders = new HttpHeaders().append(
+            "Content-Type",
+            "application/json"
+        );
+        return this.http
+            .post<any>(`${environment.apiUrl}${API.USERS_ADMINS}`, body, {
+                headers: queryHeaders,
+                observe: "response"
+            })
+            .pipe<any>(
+                map<HttpResponse<any>, any>(response => {
+                    return response.body;
+                })
+            );
+    }
+
+    patchUser(body, userId: string): Observable<any> {
+        const queryHeaders = new HttpHeaders().append(
+            "Content-Type",
+            "application/json"
+        );
+        return this.http
+            .patch<any>(`${environment.apiUrl}${API.USERS}/${userId}`, body, {
+                headers: queryHeaders,
+                observe: "response"
+            })
+            .pipe<any>(
+                map<HttpResponse<any>, any>(response => {
+                    return response.body;
+                })
+            );
+    }
+
+    patchAdmin(body: Partial<AdminPost>, adminId: string): Observable<any> {
+        const queryHeaders = new HttpHeaders().append(
+            "Content-Type",
+            "application/json"
+        );
+        return this.http
+            .patch<any>(`${environment.apiUrl}${API.USERS_ADMINS}/${adminId}`, body, {
+                headers: queryHeaders,
+                observe: "response"
+            })
+            .pipe<any>(
+                map<HttpResponse<any>, any>(response => {
+                    return response.body;
+                })
+            );
     }
 
     get currentUserValue(): User {

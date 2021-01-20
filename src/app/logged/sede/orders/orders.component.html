@@ -75,8 +75,9 @@
                      <button mat-icon-button (click)="openBottomSheet(element.id)">
                         <mat-icon [color]="'primary'">loupe</mat-icon>
                      </button>
-                     <button *ngIf="element.state.id !== ORDER_STATES.CANCELADO && element.state.id !== ORDER_STATES.ENTREGADO" mat-icon-button [matMenuTriggerFor]="menuActions"
-                        [matMenuTriggerData]="{ order: element }">
+                     <button
+                        *ngIf="element.state.id !== ORDER_STATES.CANCELADO && element.state.id !== ORDER_STATES.ENTREGADO"
+                        mat-icon-button [matMenuTriggerFor]="menuActions" [matMenuTriggerData]="{ order: element }">
                         <mat-icon [color]="'primary'">menu</mat-icon>
                      </button>
                      <!-- <button mat-raised-button color="accent" (click)="openBottomSheet(element.id)">Ver más</button> -->
@@ -130,4 +131,4 @@
       </button>
    </ng-template>
 </mat-menu>
-<cei-alert-error #alertError></cei-alert-error>
+<!-- <cei-alert-error #alertError></cei-alert-error> -->

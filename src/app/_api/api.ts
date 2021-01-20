@@ -1,7 +1,7 @@
 export enum API {
    LOGIN = "login",
    LOGOUT = "logout",
-   CAMPUSES = "campuses",
+   CAMPUSES = "/campus",
    ITEMS = "items",
    BINDINGS = "bindings",
    MENU = "menu",
@@ -11,6 +11,7 @@ export enum API {
    COURSES = "/courses",
    MOVEMENTS = "/movements",
    USER = "/user",
+   USERS = "/users",
    USERS_ADMINS = "/users/admins",
    USERS_STUDENTS = "/users/students",
    USERS_PROFESSORSHIPS = "/users/professorships",

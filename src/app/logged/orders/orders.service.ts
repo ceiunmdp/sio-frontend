@@ -228,13 +228,17 @@ export class OrdersService {
          );
    }
 
-   getCampuses(): Observable<Campus[]> {
+   getCampuses(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<Campus[]>> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
-      return this.http
-         .get(environment.apiUrl + "/" + API.CAMPUSES, { headers: queryHeaders, observe: "response" })
-         .pipe(
-            map<HttpResponse<any>, Campus[]>(result => {
-               return result.body.data;
+      const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort, pagination })
+      return this.http.get(environment.apiUrl + API.CAMPUSES,
+         {
+            headers: queryHeaders,
+            observe: "response",
+            params
+         }).pipe(
+            map<HttpResponse<ResponseAPI<Campus[]>>, ResponseAPI<Campus[]>>(result => {
+               return result.body;
             })
          );
    }
