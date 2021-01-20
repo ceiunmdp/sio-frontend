@@ -1,3 +1,4 @@
+import { Binding } from './../../_models/binding';
 import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
@@ -198,8 +199,6 @@ export class OrdersService {
       );
    }
 
-
-
    getFiles(): Observable<Career[]> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
       return this.http.get(environment.apiUrl + '/' + API.CAREERS, { headers: queryHeaders, observe: "response" }).pipe(
@@ -258,16 +257,30 @@ export class OrdersService {
       );
    }
 
-   getItems(): Observable<Item[]> {
+   getItems(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<Item[]>> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
-      return this.http.get(environment.apiUrl + "/" + API.ITEMS, { headers: queryHeaders, observe: "response" }).pipe(
+      const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort, pagination })
+      return this.http.get(environment.apiUrl + "/" + API.ITEMS, { headers: queryHeaders, params: params, observe: "response" }).pipe(
          map<HttpResponse<any>, any>(result => {
-            const items: Item[] = result.body.data;
-            return items.map(item => {
-               item.maximumLimit = item.maximumLimit ? parseInt(item.maximumLimit.toString()) : null;
-               item.price = item.price ? parseFloat(item.price.toString()) : null;
-               return item;
-            });
+            return result.body;
+            // return items.map(item => {
+            //    item.price = item.price ? parseFloat(item.price.toString()) : null;
+            //    return item;
+            // });
+         })
+      );
+   }
+
+   getBindings(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<Binding[]>> {
+      const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort, pagination })
+      return this.http.get(environment.apiUrl + "/" + API.ITEMS + "/" + API.BINDINGS, { headers: queryHeaders, params: params, observe: "response" }).pipe(
+         map<HttpResponse<any>, any>(result => {
+            return result.body;
+            // return items.map(item => {
+            //    item.price = item.price ? parseFloat(item.price.toString()) : null;
+            //    return item;
+            // });
          })
       );
    }

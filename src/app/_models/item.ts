@@ -1,7 +1,8 @@
+import { ITEM_TYPES } from 'src/app/_items/types';
 export interface Item {
-   id: number;
+   id: string;
+   code: string;
    name: string;
    price: number;
-   maximumLimit: number;
-   type: number;
+   type: ITEM_TYPES;
 }

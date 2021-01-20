@@ -1,3 +1,5 @@
+import { Binding } from './../_models/binding';
+import { Item } from 'src/app/_models/item';
 import { Career } from './../_models/orders/career';
 import { FilterBuilder, OPERATORS } from './../_helpers/filterBuilder';
 import { Subject } from './../_models/subject';
@@ -22,6 +24,15 @@ export interface CoursePost {
 
 export interface CareerPost {
    name: string
+}
+
+export interface ItemPost {
+   price: number;
+}
+
+export interface BindingPost extends ItemPost {
+   name: string;
+   sheets_limit: number;
 }
 
 @Injectable({
@@ -321,4 +332,82 @@ export class AdminService {
             })
          );
    }
+
+   patchItem(
+      body: ItemPost,
+      idItem: string
+   ): Observable<Career> {
+      const queryHeaders = new HttpHeaders().append(
+         "Content-Type",
+         "application/json"
+      );
+
+      return this.http
+         .patch<any>(`${environment.apiUrl}/${API.ITEMS}/${idItem}`, body, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
+   postBinding(body: BindingPost): Observable<Binding> {
+      const queryHeaders = new HttpHeaders().append(
+         "Content-Type",
+         "application/json"
+      );
+
+      return this.http
+         .post<any>(`${environment.apiUrl}/${API.ITEMS}/${API.BINDINGS}`, body, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
+   patchBinding(
+      body: BindingPost,
+      idBinding: string
+   ): Observable<Binding> {
+      const queryHeaders = new HttpHeaders().append(
+         "Content-Type",
+         "application/json"
+      );
+
+      return this.http
+         .patch<any>(`${environment.apiUrl}/${API.ITEMS}/${API.BINDINGS}/${idBinding}`, body, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
+   deleteBinding(bindingId: string): Observable<Binding> {
+      const queryHeaders = new HttpHeaders().append(
+         "Content-Type",
+         "application/json"
+      );
+      return this.http
+         .delete<any>(`${environment.apiUrl}/${API.ITEMS}/${API.BINDINGS}/${bindingId}`, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
 }

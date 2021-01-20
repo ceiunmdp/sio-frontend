@@ -1,0 +1,44 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Editar Artículo</mat-card-title>
+        <mat-card-subtitle>{{!!this.item ? this.item.name : ''}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <form fxFlex="100" class="mts-3" (submit)="onSubmitItemForm()"
+            *ngIf="!!this.itemForm ; else loadingDiv" fxLayoutGap="2%" fxFlex="100"
+            class=" mxs-2" [formGroup]="itemForm" fxLayout="column">
+            <cei-number-input [name]="this.NAMES_FORM_PATCH_ITEM.ITEM_PRICE" [form]="this.itemForm"
+            [placeholder]="'Precio del artículo'" [minValue] = 0>
+            </cei-number-input>
+            <!-- Actions Buttons -->
+            <div fxLayoutAlign="space-around stretch" class="mts-5">
+                <button mat-raised-button [color]="'warn'" [disabled]="isLoadingPatchItem"
+                    (click)="this.onClickCancel()" type="button">
+                    <span>
+                        Cancelar
+                    </span>
+                </button>
+                <button mat-raised-button [color]="'primary'" [disabled]="!itemForm.valid || this.isLoadingPatchItem"
+                    type="submit">
+                    <mat-icon *ngIf="!itemForm.valid; else saveIcon">lock</mat-icon>
+                    <ng-template #saveIcon>
+                        <mat-icon *ngIf="itemForm.valid && !isLoadingPatchItem; else loadingIcon">save</mat-icon>
+                    </ng-template>
+                    <span>
+                        Confirmar
+                    </span>
+                    <ng-template #loadingIcon>
+                        <mat-icon>
+                            <mat-spinner color="accent" diameter="20">
+                            </mat-spinner>
+                        </mat-icon>
+                    </ng-template>
+                </button>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>
+
+<ng-template #loadingDiv>
+    <app-spinner fxFlex="100" fxLayoutAlign="center start"></app-spinner>
+</ng-template>
