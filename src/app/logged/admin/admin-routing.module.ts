@@ -1,3 +1,4 @@
+import { ParametersComponent } from './parameters/parameters.component';
 import { ItemsComponent } from './items/items.component';
 import { CareersComponent } from './careers/careers.component';
 import { FilesComponent } from './files/files.component';
@@ -49,6 +50,13 @@ const routes: Routes = [
   {
     path: 'usuarios',
     component: UsersComponent,
+  },
+  {
+    path: 'parametricas',
+    data: {
+      breadcrumb: 'Paramétricas'
+    },
+    component: ParametersComponent,
   }
 ];
 
