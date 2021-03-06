@@ -1,0 +1,79 @@
+<form *ngIf="!!this.configForm && !!this.filesItemFormArray" [formGroup]="configForm" fxLayout="column">
+    <mat-accordion class="card-shadow my-1" fxFlex="100%">
+
+        <mat-expansion-panel [formArrayName]="this.FILES"
+            *ngFor="let fileFormGroup of this.filesItemFormArray['controls']; let fileItemIndex = index;">
+
+            <mat-expansion-panel-header [formGroupName]="fileItemIndex">
+                <mat-panel-title>{{fileFormGroup.value.file.name}}</mat-panel-title>
+                <mat-panel-description></mat-panel-description>
+            </mat-expansion-panel-header>
+            <!-- Form configuration -->
+            <div [formGroupName]="fileItemIndex" fxLayout="column">
+                <div>
+                    <!-- COPIES -->
+                    <cei-number-input [name]="this.COPIES" [form]="fileFormGroup" [placeholder]="'Cantidad de copias'"
+                        fxFlex="1 1 auto" (change)="setConfigItemsArray(fileItemIndex)">
+                    </cei-number-input>
+                    <!-- SAME CONFIG -->
+                    <cei-checkbox-input [name]="this.IS_SAME_CONFIG" [form]="fileFormGroup" fxFlex="1 1 auto"
+                        [placeholder]="'Todas las copias tienen la misma configuración'"
+                        (change)="setConfigItemsArray(fileItemIndex)">
+                    </cei-checkbox-input>
+                </div>
+                <!-- CONFIGS -->
+                <div [formArrayName]="this.CONFIGURATIONS"
+                    *ngFor="let configFormGroup of this.getconfigsFormArray(fileItemIndex)['controls']; let configIndex = index;">
+                    <div [formGroupName]="configIndex" fxLayout="column">
+                        <div class="separator separator-center-left my-3">
+                            <span class="mx-2 text-secondary">
+                                {{
+                                    fileFormGroup.get(this.IS_SAME_CONFIG).value ? 
+                                    'Configuración de las copias' :
+                                    'Configuración de la copia #' + (configIndex + 1) 
+                                }}
+                            </span>
+                        </div>
+
+                        <!-- CONFIGS INPUTS -->
+                        <!-- <cei-text-input [name]="this.RANGE" [form]="configFormGroup" [placeholder]="'Desde-Hasta'"
+                            fxFlex="1 1 auto">
+                        </cei-text-input> -->
+
+                        <mat-form-field class="mt-5" [floatLabel]="'auto'">
+                            <input [errorStateMatcher]="matcher" pattern="\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*" matInput
+                                type="text" [formControlName]="this.RANGE" />
+                            <mat-label>
+                                <b> Desde-Hasta</b>
+                            </mat-label>
+                            <mat-error *ngIf="(configFormGroup?.controls[this.RANGE].dirty || configFormGroup?.controls[this.RANGE].touched) &&
+                            configFormGroup?.controls[this.RANGE].errors?.required">Campo requerido
+                            </mat-error>
+                            <mat-error *ngIf="!!configFormGroup?.controls[this.RANGE].errors?.pattern">Rango
+                                de páginas no válido, utiliza p. ej. 1-5, 8, 11-13
+                            </mat-error>
+                            <mat-hint> <b>p. ej. 1-5, 8, 11-13</b> - Páginas:
+                                {{fileFormGroup.get(this.FILE).value.number_of_sheets}}</mat-hint>
+                        </mat-form-field>
+                        <div style="height: 20px;">
+                            <mat-error class="mat-caption" *ngIf="
+                                             !configFormGroup.controls[this.RANGE].errors?.pattern &&
+                                             !!configFormGroup.errors
+                                          ">Rango máximo superado
+                            </mat-error>
+                        </div>
+
+                        <cei-checkbox-input [name]="this.DOUBLE_SIDED" [form]="configFormGroup" fxFlex="1 1 auto"
+                            [placeholder]="'Doble faz'">
+                        </cei-checkbox-input>
+                        <cei-checkbox-input [name]="this.COLOUR" [form]="configFormGroup" fxFlex="1 1 auto"
+                            [placeholder]="'Color'">
+                        </cei-checkbox-input>
+
+                    </div>
+                </div>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+    <button mat-button (click)="showForm()">Action</button>
+</form>

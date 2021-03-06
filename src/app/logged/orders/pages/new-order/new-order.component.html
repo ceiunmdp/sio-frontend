@@ -1,0 +1,15 @@
+<mat-horizontal-stepper [linear]="true" (selectionChange)="this.onStepChange($event)" labelPosition="top">
+    <mat-step label="Selección de archivos" [completed]="this.dataFiles?.completed">
+        <cei-files (onDataChange)="onChangeDataFiles($event)"></cei-files>
+    </mat-step>
+    <mat-step label="Configuración de archivos">
+        <cei-files-config [files]="this.dataFiles?.data" (onDataChange)="this.dataConfigFiles = $event">
+        </cei-files-config>
+    </mat-step>
+    <mat-step label="Configuración de anillados">
+        Anillados
+    </mat-step>
+    <mat-step label="Confirmar pedido">
+        Confirmar
+    </mat-step>
+</mat-horizontal-stepper>

@@ -235,7 +235,7 @@ export class NewOrderComponent implements OnInit {
       console.log(a);
    }
 
-   getRingedByItems = (items: Item[]): Item[] => items.filter(item => item.type === ITEM_TYPES.ANILLADO);
+   getRingedByItems = (items: Item[]): Item[] => items.filter(item => item.type === ITEM_TYPES.BINDING);
    getPriceDuplex = (items: Item[]): number => items[1].price;
    getPriceSimpleFace = (items: Item[]): number => items[0].price;
 
@@ -1286,7 +1286,7 @@ export class NewOrderComponent implements OnInit {
    getItems(): Promise<Item[]> {
       return new Promise((resolve, reject) => {
          this.service.getItems().subscribe(
-            (items: Item[]) => {
+            (items: Item[] | any) => {
                resolve(items);
             },
             error => {

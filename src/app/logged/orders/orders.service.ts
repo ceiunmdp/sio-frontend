@@ -411,4 +411,50 @@ export class OrdersService {
       // }
       return null
    }
+
+   splitRange(input) {
+      console.log("entro con input: ", input);
+
+      // Pregunto tipo para saber si ya se modificó el rango del input
+      if (typeof input !== "object") {
+         let splitedArrayInput = [];
+         // Remove spaces and split by ","
+         const splitedArray = input
+            .split(" ")
+            .join("")
+            .split(",");
+         splitedArray.forEach(element => {
+            this.pushElements(element, splitedArrayInput);
+         });
+         //
+         splitedArrayInput = [...new Set(splitedArrayInput)];
+         splitedArrayInput.sort((a, b) => (b > a ? -1 : 1));
+         return splitedArrayInput;
+      } else {
+         return input;
+      }
+   }
+
+   /**
+    *
+    * @param {*} element = // "1-4" || "3-2" || "3"
+    */
+   pushElements(element, splitedArrayInputParam) {
+      const array = element.split("-");
+      let min;
+      let max;
+      if (array.length > 1) {
+         parseInt(array[0]) > parseInt(array[1])
+            ? ((max = array[0]), (min = array[1]))
+            : ((max = array[1]), (min = array[0]));
+         min = parseInt(min);
+         max = parseInt(max);
+
+         for (let i = min; i <= max; i++) {
+            splitedArrayInputParam.push(i);
+         }
+      } else {
+         splitedArrayInputParam.push(parseInt(array[0]));
+      }
+   }
 }

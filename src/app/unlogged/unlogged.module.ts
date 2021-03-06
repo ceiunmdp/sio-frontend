@@ -42,7 +42,7 @@ export function fbfunction() { return 'my_factory' };
             {
                 toastMessageOnAuthSuccess: false, // whether to open/show a snackbar message on auth success - default : true
                 toastMessageOnAuthError: false, // whether to open/show a snackbar message on auth error - default : true
-                enableFirestoreSync: false,
+                // enableFirestoreSync: false,
                 authGuardLoggedInURL: '/cei', // url for authenticated users - to use in combination with canActivate feature on a route
             }),
     ]
