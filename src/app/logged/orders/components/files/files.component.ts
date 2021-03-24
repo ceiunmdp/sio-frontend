@@ -258,7 +258,6 @@ export class FilesComponent implements OnInit {
    * @param file 
    */
   onCheckFile({ checked }, file: _File) {
-    console.log('se cambio el check');
     file.checked = checked;
     const selectedFiles = this.selectedFiles$.getValue();
     const actualFileIndex = selectedFiles.findIndex(_file => _file.id == file.id);

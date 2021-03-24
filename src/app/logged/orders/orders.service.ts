@@ -457,4 +457,14 @@ export class OrdersService {
          splitedArrayInputParam.push(parseInt(array[0]));
       }
    }
+
+   calculateVeneers(range) {
+      return this.splitRange(range).length;
+   }
+
+   calculatePages(range, doubleSided: boolean = true) {
+      const veneers = this.calculateVeneers(range)
+      const quantityPagesRangedAndSlidedAndSided = doubleSided ? Math.ceil(veneers / 2) : veneers;
+      return quantityPagesRangedAndSlidedAndSided;
+   }
 }

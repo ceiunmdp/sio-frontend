@@ -40,6 +40,7 @@ import { DragDropModule } from "@angular/cdk/drag-drop";
 import { FilesComponent } from './components/files/files.component';
 import { NewOrderComponent as NewOrderComponentNuevo } from './pages/new-order/new-order.component';
 import { FilesConfigComponent } from './components/files-config/files-config.component';
+import { RingConfigComponent } from './components/ring-config/ring-config.component';
 
 @NgModule({
    declarations: [
@@ -49,7 +50,8 @@ import { FilesConfigComponent } from './components/files-config/files-config.com
       SnackbarComponent,
       FilesConfigComponent,
       BottomSheetFiles,
-      FilesComponent
+      FilesComponent,
+      RingConfigComponent
    ],
    imports: [
       CommonModule,

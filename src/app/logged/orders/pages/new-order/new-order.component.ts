@@ -9,6 +9,7 @@ import { _OnDataChange as dataFiles } from '../../components/files/files.compone
 })
 export class NewOrderComponent implements OnInit {
   dataFiles: dataFiles;
+  dataConfigFiles;
 
   constructor(private cd: ChangeDetectorRef) { }
 

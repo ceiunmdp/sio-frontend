@@ -6,7 +6,7 @@ export interface File {
    id: number;
    name: string;
    format: string;
-   numberOfSheets: number;
+   number_of_sheets: number;
    year?: number;
    course?: Course;
    career?: Career;

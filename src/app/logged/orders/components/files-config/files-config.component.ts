@@ -4,6 +4,7 @@ import { _File } from '../files/files.component';
 import { CustomValidators } from 'src/app/_validators/custom-validators';
 import { ErrorStateMatcher } from '@angular/material';
 import { OrdersService } from '../../orders.service';
+import { Subscription } from 'rxjs';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -17,6 +18,11 @@ export interface _OnDataChange {
   data: any //Completar
 }
 
+enum OPTIONS_RANGE_ENUM {
+  ALL = '1',
+  CUSTOM = '2'
+}
+
 @Component({
   selector: 'cei-files-config',
   templateUrl: './files-config.component.html',
@@ -28,6 +34,8 @@ export class FilesConfigComponent implements OnInit {
 
   matcher = new MyErrorStateMatcher();
   configForm: FormGroup;
+  _configFormValueChanges: Subscription;
+  OPTIONS_RANGE_ENUM = OPTIONS_RANGE_ENUM;
   public readonly FILES = 'files' // Form array ppal
   public readonly FILE = 'file'
   public readonly FILE_ID = 'file_id'
@@ -37,12 +45,39 @@ export class FilesConfigComponent implements OnInit {
   public readonly COLOUR = 'colour'
   public readonly DOUBLE_SIDED = 'double_sided'
   public readonly RANGE = 'range'
+  public readonly OPTIONS_RANGE = 'options_range'
   public readonly SLIDES_PER_SHEET = 'slides_per_sheet'
 
-  constructor(private formBuilder: FormBuilder, private orderService: OrdersService) { }
+  slides_per_sheet = [
+    {
+      value: 1
+    },
+    {
+      value: 2
+    },
+    {
+      value: 4
+    },
+    {
+      value: 6
+    }
+  ];
+
+  options_range = [
+    {
+      id: OPTIONS_RANGE_ENUM.ALL,
+      name: 'Todas'
+    },
+    {
+      id: OPTIONS_RANGE_ENUM.CUSTOM,
+      name: 'Personalizado'
+    }
+  ];
+
+  constructor(private formBuilder: FormBuilder, public orderService: OrdersService) { }
 
   ngOnInit() {
-    console.log('Se inicio');
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -50,6 +85,13 @@ export class FilesConfigComponent implements OnInit {
     //Add '${implements OnChanges}' to the class.
     if (!!this.files && this.files.length > 0) {
       this.configForm = this.createConfigForm();
+      if (!!this._configFormValueChanges) {
+        this._configFormValueChanges.unsubscribe();
+      }
+      this._configFormValueChanges = this.configForm.valueChanges.subscribe(form => {
+        const completed = this.configForm.valid;
+        this.data.emit({ completed, data: form })
+      });
     }
   }
 
@@ -86,23 +128,43 @@ export class FilesConfigComponent implements OnInit {
   }
 
   createConfigItemForm(file: _File, value?): FormGroup {
+    const quantityPagesFile = file.number_of_sheets;
+    const slidesPerSheetValue = value && value[this.SLIDES_PER_SHEET] ? value[this.SLIDES_PER_SHEET] : '1';
+    let quantityVeenersFileConfig = Math.ceil(quantityPagesFile / slidesPerSheetValue);
     return this.formBuilder.group({
       [this.COLOUR]: [value && value[this.COLOUR] ? value[this.COLOUR] : false],
       [this.DOUBLE_SIDED]: [value && value[this.DOUBLE_SIDED] ? value[this.DOUBLE_SIDED] : ''],
-      [this.RANGE]: [value && value[this.RANGE] ? value[this.RANGE] : '', [CustomValidators.required('Campo requerido')]],
-      [this.SLIDES_PER_SHEET]: [value && value[this.SLIDES_PER_SHEET] ? value[this.SLIDES_PER_SHEET] : ''],
+      [this.RANGE]: [value && value[this.RANGE] ? value[this.RANGE] : this.orderService.splitRange("1-" + quantityVeenersFileConfig), [CustomValidators.required('Campo requerido')]],
+      [this.OPTIONS_RANGE]: [value && value[this.OPTIONS_RANGE] ? value[this.OPTIONS_RANGE] : OPTIONS_RANGE_ENUM.ALL, [CustomValidators.required('Campo requerido')]],
+      [this.SLIDES_PER_SHEET]: [value && value[this.SLIDES_PER_SHEET] ? value[this.SLIDES_PER_SHEET] : '1'],
     },
-      { validators: [this.maxRange(file.numberOfSheets, "Max superado")] }
+      { validators: [this.maxRange(file.number_of_sheets, "Max superado")] }
     )
   }
 
-  // onChangeSameConfig(fileItemIndex: number, checked: boolean) {
-  //   console.log(fileItemIndex, checked);
-  // }
+  onChangeSlidesPerSheet(element: { id: string, value: string }, form, file) {
+    const optionsRange = form.get(this.OPTIONS_RANGE).value
+    if (optionsRange == OPTIONS_RANGE_ENUM.ALL) {
+      this.setAllPagesToRange(form, file);
+    }
+  }
 
-  // onChangeCopies(fileItemIndex: number, copies: number) {
-  //   console.log(fileItemIndex, copies);
-  // }
+  onChangeOptionsRange(element: { id: string, name: string }, form, file) {
+    if (element.id == OPTIONS_RANGE_ENUM.ALL) {
+      this.setAllPagesToRange(form, file);
+    } else if (element.id == OPTIONS_RANGE_ENUM.CUSTOM) {
+      form.get(this.RANGE).reset();
+    }
+  }
+
+  setAllPagesToRange(formConfig, file) {
+    const quantityPagesFile = file.number_of_sheets;
+    const slidesPerSheetValue = formConfig.get(this.SLIDES_PER_SHEET).value;
+    let quantityVeenersFileConfig = Math.ceil(quantityPagesFile / slidesPerSheetValue);
+    formConfig.get(this.RANGE).setValue(
+      this.orderService.splitRange("1-" + quantityVeenersFileConfig)
+    );
+  }
 
   /**
    * Used to add/remove configurations items on file form according to sameConfig and copie values
@@ -112,10 +174,8 @@ export class FilesConfigComponent implements OnInit {
     const copies = fileFormGroup.get(this.COPIES).value;
     const isSameConfig = fileFormGroup.get(this.IS_SAME_CONFIG).value;
     let configurationsFormArray: FormArray = fileFormGroup.get(this.CONFIGURATIONS) as FormArray; // Form array
-    console.log(configurationsFormArray);
     const firstConfigValue = configurationsFormArray.controls[0].value;
     configurationsFormArray.clear();
-    console.log('archivoooO: ', fileFormGroup.value);
     if (isSameConfig) {
       configurationsFormArray.push(this.createConfigItemForm(fileFormGroup.value.file, firstConfigValue));
     } else {
@@ -135,12 +195,19 @@ export class FilesConfigComponent implements OnInit {
       const rangeValue = control.get(this.RANGE).value;
       let quantityVeenersFileConfig = Math.ceil(quantityPagesFile / slidesPerSheetValue);
       let ret = null;
-      if (!control.errors && !!rangeValue) {
+      if (!!rangeValue) {
         let arr: Array<number> = this.orderService.splitRange(rangeValue);
+        console.log('Carillas:', quantityVeenersFileConfig);
+        console.log('Carillas:', arr);
+
         ret = arr[arr.length - 1] <= quantityVeenersFileConfig ? null : { length: message };
       }
       return ret;
     };
   }
+
+  calculateIdSlidesPerSheet = (element) => element.value
+  calculateNameSlidesPerSheet = (element) => element.value
+  calculatePagesFile = (totalPages, slidesPerSheet) => Math.ceil(totalPages / slidesPerSheet);
 
 }

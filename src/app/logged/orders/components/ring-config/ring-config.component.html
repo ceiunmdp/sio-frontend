@@ -1,0 +1,100 @@
+<div *ngIf="!!this.configFiles">
+    <mat-card fxFlex="45" class="card-shadow">
+        <mat-card-content fxLayout="column">
+            <!-- Title -->
+            <div fxFlex="100" class="separator separator-center-left" style="margin-top: 75px;">
+                <span class="mx-2 text-secondary">
+                    Listado de archivos
+                </span>
+            </div>
+            <!-- List -->
+            <mat-list dense>
+                <ng-container *ngFor="let _file of this.configFiles; let indexFile = index">
+                    <mat-list-item *ngFor="let configuration of _file.configurations; let indexConfigFile = index">
+                        <span fxFlex="60">
+                            {{
+                      "- " + _file.file.name 
+                   }}
+                            (<span *ngFor="let course of _file.file.courses">{{course.name}}</span>)
+                            <span *ngIf="_file.copies > 1">
+                                - {{indexConfigFile + 1}}
+                            </span>
+                        </span>
+                        <div fxFlex="40" fxLayoutAlign="center stretch">
+                            <button mat-icon-button [disabled]="_file.ringed"
+                                [matTooltip]="'Anillar el archivo ' + _file.file.name"
+                                (click)="onRingFile(_file, indexFile, indexConfigFile)">
+                                <mat-icon>send</mat-icon>
+                            </button>
+                        </div>
+                    </mat-list-item>
+                </ng-container>
+            </mat-list>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card fxFlex="45" class="card-shadow">
+        <mat-card-content fxLayout="column">
+            <div fxLayoutAlign="space-between center">
+                <span>
+                    {{
+                    this.tabs[this.tabAnillados.selectedIndex].ringType
+                       ? this.tabs[this.tabAnillados.selectedIndex].ringType.name
+                       : "Sin anillado"
+                 }}</span>
+                <div>
+                    <button mat-icon-button [disabled]="isDisabledNewTabAnillado()" (click)="onAddTabAnillado(true)"
+                        matTooltip="Crear nuevo grupo de anillado">
+                        <mat-icon [ngClass]="{
+                          'text-primary': !isDisabledNewTabAnillado(),
+                          'text-secondary': isDisabledNewTabAnillado()
+                       }">add_circle</mat-icon>
+                    </button>
+                    <button mat-icon-button [disabled]="tabs.length === 1"
+                        (click)="onRemoveTabAnillado(this.tabAnillados.selectedIndex)"
+                        matTooltip="Eliminar el grupo de anillado">
+                        <mat-icon [ngClass]="{
+                          'text-warn': tabs.length !== 1,
+                          'text-secondary': tabs.length === 1
+                       }">delete</mat-icon>
+                    </button>
+                </div>
+            </div>
+
+            <mat-tab-group #tabAnillados [selectedIndex]="selected.value"
+                (selectedIndexChange)="selected.setValue($event)">
+                <mat-tab *ngFor="let tab of tabs; let index = index" [label]="'Anillado' + ' ' + (index + 1)">
+                    <mat-list dense>
+                        <div fxLayoutAlign="center stretch" *ngIf="tab.files.length === 0">
+                            <span class=" mt-1 text-secondary">
+                                Anillado vacío
+                            </span>
+                        </div>
+                        <mat-list-item class="mt-1" *ngFor="let file of tab.files; let indexFile = index">
+                            <button mat-icon-button (click)="
+                             this.onRemoveRingFile(file.indexArchivo, file.indexConfiguracion, index, indexFile)
+                          " [matTooltip]="'Quitar ' + file.name + ' del anillado'">
+                                <mat-icon style="transform: rotate(180deg)" [color]="'warn'">cancel_schedule_send
+                                </mat-icon>
+                            </button>
+                            <div fxFlex="100" fxLayoutAlign="space-between stretch">
+                                <span>
+                                    {{
+                                file.literalName
+                             }}
+                                </span>
+                                <span class="text-secondary-darker" [matTooltip]="
+                                file.name + ' ocupará la ' + (indexFile + 1) + '° posición del anillado'
+                             ">
+                                    <b>
+                                        {{ indexFile + 1 + "° " }}
+                                    </b>
+                                </span>
+                            </div>
+                        </mat-list-item>
+                    </mat-list>
+                </mat-tab>
+            </mat-tab-group>
+        </mat-card-content>
+    </mat-card>
+</div>

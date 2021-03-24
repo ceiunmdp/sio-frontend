@@ -36,11 +36,17 @@
                         </div>
 
                         <!-- CONFIGS INPUTS -->
-                        <!-- <cei-text-input [name]="this.RANGE" [form]="configFormGroup" [placeholder]="'Desde-Hasta'"
-                            fxFlex="1 1 auto">
-                        </cei-text-input> -->
-
-                        <mat-form-field class="mt-5" [floatLabel]="'auto'">
+                        <cei-select-input [calculateName]="this.calculateNameSlidesPerSheet"
+                            [calculateId]="this.calculateIdSlidesPerSheet" fxFlex="1 1 auto"
+                            [name]="this.SLIDES_PER_SHEET" [form]="configFormGroup"
+                            [placeholder]="'Diapositivas por hoja'" [elements]="this.slides_per_sheet"
+                            (selected)="onChangeSlidesPerSheet($event, configFormGroup,fileFormGroup.get(this.FILE).value)">
+                        </cei-select-input>
+                        <cei-select-input fxFlex="1 1 auto" [name]="this.OPTIONS_RANGE" [form]="configFormGroup"
+                            [placeholder]="'Páginas'" [elements]="this.options_range"
+                            (selected)="onChangeOptionsRange($event, configFormGroup,fileFormGroup.get(this.FILE).value)">
+                        </cei-select-input>
+                        <mat-form-field [floatLabel]="'auto'">
                             <input [errorStateMatcher]="matcher" pattern="\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*" matInput
                                 type="text" [formControlName]="this.RANGE" />
                             <mat-label>
@@ -53,7 +59,8 @@
                                 de páginas no válido, utiliza p. ej. 1-5, 8, 11-13
                             </mat-error>
                             <mat-hint> <b>p. ej. 1-5, 8, 11-13</b> - Páginas:
-                                {{fileFormGroup.get(this.FILE).value.number_of_sheets}}</mat-hint>
+                                {{calculatePagesFile(fileFormGroup.get(this.FILE).value.number_of_sheets, configFormGroup.get(this.SLIDES_PER_SHEET).value)}}
+                            </mat-hint>
                         </mat-form-field>
                         <div style="height: 20px;">
                             <mat-error class="mat-caption" *ngIf="
