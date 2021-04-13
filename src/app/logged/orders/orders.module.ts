@@ -41,6 +41,7 @@ import { FilesComponent } from './components/files/files.component';
 import { NewOrderComponent as NewOrderComponentNuevo } from './pages/new-order/new-order.component';
 import { FilesConfigComponent } from './components/files-config/files-config.component';
 import { RingConfigComponent } from './components/ring-config/ring-config.component';
+import { ConfirmOrderComponent } from './components/confirm-order/confirm-order.component';
 
 @NgModule({
    declarations: [
@@ -51,7 +52,8 @@ import { RingConfigComponent } from './components/ring-config/ring-config.compon
       FilesConfigComponent,
       BottomSheetFiles,
       FilesComponent,
-      RingConfigComponent
+      RingConfigComponent,
+      ConfirmOrderComponent
    ],
    imports: [
       CommonModule,

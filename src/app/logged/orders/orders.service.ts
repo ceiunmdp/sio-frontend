@@ -77,6 +77,11 @@ interface TreeArchivos {
    ];
 }
 
+export enum PRICES_CODES {
+   colour = 'colour',
+   simple_sided = 'simple_sided',
+   double_sided = 'double_sided',
+}
 @Injectable({
    providedIn: "root"
 })
@@ -211,11 +216,7 @@ export class OrdersService {
 
    postOrder(internalOrder: InternalOrder): Observable<ResponseMessage> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
-
-      console.log("internalOrder: ", internalOrder);
       const externalOrder = this.translateOrder(internalOrder);
-      console.log("externalOrder: ", externalOrder);
-
       return this.http
          .post<ResponseMessage>(environment.apiUrl + "/user/orders", JSON.stringify(externalOrder), {
             headers: queryHeaders,
@@ -244,8 +245,6 @@ export class OrdersService {
    }
 
    getFile(fileId: number): Observable<Career[]> {
-      console.log('entro');
-
       const queryHeaders = new HttpHeaders().append("Content-Type", 'application/x-www-form-urlencoded');
       const queryParams = new HttpParams()
          .append('download', 'true');
@@ -308,8 +307,6 @@ export class OrdersService {
                ringedOrder: internalConf.orden_anillado
             };
          });
-         console.log("conffff: ", configurations);
-
          return {
             id: internalFile.idArchivo,
             name: internalFile.name,
@@ -413,8 +410,6 @@ export class OrdersService {
    }
 
    splitRange(input) {
-      console.log("entro con input: ", input);
-
       // Pregunto tipo para saber si ya se modificó el rango del input
       if (typeof input !== "object") {
          let splitedArrayInput = [];

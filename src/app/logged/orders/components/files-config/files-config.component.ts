@@ -106,7 +106,6 @@ export class FilesConfigComponent implements OnInit {
   createConfigForm(): FormGroup {
     // Create as many forms as there are files
     const createFilesItemByFiles = (): FormGroup[] => {
-      console.log(this);
       const forms: FormGroup[] = [];
       this.files.forEach(file => forms.push(this.createFileItemForm(file)))
       return forms;
@@ -185,10 +184,6 @@ export class FilesConfigComponent implements OnInit {
     }
   }
 
-  showForm() {
-    console.log(this.configForm);
-  }
-
   maxRange(quantityPagesFile: number, message: string): ValidatorFn {
     return (control: FormGroup): { [key: string]: any } | null => {
       const slidesPerSheetValue = control.get(this.SLIDES_PER_SHEET).value;
@@ -197,9 +192,6 @@ export class FilesConfigComponent implements OnInit {
       let ret = null;
       if (!!rangeValue) {
         let arr: Array<number> = this.orderService.splitRange(rangeValue);
-        console.log('Carillas:', quantityVeenersFileConfig);
-        console.log('Carillas:', arr);
-
         ret = arr[arr.length - 1] <= quantityVeenersFileConfig ? null : { length: message };
       }
       return ret;

@@ -18,11 +18,13 @@ import { CareersComponent } from './careers/careers.component';
 import { CreateEditCareerComponent } from './careers/create-edit-career/create-edit-career.component';
 import { UsersComponent } from './users/users.component';
 import { CreateEditUserComponent } from './users/create-edit-user/create-edit-user.component';
+import { ItemsComponent } from './items/items.component';
+import { BindingsComponent } from './bindings/bindings.component';
 registerPlugin(FilePondPluginFileValidateType);
 registerPlugin(FilePondPluginFileEncode);
 
 @NgModule({
-  declarations: [FilesComponent, CoursesComponent, CreateEditCourseComponent, CareersComponent, CreateEditCareerComponent, UsersComponent, CreateEditUserComponent],
+  declarations: [FilesComponent, CoursesComponent, CreateEditCourseComponent, CareersComponent, CreateEditCareerComponent, UsersComponent, CreateEditUserComponent, ItemsComponent, BindingsComponent],
   imports: [
     CommonModule,
     AdminRoutingModule,
