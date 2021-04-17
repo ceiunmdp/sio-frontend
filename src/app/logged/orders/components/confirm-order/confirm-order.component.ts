@@ -1,10 +1,10 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
-import { Campus } from 'src/app/_models/campus';
-import { CustomValidators } from 'src/app/_validators/custom-validators';
-import { Binding } from 'src/app/_models/binding';
-import { MatTableDataSource } from '@angular/material';
-import { OrdersService, PRICES_CODES } from '../../orders.service';
+import {Component, OnInit, Input, SimpleChanges, Output, EventEmitter} from '@angular/core';
+import {FormGroup, FormBuilder} from '@angular/forms';
+import {Campus} from 'src/app/_models/campus';
+import {CustomValidators} from 'src/app/_validators/custom-validators';
+import {Binding} from 'src/app/_models/binding';
+import {MatTableDataSource} from '@angular/material';
+import {OrdersService, PRICES_CODES} from '../../orders.service';
 
 @Component({
   selector: 'cei-confirm-order',
@@ -15,15 +15,16 @@ export class ConfirmOrderComponent implements OnInit {
   @Input() campuses: Campus;
   @Input() order;
   @Input() prices;
+  @Output('submit') finalOrder = new EventEmitter;
   totalPrice: number = 0;
   dataSource: MatTableDataSource<any>;
   bindingsDetail: Binding[];
   filesDetail: any[];
   confirmOrderForm: FormGroup;
-  public readonly CAMPUS = 'campus' // Form array ppal
+  public readonly CAMPUS = 'campus_id' // Form array ppal
   displayedColumns: string[] = ["file", "quantity", "totalPages", "unitPrice", "totalPrice"];
 
-  constructor(private formBuilder: FormBuilder, private orderService: OrdersService) { }
+  constructor(private formBuilder: FormBuilder, private orderService: OrdersService) {}
 
 
   ngOnInit() {
@@ -54,11 +55,11 @@ export class ConfirmOrderComponent implements OnInit {
           // if the binding has not yet been inserted
           const existingBindingIndex = bindings.findIndex(binding => binding.id == configuration.binding_groups.id);
           if (existingBindingIndex == -1) {
-            bindings.push({ ...configuration.binding_groups.binding, id: configuration.binding_groups.id })
+            bindings.push({...configuration.binding_groups.binding, id: configuration.binding_groups.id})
           } else {
             const existingBinding = bindings[existingBindingIndex];
             if (configuration.binding_groups.binding.sheets_limit > existingBinding.sheets_limit) {
-              bindings[existingBindingIndex] = { ...configuration.binding_groups.binding, id: configuration.binding_groups.id };
+              bindings[existingBindingIndex] = {...configuration.binding_groups.binding, id: configuration.binding_groups.id};
             }
           }
         }
@@ -72,7 +73,7 @@ export class ConfirmOrderComponent implements OnInit {
         return bindingsProccesed;
 
       } else {
-        return [...bindingsProccesed, { ...binding, quantity: 1, unitPrice: Number(binding.price), totalPrice: Number(binding.price) }]
+        return [...bindingsProccesed, {...binding, quantity: 1, unitPrice: Number(binding.price), totalPrice: Number(binding.price)}]
       }
     }, [])
     console.log('ANILLADOS FINAL: ', bindingsProccesed);
@@ -83,9 +84,10 @@ export class ConfirmOrderComponent implements OnInit {
     const obtainFile = (configuration, copies, name) => {
       const range = configuration.range;
       const double_sided = configuration.double_sided;
+      const slidesPerSheet = configuration.slides_per_sheet;
       // const unitVeneers = this.orderService.calculateVeneers(range);
       // const totalVeneers = unitVeneers * file.copies;
-      const unitPages = this.orderService.calculatePages(range, double_sided);
+      const unitPages = this.orderService.calculatePages(range, double_sided, slidesPerSheet);
       const totalPages = unitPages * copies;
       const colour = configuration.colour;
       const unitPrice = this.calculatePrice(unitPages, colour, double_sided);
@@ -126,6 +128,10 @@ export class ConfirmOrderComponent implements OnInit {
     const simpleSidedPrice = this.prices.find(price => price.code == PRICES_CODES.simple_sided).price;
     const colourPrice = this.prices.find(price => price.code == PRICES_CODES.colour).price;
     let price;
+    console.log('Cantidad de paginas', pages);
+    console.log('Precio de doble faz', doubleSidedPrice);
+    console.log('Precio de simple faz', simpleSidedPrice);
+
     if (double_sided) {
       price = pages * doubleSidedPrice;
     } else {
@@ -138,6 +144,15 @@ export class ConfirmOrderComponent implements OnInit {
     return this.formBuilder.group({
       [this.CAMPUS]: [this.campuses[0].id.toString(), [CustomValidators.required('La sede es requerida')]]
     });
+  }
+
+  mostrar() {
+    console.log(this.order);
+    console.log(this.confirmOrderForm);
+  }
+
+  onSubmit() {
+    this.finalOrder.emit({...this.confirmOrderForm.value, order_files: this.order});
   }
 
   calculateIdCampus = (element) => element.id

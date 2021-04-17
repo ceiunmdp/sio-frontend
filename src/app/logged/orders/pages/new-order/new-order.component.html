@@ -1,19 +1,19 @@
 <mat-horizontal-stepper [linear]="true" (selectionChange)="this.onStepChange($event)" labelPosition="top">
-    <mat-step label="Selección de archivos" [completed]="this.dataFiles?.completed">
-        <cei-files (onDataChange)="onChangeDataFiles($event)"></cei-files>
-    </mat-step>
-    <mat-step label="Configuración de archivos" [completed]="this.dataConfigFiles?.completed">
-        <cei-files-config [files]="this.dataFiles?.data" (onDataChange)="this.dataConfigFiles = $event;mostrar();">
-        </cei-files-config>
-    </mat-step>
-    <mat-step label="Configuración de anillados">
-        <cei-ring-config #ringOrderComponent *ngIf="!!this.bindings" [bindings]="bindings"
-            [configFiles]="this.dataConfigFiles?.data?.files">
-        </cei-ring-config>
-    </mat-step>
-    <mat-step label="Confirmar pedido">
-        <cei-confirm-order *ngIf="!!this.campuses && this.items" [campuses]="this.campuses" [prices]="this.items"
-            [order]="this.confirmOrderData">
-        </cei-confirm-order>
-    </mat-step>
+  <mat-step label="Selección de archivos" [completed]="this.dataFiles?.completed">
+    <cei-files (onDataChange)="onChangeDataFiles($event)"></cei-files>
+  </mat-step>
+  <mat-step label="Configuración de archivos" [completed]="this.dataConfigFiles?.completed">
+    <cei-files-config [files]="this.dataFiles?.data" (onDataChange)="this.dataConfigFiles = $event">
+    </cei-files-config>
+  </mat-step>
+  <mat-step label="Configuración de anillados">
+    <cei-ring-config #ringOrderComponent *ngIf="!!this.bindings" [bindings]="bindings"
+      [configFiles]="this.dataConfigFiles?.data?.files">
+    </cei-ring-config>
+  </mat-step>
+  <mat-step label="Confirmar pedido">
+    <cei-confirm-order *ngIf="!!this.campuses && this.items" (submit)="this.mostrar($event)" [campuses]="this.campuses"
+      [prices]="this.items" [order]="this.confirmOrderData">
+    </cei-confirm-order>
+  </mat-step>
 </mat-horizontal-stepper>

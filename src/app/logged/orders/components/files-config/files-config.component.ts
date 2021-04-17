@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, AbstractControl, FormControl, Validators, FormGroupDirective, NgForm, ValidatorFn } from '@angular/forms';
-import { _File } from '../files/files.component';
-import { CustomValidators } from 'src/app/_validators/custom-validators';
-import { ErrorStateMatcher } from '@angular/material';
-import { OrdersService } from '../../orders.service';
-import { Subscription } from 'rxjs';
+import {Component, EventEmitter, Input, OnInit, Output, SimpleChanges} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup, AbstractControl, FormControl, Validators, FormGroupDirective, NgForm, ValidatorFn} from '@angular/forms';
+import {_File} from '../files/files.component';
+import {CustomValidators} from 'src/app/_validators/custom-validators';
+import {ErrorStateMatcher} from '@angular/material';
+import {OrdersService} from '../../orders.service';
+import {Subscription} from 'rxjs';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -74,7 +74,7 @@ export class FilesConfigComponent implements OnInit {
     }
   ];
 
-  constructor(private formBuilder: FormBuilder, public orderService: OrdersService) { }
+  constructor(private formBuilder: FormBuilder, public orderService: OrdersService) {}
 
   ngOnInit() {
 
@@ -90,7 +90,7 @@ export class FilesConfigComponent implements OnInit {
       }
       this._configFormValueChanges = this.configForm.valueChanges.subscribe(form => {
         const completed = this.configForm.valid;
-        this.data.emit({ completed, data: form })
+        this.data.emit({completed, data: form})
       });
     }
   }
@@ -137,18 +137,18 @@ export class FilesConfigComponent implements OnInit {
       [this.OPTIONS_RANGE]: [value && value[this.OPTIONS_RANGE] ? value[this.OPTIONS_RANGE] : OPTIONS_RANGE_ENUM.ALL, [CustomValidators.required('Campo requerido')]],
       [this.SLIDES_PER_SHEET]: [value && value[this.SLIDES_PER_SHEET] ? value[this.SLIDES_PER_SHEET] : '1'],
     },
-      { validators: [this.maxRange(file.number_of_sheets, "Max superado")] }
+      {validators: [this.maxRange(file.number_of_sheets, "Max superado")]}
     )
   }
 
-  onChangeSlidesPerSheet(element: { id: string, value: string }, form, file) {
+  onChangeSlidesPerSheet(element: {id: string, value: string}, form, file) {
     const optionsRange = form.get(this.OPTIONS_RANGE).value
     if (optionsRange == OPTIONS_RANGE_ENUM.ALL) {
       this.setAllPagesToRange(form, file);
     }
   }
 
-  onChangeOptionsRange(element: { id: string, name: string }, form, file) {
+  onChangeOptionsRange(element: {id: string, name: string}, form, file) {
     if (element.id == OPTIONS_RANGE_ENUM.ALL) {
       this.setAllPagesToRange(form, file);
     } else if (element.id == OPTIONS_RANGE_ENUM.CUSTOM) {
@@ -184,15 +184,28 @@ export class FilesConfigComponent implements OnInit {
     }
   }
 
+  // maxRange(quantityPagesFile: number, message: string): ValidatorFn {
+  //   return (control: FormGroup): { [key: string]: any } | null => {
+  //     const slidesPerSheetValue = control.get(this.SLIDES_PER_SHEET).value;
+  //     const rangeValue = control.get(this.RANGE).value;
+  //     let quantityVeenersFileConfig = Math.ceil(quantityPagesFile / slidesPerSheetValue);
+  //     let ret = null;
+  //     if (!!rangeValue) {
+  //       let arr: Array<number> = this.orderService.splitRange(rangeValue);
+  //       ret = arr[arr.length - 1] <= quantityVeenersFileConfig ? null : { length: message };
+  //     }
+  //     return ret;
+  //   };
+  // }
   maxRange(quantityPagesFile: number, message: string): ValidatorFn {
-    return (control: FormGroup): { [key: string]: any } | null => {
-      const slidesPerSheetValue = control.get(this.SLIDES_PER_SHEET).value;
+    return (control: FormGroup): {[key: string]: any} | null => {
+      // const slidesPerSheetValue = control.get(this.SLIDES_PER_SHEET).value;
       const rangeValue = control.get(this.RANGE).value;
-      let quantityVeenersFileConfig = Math.ceil(quantityPagesFile / slidesPerSheetValue);
+      // let quantityVeenersFileConfig = Math.ceil(quantityPagesFile / slidesPerSheetValue);
       let ret = null;
       if (!!rangeValue) {
         let arr: Array<number> = this.orderService.splitRange(rangeValue);
-        ret = arr[arr.length - 1] <= quantityVeenersFileConfig ? null : { length: message };
+        ret = arr[arr.length - 1] <= quantityPagesFile ? null : {length: message};
       }
       return ret;
     };

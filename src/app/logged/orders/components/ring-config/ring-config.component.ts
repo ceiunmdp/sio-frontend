@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { OrdersService } from '../../orders.service';
-import { Binding } from 'src/app/_models/binding';
+import {Component, Input, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {FormControl} from '@angular/forms';
+import {OrdersService} from '../../orders.service';
+import {Binding} from 'src/app/_models/binding';
 
 @Component({
   selector: 'cei-ring-config',
@@ -9,8 +9,8 @@ import { Binding } from 'src/app/_models/binding';
   styleUrls: ['./ring-config.component.scss']
 })
 export class RingConfigComponent implements OnInit {
-  @ViewChild("tabAnillados", { static: false }) tabAnillados;
-  @ViewChild("ringExceededSwal", { static: true }) ringExceededSwal;
+  @ViewChild("tabAnillados", {static: false}) tabAnillados;
+  @ViewChild("ringExceededSwal", {static: true}) ringExceededSwal;
   @Input() configFiles: any[] = [];
   @Input() bindings: Binding[] = [];
   selected = new FormControl(0);
@@ -19,9 +19,9 @@ export class RingConfigComponent implements OnInit {
     files;
     quantityPages: number;
     ringType: any;
-  }[] = [{ files: [], quantityPages: 0, ringType: null }];
+  }[] = [{files: [], quantityPages: 0, ringType: null}];
 
-  constructor(private orderService: OrdersService) { }
+  constructor(private orderService: OrdersService) {}
 
   ngOnInit() {
   }
@@ -33,7 +33,7 @@ export class RingConfigComponent implements OnInit {
 
         if (configFile.same_config) {
           for (let i = 1; i < configFile.copies; i++) {
-            _configFile.configurations.push({ ...configFile.configurations[0] })
+            _configFile.configurations.push({...configFile.configurations[0]})
           }
         }
         return _configFile
@@ -54,7 +54,7 @@ export class RingConfigComponent implements OnInit {
   }
 
   onAddTabAnillado(selectAfterAdding: boolean) {
-    this.tabs.push({ files: [], quantityPages: 0, ringType: null });
+    this.tabs.push({files: [], quantityPages: 0, ringType: null});
 
     if (selectAfterAdding) {
       this.selected.setValue(this.tabs.length - 1);
@@ -109,7 +109,7 @@ export class RingConfigComponent implements OnInit {
   onRingFile(file, indexFile, indexConfiguration) {
     const tab = this.tabs[this.tabAnillados.selectedIndex];
     const configFile = file.same_config ? file.configurations[0] : file.configurations[indexConfiguration];
-    const quantityPagesByConfiguration = this.orderService.calculatePages(configFile.range, configFile.double_sided);
+    const quantityPagesByConfiguration = this.orderService.calculatePages(configFile.range, configFile.double_sided, configFile.slides_per_sheet);
     const totalPagesTab = tab.quantityPages + quantityPagesByConfiguration
     console.log(quantityPagesByConfiguration, totalPagesTab);
 
@@ -141,7 +141,7 @@ export class RingConfigComponent implements OnInit {
       // Se modifica el configFiles, agregándole el anillado 
       const fileToModify = this.configFiles.find(configFile => configFile.file_id == file.file.id);
       const configFileToModify = fileToModify.configurations[indexConfiguration];
-      configFileToModify.binding_groups = { id: this.tabAnillados.selectedIndex + 1, position: tab.files.length, binding: ringType }
+      configFileToModify.binding_groups = {id: this.tabAnillados.selectedIndex + 1, position: tab.files.length, binding: ringType}
       console.log(this.configFiles)
     }
   }

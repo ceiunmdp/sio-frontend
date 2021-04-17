@@ -1,18 +1,39 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { _OnDataChange as dataFiles } from '../../components/files/files.component';
-import { OrdersService } from '../../orders.service';
-import { Item } from 'src/app/_models/item';
-import { Binding } from 'src/app/_models/binding';
-import { Campus } from 'src/app/_models/campus';
+import {Component, OnInit, ChangeDetectorRef, ViewChild} from '@angular/core';
+import {StepperSelectionEvent} from '@angular/cdk/stepper';
+import {_OnDataChange as dataFiles} from '../../components/files/files.component';
+import {OrdersService} from '../../orders.service';
+import {Item} from 'src/app/_models/item';
+import {Binding} from 'src/app/_models/binding';
+import {Campus} from 'src/app/_models/campus';
+import {File} from 'src/app/_models/orders/file';
 
+export interface UnproccesedOrder {
+  campus_id: string,
+  order_files: {
+    file_id: string,
+    file: File,
+    copies: number,
+    same_config: boolean,
+    configurations: {
+      colour: boolean,
+      double_sided: boolean,
+      range: string,
+      slides_per_sheet: number,
+      binding_groups?: {
+        id: number,
+        position: number,
+        binding: Binding
+      }
+    }[]
+  }[]
+}
 @Component({
   selector: 'cei-new-order',
   templateUrl: './new-order.component.html',
   styleUrls: ['./new-order.component.scss']
 })
 export class NewOrderComponent implements OnInit {
-  @ViewChild('ringOrderComponent', { static: false }) ringOrderComponent: any;
+  @ViewChild('ringOrderComponent', {static: false}) ringOrderComponent: any;
   dataFiles: dataFiles;
   dataConfigFiles;
   items: Item[];
@@ -20,7 +41,7 @@ export class NewOrderComponent implements OnInit {
   campuses: Campus[];
   confirmOrderData;
 
-  constructor(private cd: ChangeDetectorRef, private orderService: OrdersService) { }
+  constructor(private cd: ChangeDetectorRef, private orderService: OrdersService) {}
 
   ngOnInit() {
     this.getBindings().then(data => this.bindings = data.data.items);
@@ -40,15 +61,16 @@ export class NewOrderComponent implements OnInit {
 
   onChangeDataFiles(dataFiles: dataFiles) {
 
-    this.dataFiles = { ...dataFiles };
+    this.dataFiles = {...dataFiles};
     // Reference a new array to force fire change detection
     this.dataFiles.data = [...dataFiles.data];
     this.cd.detectChanges();
     console.log(dataFiles)
   }
 
-  mostrar() {
-    console.log('CAMBIO EL CONFIGFILES:', this.dataConfigFiles)
+  mostrar(e) {
+    console.log(e)
+    this.orderService.mapToOrderApi(e);
   }
 
   getBindings(): Promise<any> {
