@@ -90,7 +90,16 @@
   </div>
 </div>
 
-<button mat-button matStepperPrevious>Atrás</button>
-<button mat-raised-button [color]="'primary'" (click)="this.onSubmit()">
-  Finalizar
+<button mat-button matStepperPrevious [disabled]="this.isPosting">Atrás</button>
+<button mat-raised-button [color]="'primary'" (click)="this.onSubmit()" [disabled]="this.isPosting">
+  <span *ngIf="!this.isPosting; else loadingIcon">
+    Finalizar
+  </span>
+  <ng-template #loadingIcon>
+    <mat-icon>
+        <mat-spinner color="accent" diameter="20">
+        </mat-spinner>
+    </mat-icon>
+  </ng-template>
+  
 </button>

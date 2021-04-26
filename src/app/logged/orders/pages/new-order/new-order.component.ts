@@ -6,6 +6,10 @@ import {Item} from 'src/app/_models/item';
 import {Binding} from 'src/app/_models/binding';
 import {Campus} from 'src/app/_models/campus';
 import {File} from 'src/app/_models/orders/file';
+import Swal from 'sweetalert2';
+import {Router} from '@angular/router';
+import {Routes} from 'src/app/_routes/routes';
+import {HttpErrorResponse} from '@angular/common/http';
 
 export interface UnproccesedOrder {
   campus_id: string,
@@ -17,7 +21,7 @@ export interface UnproccesedOrder {
     configurations: {
       colour: boolean,
       double_sided: boolean,
-      range: string,
+      range: number[],
       slides_per_sheet: number,
       binding_groups?: {
         id: number,
@@ -40,8 +44,9 @@ export class NewOrderComponent implements OnInit {
   bindings: Binding[];
   campuses: Campus[];
   confirmOrderData;
+  isPosting = false;
 
-  constructor(private cd: ChangeDetectorRef, private orderService: OrdersService) {}
+  constructor(private cd: ChangeDetectorRef, private orderService: OrdersService, private router: Router) {}
 
   ngOnInit() {
     this.getBindings().then(data => this.bindings = data.data.items);
@@ -68,9 +73,42 @@ export class NewOrderComponent implements OnInit {
     console.log(dataFiles)
   }
 
-  mostrar(e) {
-    console.log(e)
-    this.orderService.mapToOrderApi(e);
+  onSubmitOrder(order) {
+    this.isPosting = true;
+    const body = this.orderService.mapToOrderApi(order);
+    this.orderService.postNewOrder(body).toPromise()
+      .then(res => {
+        return Swal.fire({
+          title: `Pedido solicitado correctamente`,
+          text: `Puede ver la evolución del pedido en el menú Mis Pedidos `,
+          icon: 'success',
+          confirmButtonText: 'Ok',
+          showLoaderOnConfirm: true,
+          allowOutsideClick: false,
+        })
+      })
+      .then(() => {
+        this.router.navigate([Routes.HOME]);
+      })
+      .catch((error:HttpErrorResponse) => {
+        let text = 'Inténtelo nuevamente más tarde';
+        console.log(error, error.status);
+        
+        if(error.status == 400){
+          console.log('entro', error.status);
+          
+          text = error.error.message;
+        }
+        Swal.fire({
+          title: `Ha ocurrido un error`,
+          text,
+          icon: 'error',
+          confirmButtonText: 'Ok',
+          showLoaderOnConfirm: true,
+          allowOutsideClick: false,
+        })
+      })
+      .finally(() => this.isPosting = false);
   }
 
   getBindings(): Promise<any> {

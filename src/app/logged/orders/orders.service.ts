@@ -20,6 +20,7 @@ import {Sort} from 'src/app/_models/sort';
 import {RestUtilitiesService} from 'src/app/_services/rest-utilities.service';
 import {Pagination} from 'src/app/_models/pagination';
 import {UnproccesedOrder} from './pages/new-order/new-order.component';
+import MultiRange from 'multi-integer-range';
 
 export interface PostOrder {
   campus_id: string,
@@ -427,7 +428,7 @@ export class OrdersService {
     return null
   }
 
-  mapToOrderApi(order: UnproccesedOrder): Partial<PostOrder> {
+  mapToOrderApi(order: UnproccesedOrder): PostOrder {
     let postOrder: Partial<PostOrder> = {
       campus_id: order.campus_id,
       order_files: []
@@ -439,12 +440,17 @@ export class OrdersService {
         // pushear, a la par de la configuracion, los binding groups que habia sacado antes
         const binding_groups = orderFile.configurations.reduce((previousValue, currentValue) => {
           if (currentValue.binding_groups) {
+            delete currentValue.binding_groups.binding;
             previousValue.push(currentValue.binding_groups)
           }
           return previousValue;
         }, []);
-        const configuration = orderFile.configurations[0];
+        const configuration: any = {...orderFile.configurations[0]};
         delete configuration.binding_groups;
+        configuration.double_sided = !configuration.double_sided ? false: true;
+        delete configuration.options_range;
+        configuration.slides_per_sheet = Number(configuration.slides_per_sheet);
+        configuration.range = new MultiRange(configuration.range).toString();
         const copies = orderFile.copies;
         const file_id = orderFile.file_id;
         // Hacer opcional el binding groups
@@ -455,14 +461,18 @@ export class OrdersService {
         orderFile.configurations.forEach(_configuration => {
           const copies = 1;
           const file_id = orderFile.file_id;
-          const configuration = _configuration;
+          delete _configuration.binding_groups.binding;
+          const configuration: any = {..._configuration};
+          configuration.double_sided = !configuration.double_sided ? false: true;
+          delete configuration.options_range;
+          configuration.slides_per_sheet = Number(configuration.slides_per_sheet);
+          configuration.range = new MultiRange(configuration.range).toString();
           delete configuration.binding_groups;
           postOrder.order_files.push({...(!!_configuration.binding_groups && {binding_groups: [_configuration.binding_groups], configuration, copies, file_id})});
         })
       }
     })
-    console.log(postOrder);
-    return postOrder;
+    return postOrder as PostOrder;
   }
 
   splitRange(input) {
@@ -524,5 +534,20 @@ export class OrdersService {
     const quantityPagesRangedAndSlided = Math.ceil(veneers / slidesPerSheet);
     const quantityPagesRangedAndSlidedAndSided = doubleSided ? Math.ceil(quantityPagesRangedAndSlided / 2) : quantityPagesRangedAndSlided;
     return quantityPagesRangedAndSlidedAndSided;
+  }
+
+  // Nuevo
+  postNewOrder(order: PostOrder): Observable<ResponseAPI<Order>> {
+    const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+    return this.http
+      .post<ResponseAPI<Order>>(environment.apiUrl + "/orders", JSON.stringify(order), {
+        headers: queryHeaders,
+        observe: "response"
+      })
+      .pipe(
+        map<HttpResponse<ResponseAPI<Order>>, any>(response => {
+          return response.body;
+        })
+      );
   }
 }

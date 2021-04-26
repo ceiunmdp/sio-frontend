@@ -18,6 +18,9 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { NotFoundComponent } from "./not-found/not-found.component";
 import { JwtInterceptor } from "./_helpers/jwt.interceptor";
+import {AlertErrorChildComponent} from "./_utils/forms/alert-error/alert-error-child/alert-error-child.component";
+import {AlertErrorComponent} from "./_utils/forms/alert-error/alert-error.component";
+import {UtilsModule} from "./_utils/utils.module";
 
 // import * as firebase from 'firebase/app';
 // import * as firebaseui from 'firebaseui';
@@ -46,6 +49,7 @@ export function fbfunction() { return 'my_factory' };
       MatFormFieldModule,
       MatInputModule,
       MatButtonModule,
+      UtilsModule,
       ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
       // NgxAuthFirebaseUIModule.forRoot(firebaseConfig),
       NgxAuthFirebaseUIModule.forRoot(firebaseConfig, fbfunction,
@@ -56,6 +60,7 @@ export function fbfunction() { return 'my_factory' };
             authGuardLoggedInURL: '/cei', // url for authenticated users - to use in combination with canActivate feature on a route
          }),
    ],
+   entryComponents: [AlertErrorComponent, AlertErrorChildComponent],
    providers: [
       {
          provide: HTTP_INTERCEPTORS,

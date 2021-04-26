@@ -118,6 +118,6 @@ export function playerFactory() {
       CardTableComponent,
 
    ],
-   entryComponents: [AlertErrorChildComponent]
+   entryComponents: [AlertErrorComponent]
 })
 export class UtilsModule { }

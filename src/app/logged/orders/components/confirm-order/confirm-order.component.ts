@@ -15,6 +15,7 @@ export class ConfirmOrderComponent implements OnInit {
   @Input() campuses: Campus;
   @Input() order;
   @Input() prices;
+  @Input() isPosting;
   @Output('submit') finalOrder = new EventEmitter;
   totalPrice: number = 0;
   dataSource: MatTableDataSource<any>;
@@ -36,7 +37,7 @@ export class ConfirmOrderComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
     //Add '${implements OnChanges}' to the class.
-    if (!!changes.order.currentValue) {
+    if (!!changes && !!changes.order && !!changes.order.currentValue) {
       this.bindingsDetail = this.getBindingsFromOrder(this.order);
       this.filesDetail = this.getFilesFromOrder(this.order);
       this.dataSource = new MatTableDataSource(this.filesDetail.concat(this.bindingsDetail));
@@ -144,11 +145,6 @@ export class ConfirmOrderComponent implements OnInit {
     return this.formBuilder.group({
       [this.CAMPUS]: [this.campuses[0].id.toString(), [CustomValidators.required('La sede es requerida')]]
     });
-  }
-
-  mostrar() {
-    console.log(this.order);
-    console.log(this.confirmOrderForm);
   }
 
   onSubmit() {

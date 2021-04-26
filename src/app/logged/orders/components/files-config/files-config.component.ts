@@ -88,6 +88,8 @@ export class FilesConfigComponent implements OnInit {
       if (!!this._configFormValueChanges) {
         this._configFormValueChanges.unsubscribe();
       }
+      const completed = this.configForm.valid;
+      this.data.emit({completed, data: this.configForm.value})
       this._configFormValueChanges = this.configForm.valueChanges.subscribe(form => {
         const completed = this.configForm.valid;
         this.data.emit({completed, data: form})
@@ -133,36 +135,12 @@ export class FilesConfigComponent implements OnInit {
     return this.formBuilder.group({
       [this.COLOUR]: [value && value[this.COLOUR] ? value[this.COLOUR] : false],
       [this.DOUBLE_SIDED]: [value && value[this.DOUBLE_SIDED] ? value[this.DOUBLE_SIDED] : ''],
-      [this.RANGE]: [value && value[this.RANGE] ? value[this.RANGE] : this.orderService.splitRange("1-" + quantityVeenersFileConfig), [CustomValidators.required('Campo requerido')]],
+      [this.RANGE]: [value && value[this.RANGE] ? value[this.RANGE] :  `1-${quantityVeenersFileConfig}`, [CustomValidators.required('Campo requerido')]],
       [this.OPTIONS_RANGE]: [value && value[this.OPTIONS_RANGE] ? value[this.OPTIONS_RANGE] : OPTIONS_RANGE_ENUM.ALL, [CustomValidators.required('Campo requerido')]],
       [this.SLIDES_PER_SHEET]: [value && value[this.SLIDES_PER_SHEET] ? value[this.SLIDES_PER_SHEET] : '1'],
     },
       {validators: [this.maxRange(file.number_of_sheets, "Max superado")]}
     )
-  }
-
-  onChangeSlidesPerSheet(element: {id: string, value: string}, form, file) {
-    const optionsRange = form.get(this.OPTIONS_RANGE).value
-    if (optionsRange == OPTIONS_RANGE_ENUM.ALL) {
-      this.setAllPagesToRange(form, file);
-    }
-  }
-
-  onChangeOptionsRange(element: {id: string, name: string}, form, file) {
-    if (element.id == OPTIONS_RANGE_ENUM.ALL) {
-      this.setAllPagesToRange(form, file);
-    } else if (element.id == OPTIONS_RANGE_ENUM.CUSTOM) {
-      form.get(this.RANGE).reset();
-    }
-  }
-
-  setAllPagesToRange(formConfig, file) {
-    const quantityPagesFile = file.number_of_sheets;
-    const slidesPerSheetValue = formConfig.get(this.SLIDES_PER_SHEET).value;
-    let quantityVeenersFileConfig = Math.ceil(quantityPagesFile / slidesPerSheetValue);
-    formConfig.get(this.RANGE).setValue(
-      this.orderService.splitRange("1-" + quantityVeenersFileConfig)
-    );
   }
 
   /**
