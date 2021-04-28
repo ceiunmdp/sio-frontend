@@ -40,6 +40,7 @@
       "jwt-decode": "^2.2.0",
       "lottie-web": "^5.6.4",
       "moment": "^2.28.0",
+      "multi-integer-range": "^4.0.8",
       "ng-form-rules": "^1.0.3",
       "ngx-auth-firebaseui": "^3.4.0",
       "ngx-filepond": "^5.0.1",

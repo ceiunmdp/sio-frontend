@@ -5,4 +5,6 @@ export interface Item {
    name: string;
    price: number;
    type: ITEM_TYPES;
+   //NO SE SI VA
+   maximumLimit: number;
 }

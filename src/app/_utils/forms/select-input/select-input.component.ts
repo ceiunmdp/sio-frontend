@@ -74,6 +74,9 @@ export class SelectInputComponent extends FormElementComponent implements OnInit
 
     change(event) {
         // Called everytime a new value is selected
+        console.log(this.calculateSelected(event.value));
+        console.log(event);
+
         this.selected.emit(this.calculateSelected(event.value));
     }
 }

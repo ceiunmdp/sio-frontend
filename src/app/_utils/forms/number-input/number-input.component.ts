@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, EventEmitter, Output } from "@angular/core";
 import { FormElementComponent } from "../form-element/form-element.component";
 
 @Component({
@@ -9,14 +9,14 @@ import { FormElementComponent } from "../form-element/form-element.component";
 export class NumberInputComponent extends FormElementComponent implements OnInit {
    @Input() minValue: number;
    @Input() maxValue: number;
+   // @Output('change') change$ = new EventEmitter(null);
+
    showPrefix = false;
+
    constructor() {
       super();
    }
 
-   mostrar() {
-      console.log(this.form.get(this.name).value);
-   }
+   ngOnInit() { }
 
-   ngOnInit() {}
 }
