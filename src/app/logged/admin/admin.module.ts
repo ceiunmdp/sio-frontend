@@ -1,3 +1,8 @@
+import { CreateEditBindingsComponent } from './bindings/create-edit-bindings/create-edit-bindings.component';
+import { BindingsComponent } from './bindings/bindings.component';
+import { ItemsComponent } from './items/items.component';
+import { EditParameterComponent } from './parameters/edit-parameter/edit-parameter.component';
+import { ParametersComponent } from './parameters/parameters.component';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { UtilsModule } from 'src/app/_utils/utils.module';
 import { MaterialModule } from './../../material/material.module';
@@ -18,13 +23,12 @@ import { CareersComponent } from './careers/careers.component';
 import { CreateEditCareerComponent } from './careers/create-edit-career/create-edit-career.component';
 import { UsersComponent } from './users/users.component';
 import { CreateEditUserComponent } from './users/create-edit-user/create-edit-user.component';
-import { ItemsComponent } from './items/items.component';
-import { BindingsComponent } from './bindings/bindings.component';
+import { EditItemComponent } from './items/edit-item/edit-item.component';
 registerPlugin(FilePondPluginFileValidateType);
 registerPlugin(FilePondPluginFileEncode);
 
 @NgModule({
-  declarations: [FilesComponent, CoursesComponent, CreateEditCourseComponent, CareersComponent, CreateEditCareerComponent, UsersComponent, CreateEditUserComponent, ItemsComponent, BindingsComponent],
+  declarations: [FilesComponent, ParametersComponent, EditParameterComponent, CoursesComponent, CreateEditCourseComponent, CareersComponent, CreateEditCareerComponent, UsersComponent, CreateEditUserComponent, ItemsComponent, EditItemComponent, BindingsComponent, CreateEditBindingsComponent],
   imports: [
     CommonModule,
     AdminRoutingModule,

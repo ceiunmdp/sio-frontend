@@ -1,0 +1,61 @@
+<div *ngIf="this.step == STEPS.LIST" fxFlex="100">
+    <cei-card-table [metaData]="this.metaDataParameters" [title]="'Gestión de paramétricas'" (page)="onPaginatorEvent($event)">
+        <div controlButtons fxLayout="row" fxLayoutGap="15px">
+            <!-- <button mat-icon-button matTooltip="Nueva carrera" (click)="this.step = STEPS.CREATE_OR_EDIT">
+                <mat-icon>add</mat-icon>
+            </button> -->
+            <button mat-icon-button matTooltip="Refrescar la búsqueda" (click)="this.onRefresh()">
+                <mat-icon>refresh</mat-icon>
+            </button>
+        </div>
+        <cei-text-searching-input filterInputs fxFlex="100" [placeholder]="'Búsqueda rápida'"
+            [label]="'Ingrese el nombre de la paramétrica'" [inputFilterValue]="this. inputFilterValue"
+            (onSearch)="this.inputFilterValue = $event;this.onSearch($event)">
+        </cei-text-searching-input>
+        <table table fxFlex="100" mat-table *ngIf="!this.isLoadingGetParameters; else loadingDiv"
+            [dataSource]="dataSourceParameters">
+            <!-- parameterName Column -->
+            <ng-container matColumnDef="parameterName" sticky>
+                <th mat-header-cell *matHeaderCellDef>Nombre</th>
+                <td mat-cell *matCellDef="let parameter">
+                    {{ parameter.name }}
+                </td>
+            </ng-container>
+            <!-- parameterPrice Column -->
+            <ng-container matColumnDef="parameterValue" sticky>
+                <th mat-header-cell *matHeaderCellDef>Valor</th>
+                <td mat-cell *matCellDef="let parameter">
+                    {{ parameter.value }}
+                </td>
+            </ng-container>
+            <!-- actions Column -->
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let parameter">
+                    <div fxLayoutAlign="end">
+                        <button mat-icon-button
+                            (click)="this.generalService.stopPropagation($event);this.onClickEditItem(parameter)">
+                            <mat-icon class="text-secondary m-0 mat-icon-medium" matTooltip="Editar paramétrica">
+                                edit
+                            </mat-icon>
+                        </button>
+                    </div>
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns" class="bg-on-hover">
+            </tr>
+        </table>
+    </cei-card-table>
+</div>
+
+<div fxFlex="100" *ngIf="this.step == STEPS.CREATE_OR_EDIT">
+    <cei-edit-parameter *ngIf="!this.isLoadingGetParameters; else loadingDiv" fxFlex="100"
+        [parameters]="this.parameters" [parameter]="this.selectedParameter"
+        (created)="this.fromCreateOrEditToList(true)" (cancelled)="this.fromCreateOrEditToList(false)">
+    </cei-edit-parameter>
+</div>
+
+<ng-template #loadingDiv>
+    <app-spinner fxFlex="100" fxLayoutAlign="center start"></app-spinner>
+</ng-template>

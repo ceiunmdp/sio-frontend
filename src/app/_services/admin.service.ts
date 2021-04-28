@@ -1,8 +1,11 @@
+import { RestUtilitiesService } from './rest-utilities.service';
+import { Parameter } from './../_models/parameter';
+import { ResponseAPI } from './../_models/response-api';
+import { Pagination } from './../_models/pagination';
+import { Sort } from './../_models/sort';
 import { Binding } from './../_models/binding';
-import { Item } from 'src/app/_models/item';
 import { Career } from './../_models/orders/career';
-import { FilterBuilder, OPERATORS } from './../_helpers/filterBuilder';
-import { Subject } from './../_models/subject';
+import { FilterBuilder, OPERATORS, AND, OR } from './../_helpers/filterBuilder';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpHeaders, HttpParams, HttpClient, HttpResponse } from '@angular/common/http';
@@ -30,6 +33,10 @@ export interface ItemPost {
    price: number;
 }
 
+export interface ParameterPatch {
+   value: number;
+}
+
 export interface BindingPost extends ItemPost {
    name: string;
    sheets_limit: number;
@@ -40,7 +47,7 @@ export interface BindingPost extends ItemPost {
 })
 export class AdminService {
 
-   constructor(private http: HttpClient) { }
+   constructor(private http: HttpClient, private restService: RestUtilitiesService) { }
 
    getCareers(subjectId?: number): Observable<Career[]> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
@@ -400,6 +407,43 @@ export class AdminService {
       );
       return this.http
          .delete<any>(`${environment.apiUrl}/${API.ITEMS}/${API.BINDINGS}/${bindingId}`, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
+   getParameters(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<Parameter[]>> {
+      const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort, pagination })
+      return this.http
+         .get(`${environment.apiUrl}/${API.PARAMETERS}`, {
+            headers: queryHeaders,
+            observe: "response",
+            params: params
+         })
+         .pipe(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
+   patchParameter(
+      body: ParameterPatch,
+      idParameter: string
+   ): Observable<Parameter> {
+      const queryHeaders = new HttpHeaders().append(
+         "Content-Type",
+         "application/json"
+      );
+
+      return this.http
+         .patch<any>(`${environment.apiUrl}/${API.PARAMETERS}/${idParameter}`, body, {
             headers: queryHeaders,
             observe: "response"
          })
