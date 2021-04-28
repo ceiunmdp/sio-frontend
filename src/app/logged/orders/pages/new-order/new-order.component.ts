@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 import {Router} from '@angular/router';
 import {Routes} from 'src/app/_routes/routes';
 import {HttpErrorResponse} from '@angular/common/http';
+import {AuthenticationService} from 'src/app/_services/authentication.service';
 
 export interface UnproccesedOrder {
   campus_id: string,
@@ -46,7 +47,7 @@ export class NewOrderComponent implements OnInit {
   confirmOrderData;
   isPosting = false;
 
-  constructor(private cd: ChangeDetectorRef, private orderService: OrdersService, private router: Router) {}
+  constructor(private cd: ChangeDetectorRef, private orderService: OrdersService, private router: Router, private authService: AuthenticationService) {}
 
   ngOnInit() {
     this.getBindings().then(data => this.bindings = data.data.items);
@@ -57,9 +58,6 @@ export class NewOrderComponent implements OnInit {
   onStepChange(stepperSelection: StepperSelectionEvent) {
     console.log(stepperSelection);
     if (stepperSelection.selectedIndex == 3) {
-      // console.log(this.dataConfigFiles)
-      // console.log(this.ringOrderComponent)
-      // console.log(this.ringOrderComponent.configFiles)
       this.confirmOrderData = [...this.ringOrderComponent.configFiles];
     }
   }
@@ -77,6 +75,9 @@ export class NewOrderComponent implements OnInit {
     this.isPosting = true;
     const body = this.orderService.mapToOrderApi(order);
     this.orderService.postNewOrder(body).toPromise()
+      .then(() => {
+          return this.authService.getAndUpdateUserData().toPromise();
+        })
       .then(res => {
         return Swal.fire({
           title: `Pedido solicitado correctamente`,

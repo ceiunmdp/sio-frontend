@@ -29,8 +29,6 @@ export class ConfirmOrderComponent implements OnInit {
 
 
   ngOnInit() {
-    console.log(this.prices);
-
     this.confirmOrderForm = this.createConfirmOrderForm();
   }
 
@@ -77,7 +75,6 @@ export class ConfirmOrderComponent implements OnInit {
         return [...bindingsProccesed, {...binding, quantity: 1, unitPrice: Number(binding.price), totalPrice: Number(binding.price)}]
       }
     }, [])
-    console.log('ANILLADOS FINAL: ', bindingsProccesed);
     return bindingsProccesed;
   }
 
@@ -129,9 +126,6 @@ export class ConfirmOrderComponent implements OnInit {
     const simpleSidedPrice = this.prices.find(price => price.code == PRICES_CODES.simple_sided).price;
     const colourPrice = this.prices.find(price => price.code == PRICES_CODES.colour).price;
     let price;
-    console.log('Cantidad de paginas', pages);
-    console.log('Precio de doble faz', doubleSidedPrice);
-    console.log('Precio de simple faz', simpleSidedPrice);
 
     if (double_sided) {
       price = pages * doubleSidedPrice;

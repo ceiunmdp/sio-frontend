@@ -232,6 +232,23 @@ export class AuthenticationService {
         this._redirectUrl = url;
     }
 
+    getAndUpdateUserData(): Observable<User> {
+        const queryHeaders = new HttpHeaders().append('Content-Type', 'application/json');
+        let basicUser: Partial<User>;
+        return this.http
+            .get(environment.apiUrl + APIS.USER, { headers: queryHeaders, observe: 'response' })
+            .pipe(
+                map<HttpResponse<any>, any>(response => {
+                    basicUser = { ...response.body.data };
+                    return response.body.data;
+                }),
+                // Acá pedir al usuario particular
+                mergeMap(basicUser => { console.log(basicUser); return this.getSpecificUserData(basicUser) }),
+                map(user => { return { ...basicUser, ...user } }),
+                tap(user => this.updateCurrentUser(user))
+            );
+    }
+
     getUserData(): Observable<User> {
         const queryHeaders = new HttpHeaders().append('Content-Type', 'application/json');
         let basicUser: Partial<User>;
