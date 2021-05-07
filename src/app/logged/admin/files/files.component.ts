@@ -1,20 +1,36 @@
-import { MatPaginator } from '@angular/material';
-import { Subject } from './../../../_models/subject';
-import { AdminService } from './../../../_services/admin.service';
-import { CustomValidators } from './../../../_validators/custom-validators';
-import { HttpErrorResponseHandlerService } from './../../../_services/http-error-response-handler.service';
-import { GeneralService } from './../../../_services/general.service';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { MatPaginator, PageEvent } from '@angular/material';
+import { AdminService } from '../../../_services/admin.service';
+import { GeneralService } from '../../../_services/general.service';
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
+import { from, Observable, Subscription } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { AND, FilterBuilder, OPERATORS, OR } from 'src/app/_helpers/filterBuilder';
+import { Sort } from 'src/app/_models/sort';
+import { Pagination } from 'src/app/_models/pagination';
+import { Parameter } from 'src/app/_models/parameter';
+import { LinksAPI, MetadataAPI } from 'src/app/_models/response-api';
+import { OrdersService } from '../../orders/orders.service';
+import { Course } from 'src/app/_models/orders/course';
+import { File } from 'src/app/_models/orders/file';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { CustomValidators } from 'src/app/_validators/custom-validators';
 import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import { Router } from '@angular/router';
-import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import Swal from 'sweetalert2';
+import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 
 export interface FileUpload {
   name: string;
   base64: string;
+}
+
+enum STEPS {
+  LIST_COURSES,
+  LIST_FILES,
+  ADD_FILES,
+  EDIT
 }
 
 @Component({
@@ -23,34 +39,47 @@ export interface FileUpload {
   styleUrls: ['./files.component.scss']
 })
 
-export class FilesComponent implements OnInit, AfterViewInit {
+export class FilesComponent implements OnInit {
 
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild('myPond', { static: false }) myPond: any;
+  inputFilterValueCourses = ''
+  inputFilterValueFiles = ''
   public readonly SUBJECT = "subject";
   public readonly CAREER = "career";
   public readonly CAREER_SEARCHING = "career_searching";
-  public readonly NAME = "name";
-  public readonly ID = "id";
   public readonly FILES = "files";
-  public readonly CAREERS_SELECT_DEFAULT_VALUE = { id: '0', name: 'Todas' }
-  step: number;
-  totalFiles: number;
-  totalSubjects: number;
-  selectedSubject: string;
-  selectedCareer: string;
-  filePage: number;
-  subjectPage: number;
-  dataSourceSubjects: any = new MatTableDataSource();
-  dataSourceFiles: any;
-  messageError: any;
-  selectedSubjects: any[];
-  @ViewChild('alertError', { static: true }) alertError;
-  @ViewChild('filesPaginator', { read: MatPaginator, static: false }) filesPaginator: MatPaginator;
-  @ViewChild('subjectsPaginator', { read: MatPaginator, static: false }) subjectsPaginator: MatPaginator;
+  public STEPS = STEPS;
+  step: STEPS;
+  isLoadingGetCourses = false; _courses: Subscription;
+  isLoadingGetFiles = false; _files: Subscription;
+  selectedCourse: Course; // .. !null when edit button is clicked 
+  selectedFile: File; // .. !null when edit button is clicked 
+  dataSourceCourses: MatTableDataSource<Course>;
+  dataSourceFiles: MatTableDataSource<File>;
+  displayedColumnsCourses: string[] = [
+    'courseName',
+    'actions',
+  ];
+  displayedColumnsFiles: string[] = [
+    'fileName',
+    'actions',
+  ];
+  // metadata from api
+  metaDataCourses: MetadataAPI;
+  linksCourses: LinksAPI;
+  metaDataFiles: MetadataAPI;
+  linksFiles: LinksAPI;
+  // metadata from ui
+  paginationCourse: Pagination;
+  paginationFile: Pagination;
+  filterCourse: OR | AND;
+  sortCourse: Sort[];
+  filterFile: OR | AND;
+  sortFile: Sort[];
+  files: Map<string, FileUpload> = new Map();
+  fb: FilterBuilder;
   public readonly TITLE = "Archivos";
-  displayedColumns: string[];
-  @ViewChild('responseSwal', { static: false }) private responseSwal: SwalComponent;
-
   pondOptions = {
     class: 'my-filepond',
     multiple: true,
@@ -61,155 +90,152 @@ export class FilesComponent implements OnInit, AfterViewInit {
   }
 
   filesForm: FormGroup;
-  subjects: Subject[];
-  careers: any[];
-  files: Map<string, FileUpload> = new Map();
-  subjectFilesEditForm: FormGroup;
-  displayedColumnsFiles: string[];
+  messageError: string;
+  selectedCourses: any[] = [];
+  courses: any[] = [];
+  @ViewChild('alertError', { static: true }) alertError;
+  @ViewChild('responseSwal', { static: false }) private responseSwal: SwalComponent;
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private adminService: AdminService,
-    private generalService: GeneralService,
-    public router: Router,
-    private httpErrorResponseHandlerService: HttpErrorResponseHandlerService
-  ) { }
-
-
-  ngAfterViewInit(): void {
-    !!this.dataSourceFiles ? this.dataSourceFiles.paginator = this.filesPaginator : null;
-    !!this.dataSourceSubjects ? this.dataSourceSubjects.paginator = this.subjectsPaginator : null;
-  }
+  constructor(public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService,private formBuilder: FormBuilder, private adminService: AdminService, private orderService: OrdersService, public generalService: GeneralService) { }
 
   ngOnInit() {
-    this.step = 0;
-    this.selectedSubjects = new Array();
-    this.displayedColumns = [
-      "name",
-      "actions"
-    ];
-    this.displayedColumnsFiles = [
-      "name",
-      "actions"
-    ];
+    this.fb = new FilterBuilder();
+    this.filterCourse = this.fb.and();
+    this.step = STEPS.LIST_COURSES;
     this.generalService.sendMessage({ title: this.TITLE });
+    this.sortCourse = [{ field: 'course.name', sort: "ASC" }]
+    this.getCourses(this.filterCourse, this.sortCourse, this.paginationCourse);
+    this.dataSourceCourses = new MatTableDataSource();
+  }
+
+  ngOnDestroy(): void {
+    this._courses.unsubscribe();
+    this._files.unsubscribe();
+  }
+
+  onPaginatorEvent(event: PageEvent) {
+    this.paginationCourse = { limit: event.pageSize, page: event.pageIndex + 1 }
+    this.getCourses(this.filterCourse, this.sortCourse, this.paginationCourse);
+  }
+
+  onPaginatorFileEvent(event: PageEvent) {
+    this.paginationFile = { limit: event.pageSize, page: event.pageIndex + 1 }
+    this.getFiles(this.filterFile, this.sortFile, this.paginationFile);
+  }
+
+  onRefresh(): Promise<Course[]> {
+    return this.getCourses(this.fb.and(), this.sortCourse, this.paginationCourse).toPromise();
+  }
+
+  onRefreshFiles(): Promise<File[]> {
+    let filter = (!!this.selectedCourse) ? this.filterFile : this.fb.and() 
+    return this.getFiles(filter, this.sortFile, this.paginationFile).toPromise();
+  }
+
+  onSearchCourses(st: string) {
+    this.filterCourse = this.fb.and(this.fb.where('course.name', OPERATORS.CONTAINS, st));
+    this.getCourses(this.filterCourse)
+  }
+
+  onSearchFiles(st: string) {
+    this.filterFile = this.fb.and(this.fb.where('file.name', OPERATORS.CONTAINS, st), this.fb.where('file_course.course_id', OPERATORS.IS, this.selectedCourse.id));
+    this.getFiles(this.filterFile)
+  }
+
+  onClickEditFile(file: File) {
+    this.selectedFile = file;
+    this.step = this.STEPS.EDIT;
+  }
+
+  fromCreateOrEditToList(refresh = false) {
+    this.step = this.STEPS.LIST_FILES;
+    this.selectedFile = null; // Reset selectedFile
+    if (refresh) this.onRefreshFiles();
+  }
+
+  // Services
+
+  getCourses(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<Course[]> {
+    this.isLoadingGetCourses = true;
+    const promise: Promise<any> = new Promise((res, rej) => {
+      this.orderService.getCourses(filter, sort, pagination).pipe(
+        finalize(() => {
+          this.isLoadingGetCourses = false; setTimeout(() => {
+            // this.setDataSourceAttributes();
+          }, 400)
+        })
+      ).subscribe(
+        (data) => { this.metaDataCourses = data.data.meta; this.linksCourses = data.data.links; this.dataSourceCourses.data = data.data.items; res(data.data.items) },
+        (e) => { rej(e) },
+      )
+    })
+    return from(promise);
+  }
+
+  selectCourseFiles(course) {
+    this.generalService.sendMessage({ title: this.TITLE + " de " + course.name });
+    this.selectedCourse = course;
+    this.dataSourceFiles = new MatTableDataSource();
+    this.sortFile = [{ field: 'file.name', sort: "ASC" }]
+    this.filterFile = this.fb.and(this.fb.where('file_course.course_id', OPERATORS.IS, this.selectedCourse.id));
+    this.getFiles(this.filterFile, this.sortCourse, this.paginationCourse)
+  }
+
+
+  getFiles(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<File[]> {
+    this.isLoadingGetCourses = true;
+    const promise: Promise<any> = new Promise((res, rej) => {
+      this.orderService.getFilesV2(filter, sort, pagination).pipe(
+        finalize(() => {
+          this.isLoadingGetCourses = false; setTimeout(() => {
+            // this.setDataSourceAttributes();
+          }, 400)
+        })
+      ).subscribe(
+        (data) => { this.metaDataFiles = data.data.meta; this.linksFiles = data.data.links; this.dataSourceFiles.data = data.data.items; res(data.data.items); this.step = this.STEPS.LIST_FILES;},
+        (e) => { rej(e) },
+      )
+    })
+    return from(promise);
+  }
+
+  getSubjectsFiles(subjectId: any): Observable<File[]> {
+    this.isLoadingGetFiles = true;
+    const promise: Promise<any> = new Promise((res, rej) => {
+      this.adminService.getSubjectsFiles(subjectId).pipe(
+        finalize(() => {
+          this.isLoadingGetFiles = false; setTimeout(() => {
+            // this.setDataSourceAttributes();
+          }, 400)
+        })
+      ).subscribe(
+        (data) => { this.metaDataFiles = data.data.meta; this.linksFiles = data.data.links; this.dataSourceFiles.data = data.data.items; res(data.data.items); this.step = this.STEPS.LIST_FILES;},
+        (e) => { rej(e) },
+      )
+    })
+    return from(promise);
+  }
+
+  backToListCourses() {
+    this.step = this.STEPS.LIST_COURSES;
+    this.inputFilterValueFiles = '';
+    this.inputFilterValueCourses = '';
+    this.selectedFile = null;
+    this.selectedCourse = null;
+    this.generalService.sendMessage({ title: this.TITLE });
+    this.onRefresh()
+  }
+
+  displayAddFiles() {
+    this.step = this.STEPS.ADD_FILES
     this.filesForm = this.createFilesForm();
-    this.getSubjects();
-    this.getCareers();
   }
 
   createFilesForm(): FormGroup {
     return this.formBuilder.group({
       [this.SUBJECT]: ["", [CustomValidators.required("Materia requeridas")]],
-      [this.CAREER]: [""],
-      [this.CAREER_SEARCHING]: [""],
       [this.FILES]: ["", [CustomValidators.required("Archivos requeridos")]]
     });
-  }
-
-  applyFilter(filterValue: string) {
-    this.dataSourceSubjects.filter = filterValue.trim().toLowerCase();
-  }
-
-  applyFilterFiles(filterValue: string) {
-    this.dataSourceFiles.filter = filterValue.trim().toLowerCase();
-  }
-
-  getCareers() {
-    this.adminService.getCareers().subscribe(
-      careers => {
-        this.careers = careers;
-        this.careers.unshift(this.CAREERS_SELECT_DEFAULT_VALUE)
-      },
-      err => this.handleErrors(err)
-    );
-  }
-
-  selectCareer(event) {
-    if (event === this.CAREERS_SELECT_DEFAULT_VALUE) {
-      this.dataSourceSubjects.data = this.subjects
-    } else {
-      this.dataSourceSubjects.data = this.subjects.filter((subject, _, __) => {
-        return subject.relations.filter((relation, _, __) => relation.careers.some((career, _, __) => career.id === event.id)).length > 0
-      })
-    }
-  }
-
-  getSubjects(careerId?: string) {
-    this.adminService.getSubjects(careerId).subscribe(
-      (data) => {
-        this.subjects = data.items;
-        this.dataSourceSubjects = new MatTableDataSource(data.items);
-        this.setSubjectPaginator();
-      },
-      err => this.handleErrors(err)
-    );
-  }
-
-  getSubjectsFiles(subjectId: any) {
-
-    this.adminService.getSubjectsFiles(subjectId).subscribe(
-      (data) => {
-        this.dataSourceFiles = new MatTableDataSource(data.items);
-        this.dataSourceFiles.paginator = this.filesPaginator;
-        this.filesPaginator._intl.itemsPerPageLabel = 'Registros por página';
-        this.filesPaginator._intl.firstPageLabel = 'Primera página';
-        this.filesPaginator._intl.lastPageLabel = 'Última página';
-        this.filesPaginator._intl.nextPageLabel = 'Página siguiente';
-        this.filesPaginator._intl.previousPageLabel = 'Página anterior';
-      },
-      err => this.handleErrors(err)
-    );
-  }
-
-  uploadFiles() {
-    this.adminService.uploadFiles(this.selectedSubjects.join(","), Array.from(this.files.values())).subscribe(
-      (message) => {
-        const swalOptions = {
-          title: 'Carga exitosa',
-          text: message.message,
-          type: 'success',
-          showConfirmButton: true,
-          confirmButtonText: 'Continuar'
-        };
-        Swal.fire(swalOptions);
-        this.backFrom1To0();
-      },
-      err => {
-        this.handleErrors(err)
-      }
-    );
-  }
-
-  calculateIdSubject(element) {
-    return element ? element.id : null;
-  }
-
-  calculateNameSubject(element) {
-    return element ? element.name : null;
-  }
-
-  calculateIdCareer(element) {
-    return element ? element.id : null;
-  }
-
-  calculateNameCareer(element) {
-    return element ? element.name : null;
-  }
-
-  backFrom1To0() {
-    this.step = 0;
-    this.selectedSubjects = new Array();
-    this.getSubjects()
-    this.generalService.sendMessage({ title: this.TITLE })
-    this.filesForm.reset();
-    this.alertError.closeError();
-  }
-
-  backFrom2To0() {
-    this.step = 2;
-    this.subjectFilesEditForm.reset();
-    this.alertError.closeError();
   }
 
   handleErrors(err: HttpErrorResponse) {
@@ -219,39 +245,23 @@ export class FilesComponent implements OnInit, AfterViewInit {
     }
   }
 
-  createSubjectFilesEditForm(subject): FormGroup {
-    return this.formBuilder.group({
-      [this.ID]: [subject.id, [CustomValidators.required("Id requerido")]],
-      [this.NAME]: [
-        subject.name,
-        [CustomValidators.required("Nombre requerido")]
-      ]
-    });
-  }
-
-  onEditSubjectsFiles() {
-    this.adminService
-      .onEditSubjectsFiles(
-        this.subjectFilesEditForm.get(this.ID).value,
-        this.subjectFilesEditForm.get(this.NAME).value
-      )
-      .subscribe(
-        message => {
-          this.step = 0;
-          const swalOptions = {
-            title: "Operación exitosa",
-            text: message.message,
-            type: "success",
-            showConfirmButton: true,
-            confirmButtonText: "Continuar"
-          };
-          Swal.fire(swalOptions);
-          this.getCareers();
-        },
-        error => {
-          this.handleErrors(error);
-        }
-      );
+  uploadFiles() {
+    this.adminService.uploadFiles(this.selectedCourses.join(","), Array.from(this.files.values())).subscribe(
+      (message) => {
+        const swalOptions = {
+          title: 'Carga exitosa',
+          text: message.message,
+          type: 'success',
+          showConfirmButton: true,
+          confirmButtonText: 'Continuar'
+        };
+        Swal.fire(swalOptions);
+        this.backToListCourses();
+      },
+      err => {
+        this.handleErrors(err)
+      }
+    );
   }
 
   deleteFile(file: any) {
@@ -265,7 +275,7 @@ export class FilesComponent implements OnInit, AfterViewInit {
           confirmButtonText: 'Continuar'
         };
         Swal.fire(swalOptions)
-        this.backFrom1To0();
+        this.backToListCourses();
       },
       err => {
         this.handleErrors(err)
@@ -273,33 +283,20 @@ export class FilesComponent implements OnInit, AfterViewInit {
     );
   }
 
-  displayEditSubjectFilesForm(subject) {
-    this.subjectFilesEditForm = this.createSubjectFilesEditForm(subject);
-    this.subjectFilesEditForm.get(this.ID).disable();
-    this.step = 3;
+  onSearchCoursesForFiles(event: any) {
+    if (event.term.length >= 2) {
+      this.filterCourse = this.fb.and(this.fb.where('course.name', OPERATORS.CONTAINS, event.term));
+      this.getCourses(this.filterCourse)
+      this.courses = this.dataSourceCourses.data;
+    }
   }
 
-  displaySubjectFiles(subject) {
-    this.generalService.sendMessage({ title: this.TITLE + " de " + subject.name })
-    this.getSubjectsFiles(subject.id)
-    this.step = 2;
+  addCourse(event) {
+    this.selectedCourses.push(event.id)
   }
 
-  addSubject(event) {
-    this.selectedSubjects.push(event.id)
-  }
-
-  removeSubject(event) {
-    this.selectedSubjects = this.selectedSubjects.filter(item => item !== event.value.id)
-  }
-
-  setSubjectPaginator() {
-    this.dataSourceSubjects.paginator = this.subjectsPaginator;
-    this.subjectsPaginator._intl.itemsPerPageLabel = 'Registros por página';
-    this.subjectsPaginator._intl.firstPageLabel = 'Primera página';
-    this.subjectsPaginator._intl.lastPageLabel = 'Última página';
-    this.subjectsPaginator._intl.nextPageLabel = 'Página siguiente';
-    this.subjectsPaginator._intl.previousPageLabel = 'Página anterior';
+  removeCourse(event) {
+    this.selectedCourses = this.selectedCourses.filter(item => item !== event.value.id)
   }
 
 }

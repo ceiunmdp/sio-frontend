@@ -37,6 +37,10 @@ export interface ParameterPatch {
    value: number;
 }
 
+export interface FilePatch {
+   name: string;
+}
+
 export interface BindingPost extends ItemPost {
    name: string;
    sheets_limit: number;
@@ -293,22 +297,19 @@ export class AdminService {
          })
          .pipe(
             map<HttpResponse<any>, any>(response => {
-               return response.body.data;
+               return response.body;
             })
          );
    }
 
-   onEditSubjectsFiles(
-      idFile: number,
-      name: string
+   patchFile(
+      body: FilePatch,
+      idFile: string
    ): Observable<any> {
       const queryHeaders = new HttpHeaders().append(
          "Content-Type",
          "application/json"
       );
-      const body = {
-         name
-      };
 
       return this.http
          .patch<any>(`${environment.apiUrl}/files/${idFile}`, body, {
