@@ -231,15 +231,15 @@ export class FilesComponent implements OnInit {
           fb.and(
             fb.where('course.id', OPERATORS.IS, course.id)
           );
-        this.filesService.getFilesByCourse(filter).subscribe(
-          files => {
-            const filesMapped: _File[] = files.map(file => { let _file: _File = { ...file, careerId: course.careerId, yearId: course.yearId, courseId: course.id, type: TREE_TYPES.FILE, checked: false }; return _file })
-            res(filesMapped)
-          },
-          error => {
-            rej(error)
-          }
-        );
+        // this.filesService.getFilesByCourse(filter).subscribe(
+        //   files => {
+        //     const filesMapped: _File[] = files.map(file => { let _file: _File = { ...file, careerId: course.careerId, yearId: course.yearId, courseId: course.id, type: TREE_TYPES.FILE, checked: false }; return _file })
+        //     res(filesMapped)
+        //   },
+        //   error => {
+        //     rej(error)
+        //   }
+        // );
       })
   }
 

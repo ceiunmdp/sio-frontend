@@ -1,12 +1,12 @@
 import { ParametersComponent } from './parameters/parameters.component';
 import { ItemsComponent } from './items/items.component';
 import { CareersComponent } from './careers/careers.component';
-import { FilesComponent } from './files/files.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CoursesComponent } from './courses/courses.component';
 import { UsersComponent } from './users/users.component';
 import { BindingsComponent } from './bindings/bindings.component';
+import { FilesComponent } from './files/files.component';
 
 
 const routes: Routes = [
