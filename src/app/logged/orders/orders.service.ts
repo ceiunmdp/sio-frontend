@@ -155,6 +155,21 @@ export class OrdersService {
       );
   }
 
+  getOrderFiles(orderId: number): Observable<any> {
+    const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+
+    return this.http
+      .get<Order>(`${environment.apiUrl}/${API.ORDERS}/${orderId}/order-files`, {
+        headers: queryHeaders,
+        observe: "response"
+      })
+      .pipe(
+        map<HttpResponse<any>, Order>(response => {
+          return response.body.data;
+        })
+      );
+  }
+
   patchOrder(body: {state: {code: ORDER_STATES}},orderId: number): Observable<Order> {
     const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
     return this.http
@@ -443,6 +458,7 @@ export class OrdersService {
       campus_id: order.campus_id,
       order_files: []
     };
+    console.log(order);
     order.order_files.forEach(orderFile => {
       if (orderFile.same_config) {
         // Sacar los bindings groups de cada configuration 
@@ -471,14 +487,21 @@ export class OrdersService {
         orderFile.configurations.forEach(_configuration => {
           const copies = 1;
           const file_id = orderFile.file_id;
-          delete _configuration.binding_groups.binding;
+          if(_configuration.binding_groups){
+            delete _configuration.binding_groups.binding;
+          }
           const configuration: any = {..._configuration};
           configuration.double_sided = !configuration.double_sided ? false: true;
           delete configuration.options_range;
           configuration.slides_per_sheet = Number(configuration.slides_per_sheet);
           configuration.range = new MultiRange(configuration.range).toString();
           delete configuration.binding_groups;
-          postOrder.order_files.push({...(!!_configuration.binding_groups && {binding_groups: [_configuration.binding_groups], configuration, copies, file_id})});
+          postOrder.order_files.push({
+            ...(!!_configuration.binding_groups && {binding_groups: [_configuration.binding_groups]}), 
+            configuration, 
+            copies, 
+            file_id
+          });
         })
       }
     })

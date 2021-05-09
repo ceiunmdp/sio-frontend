@@ -52,7 +52,7 @@ export class MyOrdersComponent implements OnInit {
   ngOnInit() {
     this.generalService.sendMessage({ title: this.TITLE });
     this.fb = new FilterBuilder();
-    this.sort = [{ field: 'order.date', sort: "ASC" }]
+    this.sort = [{ field: 'create_date', sort: "DESC" }]
     this.getActiveOrders(this.sort, this.pagination);
     this.dataSourceOrders = new MatTableDataSource();
   }
@@ -66,28 +66,10 @@ export class MyOrdersComponent implements OnInit {
     this.historicOrdersShow ? this.getHistoricOrders(this.sort, this.pagination) : this.getActiveOrders(this.sort, this.pagination);
   }
 
-  // onSearch(st: string) {
-  //   this.filter = this.fb.and(this.fb.where('order.id', OPERATORS.CONTAINS, st));
-  //   this.getCareers(this.filter)
-  // }
-
-  //  applyFilter(filterValue: string) {
-  //     this.dataSource.filter = filterValue.trim().toLowerCase();
-  //  }
-
-  //  setDataSourceAttributes() {
-  //     this.dataSource.paginator = this.paginator;
-  //     // this.dataSource.sort = this.sort;
-  //     this.paginator._intl.itemsPerPageLabel = "Registros por página";
-  //     this.paginator._intl.firstPageLabel = "Primera página";
-  //     this.paginator._intl.lastPageLabel = "Última páginaaa";
-  //     this.paginator._intl.nextPageLabel = "Página siguiente";
-  //     this.paginator._intl.previousPageLabel = "Página anterior";
-  //  }
-
   getActiveOrders(sort?: Sort[], pagination?: Pagination) {
     const filter = this.fb.and(
       this.fb.or(
+        // TODO: poner resto de condiciones
         this.fb.where('state.code', OPERATORS.IS, 'requested'),
         // fb.where('state.code', OPERATORS.IS, 'in_process'),
         // fb.where('state.code', OPERATORS.IS, 'ready')
@@ -109,18 +91,10 @@ export class MyOrdersComponent implements OnInit {
         .catch(err => this.handleErrors(err));
   }
 
-  // private getOrdersService2(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Promise<any> {
-  //   this.isLoadingGetOrders = true;
-  //   return new Promise((resolve, reject) => {
-  //       this.orderService.getMyOrders(filter, sort, pagination).subscribe(
-  //         orders => resolve(orders),
-  //         err => reject(err)
-  //       );
-  //   }).finally(() => this.isLoadingGetOrders = false);
-  // }
   private getOrdersService(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Promise<Order[]> {
     this.isLoadingGetOrders = true;
     const promise: Promise<any> = new Promise((res, rej) => {
+      // TODO: poner sort
       this.orderService.getMyOrders(filter, null, pagination).pipe(
         finalize(() => {
           this.isLoadingGetOrders = false;
