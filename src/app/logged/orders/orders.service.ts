@@ -21,6 +21,7 @@ import {RestUtilitiesService} from 'src/app/_services/rest-utilities.service';
 import {Pagination} from 'src/app/_models/pagination';
 import {UnproccesedOrder} from './pages/new-order/new-order.component';
 import MultiRange from 'multi-integer-range';
+import {ORDER_STATES} from 'src/app/_orderStates/states';
 
 export interface PostOrder {
   campus_id: string,
@@ -107,12 +108,9 @@ export enum PRICES_CODES {
 export class OrdersService {
   constructor(private http: HttpClient, private restService: RestUtilitiesService) {}
 
-  getOrders(active?: boolean): Observable<Order[]> {
+  getOrders(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<Order[]> {
     const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
-    let params = new HttpParams();
-    if (active) {
-      params = params.set("active", "true");
-    }
+    const params: HttpParams = this.restService.formatCreateAndAppendQps({filter, sort, pagination})
     return this.http
       .get(`${environment.apiUrl}/${API.ORDERS}`, {
         headers: queryHeaders,
@@ -122,6 +120,22 @@ export class OrdersService {
       .pipe(
         map<HttpResponse<any>, any>(response => {
           return response.body.data;
+        })
+      );
+  }
+
+  getMyOrders(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<Order[]>> {
+    const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+    const params: HttpParams = this.restService.formatCreateAndAppendQps({filter, sort, pagination})
+    return this.http
+      .get(`${environment.apiUrl}/${API.MY_ORDERS}`, {
+        headers: queryHeaders,
+        observe: "response",
+        params
+      })
+      .pipe(
+        map<HttpResponse<ResponseAPI<Order[]>>, ResponseAPI<Order[]>>(response => {
+          return response.body;
         })
       );
   }
@@ -141,20 +155,16 @@ export class OrdersService {
       );
   }
 
-  cancelOrderById(orderId: number): Observable<ResponseMessage> {
+  patchOrder(body: {state: {code: ORDER_STATES}},orderId: number): Observable<Order> {
     const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
-
-    // ¿Falta algo para indicarle al backend que debe cancelar la orden?
-    const body = new HttpParams();
-
     return this.http
-      .put<ResponseMessage>(`${environment.apiUrl}/${API.ORDERS}/${orderId}/cancelar`, body, {
+      .patch<any>(`${environment.apiUrl}/${API.ORDERS}/${orderId}`, body, {
         headers: queryHeaders,
         observe: "response"
       })
       .pipe(
-        map<HttpResponse<ResponseMessage>, ResponseMessage>(response => {
-          return response.body;
+        map<HttpResponse<ResponseAPI<Order>>, Order>(response => {
+          return response.body.data.items;
         })
       );
   }

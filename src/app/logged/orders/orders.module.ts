@@ -29,7 +29,6 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatTreeModule } from "@angular/material/tree";
 import { FormRulesModule } from "ng-form-rules";
 import { UtilsModule } from "src/app/_utils/utils.module";
-import { MyOrdersComponent } from "./my-orders/my-orders.component";
 // import { NewOrderComponent } from "./new-order/new-order.component";
 import { OrderDetailComponent, BottomSheetFiles } from "./order-detail/order-detail.component";
 import { OrderRoutingModule } from "./orders-routing.module";
@@ -42,18 +41,19 @@ import { NewOrderComponent as NewOrderComponentNuevo } from './pages/new-order/n
 import { FilesConfigComponent } from './components/files-config/files-config.component';
 import { RingConfigComponent } from './components/ring-config/ring-config.component';
 import { ConfirmOrderComponent } from './components/confirm-order/confirm-order.component';
+import {MyOrdersComponent} from "./pages/my-orders/my-orders.component";
 
 @NgModule({
    declarations: [
       NewOrderComponentNuevo,
-      MyOrdersComponent,
       OrderDetailComponent,
       SnackbarComponent,
       FilesConfigComponent,
       BottomSheetFiles,
       FilesComponent,
       RingConfigComponent,
-      ConfirmOrderComponent
+      ConfirmOrderComponent,
+      MyOrdersComponent
    ],
    imports: [
       CommonModule,

@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild, Inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { OrdersService } from "src/app/logged/orders/orders.service";
-import { Order } from "src/app/_models/orders/order";
 import { GeneralService } from "src/app/_services/general.service";
 import { Routes } from "src/app/_routes/routes";
 import { MatBottomSheet, MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from "@angular/material";
+import {Order} from "src/app/_models/orders/order";
+import { ORDER_STATES } from "src/app/_orderStates/states";
 
 // Bottom sheet component
 @Component({
@@ -13,6 +14,8 @@ import { MatBottomSheet, MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from "@angul
    styleUrls: ["./order-detail.component.scss"]
 })
 export class BottomSheetFiles implements OnInit {
+  ringedGroups: any[];
+
    constructor(
       private _bottomSheetRef: MatBottomSheetRef<BottomSheetFiles>,
       @Inject(MAT_BOTTOM_SHEET_DATA) public data: any
@@ -24,8 +27,6 @@ export class BottomSheetFiles implements OnInit {
       this.ringedGroups = this.createRingedGroups();
       console.log(this.ringedGroups);
    }
-
-   ringedGroups: any[];
 
    openLink(event: MouseEvent): void {
       this._bottomSheetRef.dismiss();
@@ -86,7 +87,8 @@ export class BottomSheetFiles implements OnInit {
 export class OrderDetailComponent implements OnInit {
    order: Order;
    orderId: any;
-   routes = Routes; // Necessary for the view
+   routes = Routes;
+   ORDER_STATES = ORDER_STATES;
 
    @ViewChild("orderCancelSwal", { static: true }) orderCancelSwal;
    constructor(
@@ -96,31 +98,42 @@ export class OrderDetailComponent implements OnInit {
       public router: Router,
       private _bottomSheet: MatBottomSheet
    ) {
-      console.log(router.getCurrentNavigation().extras.state);
       this.order = router.getCurrentNavigation().extras.state ? router.getCurrentNavigation().extras.state.order : null;
    }
 
    ngOnInit() {
       this.orderId = this.route.snapshot.paramMap.get("order-id");
-      this.order
-         ? null
-         : this.orderService.getOrderById(this.orderId).subscribe(order => {
-              this.order = order;
-              // this.generalService.sendMessage({ title: `Pedido #${this.order.id}` });
-              this.generalService.sendMessage({ title: `Detalles del pedido` });
-           });
+      if(!this.order){
+        this.orderService.getOrderById(this.orderId).subscribe(order => {
+          this.order = this.sortTracking(order);
+          this.generalService.sendMessage({ title: `Detalles del pedido` });
+        });
+      } else{
+        this.order = this.sortTracking(this.order);
+      }
+   }
+
+   sortTracking(order:Order): Order {
+     order.tracking.sort((previousTrack, actualTrack) => {
+      const previousTrackMs = new Date(previousTrack.timestamp.toString()).getMilliseconds();
+      const actualTrackMs = new Date(actualTrack.timestamp.toString()).getMilliseconds();
+      return previousTrackMs - actualTrackMs;
+     })
+     return order
    }
 
    doCancel() {
-      this.orderService.cancelOrderById(this.order.id).subscribe(message => {
-         console.log(message);
-         this.orderCancelSwal.fire();
-         // this.router.navigate(['cei/home/mis-pedidos']);
-      });
+    const body = {
+      state: {
+        code: this.ORDER_STATES.CANCELADO
+      }
+    };
+    this.orderService.patchOrder(body,this.order.id).subscribe(message => {
+        this.orderCancelSwal.fire();
+    });
    }
 
    openBottomSheet(): void {
-      console.log(this.order);
       this._bottomSheet.open(BottomSheetFiles, { data: this.order });
    }
 }

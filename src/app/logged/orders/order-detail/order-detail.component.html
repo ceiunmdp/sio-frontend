@@ -27,12 +27,12 @@
                   </div>
                   <div fxFlex="1 1 auto" fxLayout="row wrap" fxLayoutAlign="start center">
                      <mat-icon class="mat-icon-medium mrs-2">calendar_today</mat-icon>
-                     <span>{{ this.order.dateOrdered | date: "dd/MM/yy" }}</span>
+                     <span>{{ this.order.tracking[0].timestamp | date: "dd/MM/yy" }}</span>
                   </div>
                   <div fxFlex="1 1 auto" fxLayout="row wrap" fxLayoutAlign="start center">
                      <mat-icon class="mat-icon-medium mrs-2">attach_money</mat-icon>
                      <span>
-                        {{ order.totalPrice }}
+                        {{ order.total }}
                      </span>
                   </div>
 
@@ -50,7 +50,7 @@
                      *ngFor="let tracking of this.order.tracking">
                      <span class="mat-body text-secondary" fxFlex="100" fxLayout="row wrap"
                         fxLayoutAlign="center center">
-                        <span> {{ tracking.date | date: "dd/MM/yy H:mm" }} hs </span>
+                        <span> {{ tracking.timestamp | date: "dd/MM/yy H:mm" }} hs </span>
                         <mat-icon>arrow_forward</mat-icon>
                         <span>
                            {{ tracking.state.name | titlecase }}
@@ -68,7 +68,7 @@
             <mat-icon class="text-secondary " *ngIf="this.order.state.name === 'SOLICITADO'"
                matTooltip="Puede cancelar el pedido mientras el estado del mismo sea 'Solicitado' (el saldo será reincorporado)">
                lock_open</mat-icon>
-            <button mat-button color="warn" [disabled]="this.order.state.name !== 'SOLICITADO'"
+            <button mat-button color="warn" [disabled]="this.order.state.code !== this.ORDER_STATES.SOLICITADO"
                [swal]="confirmCancelSwal">
                Cancelar pedido
             </button>

@@ -34,7 +34,7 @@ export class HomeEstudianteComponent implements OnInit {
    }
 
    private getActiveOrders() {
-      this.orderService.getOrders(true).subscribe(orders => {
+      this.orderService.getOrders().subscribe(orders => {
          this.orders = orders;
          // console.log(this.orders);
       });
