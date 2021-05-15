@@ -238,14 +238,20 @@ export class OrdersService {
   }
 
   // Todo: Nuevo
-  getFilesByCourse(filter: OR | AND): Observable<File[]> {
+  getFilesV2(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<File[]>> {
     const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
-    const queryParams = new HttpParams().append("filter", JSON.stringify(filter))
-    return this.http.get(environment.apiUrl + "/files", {headers: queryHeaders, observe: "response", params: queryParams}).pipe(
-      map<HttpResponse<any>, any>(result => {
-        return result.body.data.items;
-      })
-    );
+    const params: HttpParams = this.restService.formatCreateAndAppendQps({filter, sort, pagination})
+    return this.http.get(environment.apiUrl + API.FILES,
+      {
+        headers: queryHeaders,
+        observe: "response",
+        params
+      }).pipe(
+        map<HttpResponse<any>, any>(result => {
+          return result.body;
+          // return courses.map((courseResponse: CourseResponse) => { const course: any = courseResponse; course.children = []; course.type = TREE_TYPES.COURSE; return course });
+        })
+      );
   }
 
   getFiles(): Observable<Career[]> {

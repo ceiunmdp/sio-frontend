@@ -15,7 +15,6 @@ import { ɵs } from '@ng-select/ng-select';
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
 import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
 import { AdminRoutingModule } from './admin-routing.module';
-import { FilesComponent } from './files/files.component';
 import { CoursesComponent } from './courses/courses.component';
 import { CreateEditCourseComponent } from './courses/create-edit-course/create-edit-course.component';
 import { FormsModule } from '@angular/forms';
@@ -24,11 +23,13 @@ import { CreateEditCareerComponent } from './careers/create-edit-career/create-e
 import { UsersComponent } from './users/users.component';
 import { CreateEditUserComponent } from './users/create-edit-user/create-edit-user.component';
 import { EditItemComponent } from './items/edit-item/edit-item.component';
+import { EditFileComponent } from './files/edit-file/edit-file.component';
+import { FilesComponent } from './files/files.component';
 registerPlugin(FilePondPluginFileValidateType);
 registerPlugin(FilePondPluginFileEncode);
 
 @NgModule({
-  declarations: [FilesComponent, ParametersComponent, EditParameterComponent, CoursesComponent, CreateEditCourseComponent, CareersComponent, CreateEditCareerComponent, UsersComponent, CreateEditUserComponent, ItemsComponent, EditItemComponent, BindingsComponent, CreateEditBindingsComponent],
+  declarations: [FilesComponent, ParametersComponent, EditParameterComponent, CoursesComponent, CreateEditCourseComponent, CareersComponent, CreateEditCareerComponent, UsersComponent, CreateEditUserComponent, ItemsComponent, EditItemComponent, BindingsComponent, CreateEditBindingsComponent, EditFileComponent],
   imports: [
     CommonModule,
     AdminRoutingModule,
