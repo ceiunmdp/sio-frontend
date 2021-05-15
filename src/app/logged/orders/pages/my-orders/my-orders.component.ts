@@ -1,9 +1,7 @@
-import {DatePipe} from '@angular/common';
 import {HttpErrorResponse} from '@angular/common/http';
-import {Component, OnInit, ViewChild } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource, PageEvent} from '@angular/material';
 import {Router} from '@angular/router';
-import {from, Observable} from 'rxjs';
 import {finalize} from 'rxjs/operators';
 import {AND, FilterBuilder, OPERATORS, OR} from 'src/app/_helpers/filterBuilder';
 import {Order} from 'src/app/_models/orders/order';
@@ -69,10 +67,9 @@ export class MyOrdersComponent implements OnInit {
   getActiveOrders(sort?: Sort[], pagination?: Pagination) {
     const filter = this.fb.and(
       this.fb.or(
-        // TODO: poner resto de condiciones
         this.fb.where('state.code', OPERATORS.IS, 'requested'),
-        // fb.where('state.code', OPERATORS.IS, 'in_process'),
-        // fb.where('state.code', OPERATORS.IS, 'ready')
+        this.fb.where('state.code', OPERATORS.IS, 'in_process'),
+        this.fb.where('state.code', OPERATORS.IS, 'ready')
       )
     );
     this.getOrdersService(filter, sort, pagination)
@@ -83,8 +80,8 @@ export class MyOrdersComponent implements OnInit {
   getHistoricOrders(sort?: Sort[], pagination?: Pagination) {
     const filter = this.fb.or(
       this.fb.where('state.code', OPERATORS.IS, 'cancelled'),
-      // this.fb.where('state.code', OPERATORS.IS, 'undelivered'),
-      // this.fb.where('state.code', OPERATORS.IS, 'delivered')
+      this.fb.where('state.code', OPERATORS.IS, 'undelivered'),
+      this.fb.where('state.code', OPERATORS.IS, 'delivered')
     );
     this.getOrdersService(filter, sort, pagination)
         .then(_ => (this.historicOrdersShow = true))
@@ -94,8 +91,7 @@ export class MyOrdersComponent implements OnInit {
   private getOrdersService(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Promise<Order[]> {
     this.isLoadingGetOrders = true;
     const promise: Promise<any> = new Promise((res, rej) => {
-      // TODO: poner sort
-      this.orderService.getMyOrders(filter, null, pagination).pipe(
+      this.orderService.getMyOrders(filter, sort, pagination).pipe(
         finalize(() => {
           this.isLoadingGetOrders = false;
         })
