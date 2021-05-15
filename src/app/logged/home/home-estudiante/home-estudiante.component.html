@@ -52,7 +52,7 @@
    </mat-card>
 
    <!-- Pedidos en curso -->
-   <mat-card class="m-0 my-3 card-shadow" fxFlex="100" [ngClass.lt-md]="{ 'border-radius-0': true }">
+   <mat-card *ngIf="!this.isLoadingGetOrders; else loadingDiv" class="m-0 my-3 card-shadow" fxFlex="100" [ngClass.lt-md]="{ 'border-radius-0': true }">
       <mat-card-header>
          <mat-card-subtitle><span class="mat-h3">Pedidos en curso</span></mat-card-subtitle>
       </mat-card-header>
@@ -60,13 +60,13 @@
       <mat-card-content>
          <mat-list class="mx-3">
             <mat-list-item *ngFor="let order of orders">
-               <span fxFlex.gt-md="25" fxFlex.lt-lg="15">
+               <!-- <span fxFlex.gt-md="25" fxFlex.lt-lg="15">
                   <span fxHide="true" fxShow.gt-md>Pedido</span> #{{ order.id }}
+               </span> -->
+               <span fxFlex.gt-md="37" fxFlex.lt-lg="1 1 auto" class="text-secondary">
+                  {{ order.tracking[0].timestamp | date: "dd/MM/yy H:mm" }}
                </span>
-               <span fxFlex.gt-md="25" fxFlex.lt-lg="35" class="text-secondary">
-                  {{ order.dateOrdered | date: "dd/MM/yy H:mm" }}
-               </span>
-               <span fxFlex.gt-md="25" fxFlex.lt-lg="35" fxLayoutAlign="start center">
+               <span fxFlex.gt-md="37" fxFlex.lt-lg="1 1 auto" fxLayoutAlign="start center">
                   <mat-icon class="text-primary mr-1 mat-icon-small" mat-list-icon svgIcon="customCircle"></mat-icon>
                   {{ order.state.name }}
                </span>
@@ -100,3 +100,7 @@
       </mat-card-footer>
    </mat-card>
 </div>
+
+<ng-template #loadingDiv>
+    <app-spinner fxFlex="100" fxLayoutAlign="center start"></app-spinner>
+</ng-template>

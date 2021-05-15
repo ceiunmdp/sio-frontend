@@ -6,6 +6,7 @@ export enum API {
    PARAMETERS = "parameters",
    BINDINGS = "bindings",
    MENU = "menu",
+   MY_ORDERS = "orders/me",
    ORDERS = "user/orders",
    FILES = "/files",
    CAREERS = "careers",

@@ -1,22 +1,32 @@
 import { OrderFile } from './order-file';
 import { OrderStatus } from './order-status';
-import { User } from '../users/user';
+import { Student, User } from '../users/user';
 
+interface State{
+  code: string,
+  id: string,
+  name: string
+}
 export interface Order {
-    id: number;
-    totalPrice: number;
-    paidPrice: number;
-    dateOrdered: Date;
-    campus: {
-        name: string
-    };
-    state: {
-        name: string
-    };
-    numberOfFiles: number;
-    date: Date;
-    files?: OrderFile[];
-    status?: OrderStatus[];
-    user?: User;
-    tracking?;
+  campus: {
+    id: string,
+    name: string
+  };
+  deposit: number,
+  id: number;
+  student: Student,
+  state: State,
+  total: number,
+  tracking: {
+    state: State,
+    timestamp: Date
+  } [],
+  totalPrice: number;
+  paidPrice: number;
+  dateOrdered: Date;
+  numberOfFiles: number;
+  date: Date;
+  files?: OrderFile[];
+  status?: OrderStatus[];
+  user?: User;
 }

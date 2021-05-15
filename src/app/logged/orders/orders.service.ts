@@ -21,6 +21,7 @@ import {RestUtilitiesService} from 'src/app/_services/rest-utilities.service';
 import {Pagination} from 'src/app/_models/pagination';
 import {UnproccesedOrder} from './pages/new-order/new-order.component';
 import MultiRange from 'multi-integer-range';
+import {ORDER_STATES} from 'src/app/_orderStates/states';
 
 export interface PostOrder {
   campus_id: string,
@@ -107,12 +108,9 @@ export enum PRICES_CODES {
 export class OrdersService {
   constructor(private http: HttpClient, private restService: RestUtilitiesService) {}
 
-  getOrders(active?: boolean): Observable<Order[]> {
+  getOrders(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<Order[]> {
     const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
-    let params = new HttpParams();
-    if (active) {
-      params = params.set("active", "true");
-    }
+    const params: HttpParams = this.restService.formatCreateAndAppendQps({filter, sort, pagination})
     return this.http
       .get(`${environment.apiUrl}/${API.ORDERS}`, {
         headers: queryHeaders,
@@ -122,6 +120,22 @@ export class OrdersService {
       .pipe(
         map<HttpResponse<any>, any>(response => {
           return response.body.data;
+        })
+      );
+  }
+
+  getMyOrders(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<Order[]>> {
+    const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+    const params: HttpParams = this.restService.formatCreateAndAppendQps({filter, sort, pagination})
+    return this.http
+      .get(`${environment.apiUrl}/${API.MY_ORDERS}`, {
+        headers: queryHeaders,
+        observe: "response",
+        params
+      })
+      .pipe(
+        map<HttpResponse<ResponseAPI<Order[]>>, ResponseAPI<Order[]>>(response => {
+          return response.body;
         })
       );
   }
@@ -141,20 +155,31 @@ export class OrdersService {
       );
   }
 
-  cancelOrderById(orderId: number): Observable<ResponseMessage> {
+  getOrderFiles(orderId: number): Observable<any> {
     const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
 
-    // ¿Falta algo para indicarle al backend que debe cancelar la orden?
-    const body = new HttpParams();
-
     return this.http
-      .put<ResponseMessage>(`${environment.apiUrl}/${API.ORDERS}/${orderId}/cancelar`, body, {
+      .get<Order>(`${environment.apiUrl}/${API.ORDERS}/${orderId}/order-files`, {
         headers: queryHeaders,
         observe: "response"
       })
       .pipe(
-        map<HttpResponse<ResponseMessage>, ResponseMessage>(response => {
-          return response.body;
+        map<HttpResponse<any>, Order>(response => {
+          return response.body.data;
+        })
+      );
+  }
+
+  patchOrder(body: {state: {code: ORDER_STATES}},orderId: number): Observable<Order> {
+    const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+    return this.http
+      .patch<any>(`${environment.apiUrl}/${API.ORDERS}/${orderId}`, body, {
+        headers: queryHeaders,
+        observe: "response"
+      })
+      .pipe(
+        map<HttpResponse<ResponseAPI<Order>>, Order>(response => {
+          return response.body.data.items;
         })
       );
   }
@@ -439,6 +464,7 @@ export class OrdersService {
       campus_id: order.campus_id,
       order_files: []
     };
+    console.log(order);
     order.order_files.forEach(orderFile => {
       if (orderFile.same_config) {
         // Sacar los bindings groups de cada configuration 
@@ -467,14 +493,21 @@ export class OrdersService {
         orderFile.configurations.forEach(_configuration => {
           const copies = 1;
           const file_id = orderFile.file_id;
-          delete _configuration.binding_groups.binding;
+          if(_configuration.binding_groups){
+            delete _configuration.binding_groups.binding;
+          }
           const configuration: any = {..._configuration};
           configuration.double_sided = !configuration.double_sided ? false: true;
           delete configuration.options_range;
           configuration.slides_per_sheet = Number(configuration.slides_per_sheet);
           configuration.range = new MultiRange(configuration.range).toString();
           delete configuration.binding_groups;
-          postOrder.order_files.push({...(!!_configuration.binding_groups && {binding_groups: [_configuration.binding_groups], configuration, copies, file_id})});
+          postOrder.order_files.push({
+            ...(!!_configuration.binding_groups && {binding_groups: [_configuration.binding_groups]}), 
+            configuration, 
+            copies, 
+            file_id
+          });
         })
       }
     })

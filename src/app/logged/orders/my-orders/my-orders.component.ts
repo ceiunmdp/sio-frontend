@@ -113,7 +113,7 @@ export class MyOrdersComponent implements OnInit {
 
    private getOrdersService(active?: boolean): Promise<any[]> {
       return new Promise((resolve, reject) => {
-         this.orderService.getOrders(active).subscribe(
+         this.orderService.getOrders().subscribe(
             orders => resolve(orders),
             err => reject(err)
          );

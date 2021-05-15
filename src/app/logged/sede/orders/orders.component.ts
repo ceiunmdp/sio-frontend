@@ -279,7 +279,7 @@ export class OrdersComponent implements OnInit {
    }
 
    getActiveOrders() {
-      this.orderService.getOrders(true).subscribe(
+      this.orderService.getOrders().subscribe(
          orders => {
             this.orders = <any>orders;
             this.dataOrders = new MatTableDataSource(this.orders);
