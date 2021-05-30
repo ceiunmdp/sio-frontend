@@ -7,7 +7,7 @@ export enum API {
    BINDINGS = "bindings",
    MENU = "menu",
    MY_ORDERS = "orders/me",
-   ORDERS = "user/orders",
+   ORDERS = "orders",
    FILES = "/files",
    CAREERS = "careers",
    RELATIONS = "relations",
@@ -20,5 +20,5 @@ export enum API {
    USERS_PROFESSORSHIPS = "/users/professorships",
    USERS_CAMPUS = "/users/campus",
    USERS_SCHOLARSHIPS = "/users/scholarships",
-
+   PRINTERS = "/printers",
 }

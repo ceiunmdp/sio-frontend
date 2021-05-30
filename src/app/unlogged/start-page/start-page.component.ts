@@ -7,6 +7,7 @@ import { User } from "src/app/_models/users/user";
 import { AuthenticationService } from "src/app/_services/authentication.service";
 import { HttpErrorResponseHandlerService } from "src/app/_services/http-error-response-handler.service";
 import { AngularFireAuth } from '@angular/fire/auth';
+import {Subscription} from 'rxjs';
 
 @Component({
    selector: "cei-start-page",
@@ -18,6 +19,7 @@ export class StartPageComponent implements OnInit {
    messageError: string;
    typeAlert: string;
    messageAlert: string;
+  _authState: Subscription;
 
    constructor(
       private authService: AuthenticationService,
@@ -27,14 +29,21 @@ export class StartPageComponent implements OnInit {
    ) { }
 
    ngOnInit() {
-      this.afAuth.authState.subscribe(user => {
-         if (!!user.email && !!user.emailVerified) {
-            this.onSuccess(user);
-         }
-      })
+      // this._authState = this.afAuth.authState.subscribe(user => {
+      //    if (!!user.email && !!user.emailVerified) {
+      //       this.onSuccess(user);
+      //    }
+      // })
+   }
+
+   ngOnDestroy(): void {
+     //Called once, before the instance is destroyed.
+     //Add 'implements OnDestroy' to the class.
+    //  this._authState.unsubscribe();
    }
 
    onSuccess(e) {
+     console.log(e);
       const u: User = {
          token: e.xa,
       }

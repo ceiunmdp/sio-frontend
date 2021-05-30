@@ -254,6 +254,16 @@ export class OrdersService {
       );
   }
 
+  getFilesByCourse(filter: OR | AND): Observable<File[]> {
+    const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+    const queryParams = new HttpParams().append("filter", JSON.stringify(filter))
+    return this.http.get(environment.apiUrl + "/files", {headers: queryHeaders, observe: "response", params: queryParams}).pipe(
+      map<HttpResponse<any>, any>(result => {
+        return result.body.data.items;
+      })
+    );
+  }
+
   getFiles(): Observable<Career[]> {
     const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
     return this.http.get(environment.apiUrl + '/' + API.CAREERS, {headers: queryHeaders, observe: "response"}).pipe(

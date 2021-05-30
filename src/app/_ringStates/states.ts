@@ -1,4 +1,4 @@
 export enum RING_STATES {
-   POR_ANILLAR = 1,
-   ANILLADO = 2,
+  TO_RING = 'to_ring',
+  RINGED = 'ringed',
 }

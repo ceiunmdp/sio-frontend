@@ -285,7 +285,7 @@ export class AuthenticationService {
                 url = `${APIS.USERS_PROFESSORSHIPS}/${basicUser.id}`
                 break;
             case USER_TYPES.SEDE:
-                url = `${APIS.USERS_CAMPUS}/${basicUser.id}`
+                url = `/user/campus`
                 break;
             default:
                 break;

@@ -23,7 +23,7 @@ export interface AND {
 }
 export interface WHERE {
    [key: string]: {
-      [key: string]: string | number | Date
+      [key: string]: string | number | Date | string[]
    }
 }
 export class FilterBuilder {
@@ -39,8 +39,9 @@ export class FilterBuilder {
       }
    }
 
-   public where(property: string, operator: OPERATORS, value: string | number | Date): WHERE {
+   public where(property: string, operator: OPERATORS, value: string | number | Date | string[]): WHERE {
       const c: any = property;
+      const _value =  Array.isArray(value) ? value.join(',') : value;
       return {
          [c]: {
             [operator]: value

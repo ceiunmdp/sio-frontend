@@ -12,7 +12,7 @@ import { MatDividerModule } from "@angular/material/divider";
 import { ReactiveFormsModule } from "@angular/forms";
 import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
 import { HistoricOrdersComponent } from "./historic-orders/historic-orders.component";
-import { MatIconModule, MatPaginatorModule, MatInputModule, MatSortModule, MatMenuModule } from "@angular/material";
+import { MatIconModule, MatPaginatorModule, MatInputModule, MatSortModule, MatMenuModule, MatSpinner, MatProgressSpinnerModule } from "@angular/material";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatListModule } from "@angular/material/list";
 
@@ -41,6 +41,7 @@ import { MatListModule } from "@angular/material/list";
       MatInputModule,
       MatSortModule,
       MatMenuModule,
+      MatProgressSpinnerModule,
       SweetAlert2Module.forRoot()
    ],
    entryComponents: [BottomChargeBalance, BottomSheetFiles]
