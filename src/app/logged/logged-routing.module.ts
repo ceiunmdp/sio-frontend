@@ -56,9 +56,15 @@ const loggedRoutes: Routes = [
             data: { expectedRoles: [Roles.Admin], breadcumb: 'Admin' }
          },
          {
+            path: "catedra",
+            loadChildren: () => import("./professorship/professorship.module").then(mod => mod.ProfessorshipModule),
+            // canActivate: [RoleGuard],
+            // data: { expectedRoles: [Roles.Catedra], breadcumb: 'Catedra' }
+         },
+         {
             path: "home",
             loadChildren: () => import("./home/home.module").then(mod => mod.HomeModule),
-         },
+         }
       ]
    }
 ];

@@ -1,5 +1,6 @@
 export interface User {
    id?: number;
+   course?: any;
    dark_theme?: number;
    disabled?: number;
    display_name?: string;
