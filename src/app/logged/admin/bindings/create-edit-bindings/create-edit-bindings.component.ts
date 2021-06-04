@@ -35,8 +35,8 @@ export class CreateEditBindingsComponent implements OnInit {
 
     return this.formBuilder.group({
       [names.BINDING_NAME]: [!!binding && !!binding.name ? binding.name : '', [CustomValidators.required("Nombre del anillado requerido")]],
-      [names.BINDING_PRICE]: [!!binding && !!binding.price ? binding.price : '', [CustomValidators.required("Precio del anillado requerido"), CustomValidators.minLength(0, "El precio debe ser mayor a 0")]],
-      [names.BINDING_SHEETS_LIMIT]: [!!binding && !!binding.sheets_limit ? binding.sheets_limit : '', [CustomValidators.required("Límite de hojas del anillado requerido"), CustomValidators.minLength(0, "El valor debe ser mayor a 0")]]
+      [names.BINDING_PRICE]: [!!binding && !!binding.price ? binding.price : '', [CustomValidators.required("Precio del anillado requerido"), CustomValidators.minValue(0, "El precio debe ser mayor a 0")]],
+      [names.BINDING_SHEETS_LIMIT]: [!!binding && !!binding.sheets_limit ? binding.sheets_limit : '', [CustomValidators.required("Límite de hojas del anillado requerido"), CustomValidators.minValue(0, "El valor debe ser mayor a 0")]]
     });
   }
 
@@ -53,16 +53,12 @@ export class CreateEditBindingsComponent implements OnInit {
   postBinding() {
     this.isLoadingPostBinding = true;
     this.adminService.postBinding(this.bindingForm.value).subscribe(response => {
-      console.log(response);
     }, e => console.log(e), () => { this.isLoadingPostBinding = false; this.onCreated.emit() });
   }
 
   patchBinding(bindingId: string) {
     this.isLoadingPostBinding = true;
-    console.log('bindingForm', this.bindingForm.value)
     this.adminService.patchBinding(this.bindingForm.value, bindingId).subscribe(response => {
-      console.log(response);
     }, e => console.log(e), () => { this.isLoadingPostBinding = false; this.onCreated.emit() });
   }
-
 }

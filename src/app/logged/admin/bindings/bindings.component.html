@@ -9,7 +9,7 @@
             </button>
         </div>
         <cei-text-searching-input filterInputs fxFlex="100" [placeholder]="'Búsqueda rápida'"
-            [label]="'Ingrese el nombre del anillado'" [inputFilterValue]="this. inputFilterValue"
+            [label]="'Ingrese el nombre del anillado'" [inputFilterValue]="this.inputFilterValue"
             (onSearch)="this.inputFilterValue = $event;this.onSearch($event)">
         </cei-text-searching-input>
         <table table fxFlex="100" mat-table *ngIf="!this.isLoadingGetBindings; else loadingDiv"
