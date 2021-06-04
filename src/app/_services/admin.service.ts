@@ -15,6 +15,7 @@ import { dataUrlToBlob } from '../_utils/utils';
 import FormData from 'form-data';
 import { Course } from '../_models/orders/course';
 import { API } from '../_api/api';
+import { typeUserFilter } from '../logged/admin/users/users.component';
 // import { FileUpload } from 'src/app/modules/logged/admin/files/files.component';
 
 export interface CoursePost {
@@ -445,6 +446,42 @@ export class AdminService {
 
       return this.http
          .patch<any>(`${environment.apiUrl}/${API.PARAMETERS}/${idParameter}`, body, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
+   copiesReloader(): Observable<any> {
+      const queryHeaders = new HttpHeaders().append(
+         "Content-Type",
+         "application/json"
+      );
+      return this.http
+         .post<any>(`${environment.apiUrl}${API.AVAILABLE_COPIES_RELOADER}`, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>(response => {
+               return;
+            })
+         );
+   }
+
+   patchStudentsOrSholarships(body, type: string): Observable<any> {
+      console.log(body, type)
+      const queryHeaders = new HttpHeaders().append(
+         "Content-Type",
+         "application/json"
+      );
+      const apiPath = (type == typeUserFilter.SCHOLARSHIP) ? API.USERS_SCHOLARSHIPS : API.USERS_STUDENTS
+      return this.http
+         .patch<any>(`${environment.apiUrl}${apiPath}/bulk`, body, {
             headers: queryHeaders,
             observe: "response"
          })

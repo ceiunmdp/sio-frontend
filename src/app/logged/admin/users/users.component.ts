@@ -1,3 +1,5 @@
+import { AdminService } from 'src/app/_services/admin.service';
+import { API } from './../../../_api/api';
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource, PageEvent } from '@angular/material';
 import { from, Observable, Subscription } from 'rxjs';
@@ -40,6 +42,7 @@ export class UsersComponent implements OnInit {
   selectedUser;
   dataSourceUsers: MatTableDataSource<User>;
   displayedColumns: string[];
+  promoteOrDegrade: any[] = [];
   displayedUsersColumns: string[] = [
     'id',
     'name',
@@ -49,20 +52,25 @@ export class UsersComponent implements OnInit {
     'disabled',
   ];
   displayedStudentsColumns: string[] = [
+    'selection',
     'id',
     'name',
     'email',
     'dni',
     'verified',
     'disabled',
+    'scholarship'
   ];
   displayedScholarshipsColumns: string[] = [
+    'selection',
     'id',
     'name',
     'email',
     'dni',
     'verified',
     'disabled',
+    'scholarship',
+    'actions'
   ];
   displayedAdminColumns: string[] = [
     'id',
@@ -79,7 +87,6 @@ export class UsersComponent implements OnInit {
     'verified',
     'disabled',
     'actions'
-
   ];
   displayedProfessorshipsColumns: string[] = [
     'id',
@@ -101,7 +108,7 @@ export class UsersComponent implements OnInit {
   sort: Sort[];
   fb: FilterBuilder;
   allUsersCheckbox;
-  constructor(private authService: AuthenticationService, ) { }
+  constructor(private authService: AuthenticationService, private adminService: AdminService) { }
 
   ngOnInit() {
     this.step = STEPS.LIST;
@@ -141,6 +148,7 @@ export class UsersComponent implements OnInit {
   }
 
   onTypeUserFilter(typeUserFilter: typeUserFilter) {
+    this.promoteOrDegrade = [];
     this.inputFilterValue = '';
     this.filter = null;
     this.getUsers(typeUserFilter, this.filter, this.sort, this.pagination)
@@ -169,10 +177,12 @@ export class UsersComponent implements OnInit {
   }
 
   onEditUser(user) {
+    console.log(user)
     this.selectedUser = user;
     if (this.typeUserFilterSelected == typeUserFilter.ALL) {
       this.typeUserFilterSelectedPost = user.type;
     } else {
+      console.log(this.typeUserFilterSelected)
       this.typeUserFilterSelectedPost = this.typeUserFilterSelected;
     }
     this.step = STEPS.CREATE_OR_EDIT;
@@ -195,6 +205,55 @@ export class UsersComponent implements OnInit {
           console.log(newUser);
           Swal.fire({
             title: `Usuario ${!user.disabled ? 'deshabilitado' : 'habilitado'} correctamente`,
+            icon: 'success'
+          })
+          this.onRefresh();
+        })
+      }
+    })
+  }
+
+  onChangeScholarshipUser(user) {
+    Swal.fire({
+      title: `Atención`,
+      text: `¿Seguro desea ${user.type === USER_TYPES.BECADO ? 'deshabilitar' : 'habilitar'} la beca del usuario ${user.display_name}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      reverseButtons: true,
+      confirmButtonColor: '#d33',
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar',
+      showLoaderOnConfirm: true,
+      allowOutsideClick: false,
+      preConfirm: () => {
+        return this.authService.patchUserStudentScholarship(user.type === USER_TYPES.BECADO ? API.USERS_SCHOLARSHIPS : API.USERS_STUDENTS,{ type: user.type === USER_TYPES.ESTUDIANTE ? USER_TYPES.BECADO : USER_TYPES.ESTUDIANTE }, user.id).toPromise().then(newUser => {
+          Swal.fire({
+            title: `Usuario ${newUser.data.type === USER_TYPES.ESTUDIANTE ? 'desasignado de' : 'asignado a'} la beca correctamente`,
+            icon: 'success'
+          })
+          this.onRefresh();
+        })
+      }
+    })
+  }
+
+  onReloadCopies() {
+    Swal.fire({
+      title: `Atención`,
+      text: `¿Seguro desea restaurar las copias de TODOS los becados?`,
+      icon: 'warning',
+      showCancelButton: true,
+      reverseButtons: true,
+      confirmButtonColor: '#d33',
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar',
+      showLoaderOnConfirm: true,
+      allowOutsideClick: false,
+      preConfirm: () => {
+        return this.adminService.copiesReloader().toPromise().then(newUser => {
+          console.log(newUser);
+          Swal.fire({
+            title: `Copias restauradas exitosamente`,
             icon: 'success'
           })
           this.onRefresh();
@@ -276,6 +335,36 @@ export class UsersComponent implements OnInit {
       )
     })
     return from(promise);
+  }
+
+  onCheckbox(checked, user) {
+    checked ? this.promoteOrDegrade.push({id: user.id, name: user.display_name}) : this.promoteOrDegrade = this.promoteOrDegrade.filter(userx => userx.id != user.id);
+    console.table(this.promoteOrDegrade)
+  }
+
+  degradeOrPromote(type) {
+    let names = this.promoteOrDegrade.map(user => user.name + '\n')
+    Swal.fire({
+      title: `Atención`,
+      text: `¿Seguro desea ${type === typeUserFilter.STUDENT ? 'promover a becados los siguientes estudiantes:\n' : 'degradar a estudiantes a los siguientes becados:\n'}${names}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      reverseButtons: true,
+      confirmButtonColor: '#d33',
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar',
+      showLoaderOnConfirm: true,
+      allowOutsideClick: false,
+      preConfirm: () => {
+        return this.adminService.patchStudentsOrSholarships(this.promoteOrDegrade.map(user => { return {id: user.id, type: (type == typeUserFilter.STUDENT) ? USER_TYPES.BECADO : USER_TYPES.ESTUDIANTE} }), type).toPromise().then(newUser => {
+          Swal.fire({
+            title: `Usuarios ${type === typeUserFilter.STUDENT ? 'promovidos' : 'degradados'} correctamente`,
+            icon: 'success'
+          })
+          this.onRefresh();
+        })
+      }
+    })
   }
 
 }

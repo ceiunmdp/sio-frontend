@@ -395,7 +395,7 @@ export class NewOrderComponent implements OnInit {
       //    ? quantityPagesByConfiguration + this.tabs[indexTab].quantityPages
       //    : this.tabs[indexTab].quantityPages;
       console.log("Paginas totales", totalPages);
-      const anillado = this.anillados.find(anillado => totalPages <= anillado.maximumLimit);
+      const anillado = this.anillados.find(anillado => totalPages <= anillado.id);
 
       return anillado ? anillado : null;
    }
