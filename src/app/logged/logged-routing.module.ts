@@ -62,6 +62,12 @@ const loggedRoutes: Routes = [
             // data: { expectedRoles: [Roles.Catedra], breadcumb: 'Catedra' }
          },
          {
+            path: "estudiante",
+            loadChildren: () => import("./student/student.module").then(mod => mod.StudentModule),
+            // canActivate: [RoleGuard],
+            // data: { expectedRoles: [Roles.Catedra], breadcumb: 'Catedra' }
+         },
+         {
             path: "home",
             loadChildren: () => import("./home/home.module").then(mod => mod.HomeModule),
          }

@@ -73,6 +73,22 @@ export class CustomValidators {
       };
    }
 
+   static maxValue(maxValue: number, message: string): ValidatorFn {
+      return (control: AbstractControl): { [key: string]: any } | null => {
+         if (typeof control.value !== 'number') {
+            return {
+               maxValue: message,
+            }
+         } else {
+            return control && control.value && control.value > maxValue
+               ? {
+                  maxValue: message,
+               }
+               : null;
+         }
+      };
+   }
+
    static email(message: string): ValidatorFn {
       return (control: AbstractControl): { [key: string]: any } | null => {
          return control &&

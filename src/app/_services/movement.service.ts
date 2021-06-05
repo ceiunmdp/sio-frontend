@@ -3,16 +3,15 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { API } from '../_api/api';
 import { Movement } from '../_models/movement';
+import { ResponseAPI } from '../_models/response-api';
+import { MOVEMENTS } from '../_movements/movements';
 
 @Injectable({
    providedIn: 'root'
 })
 export class MovementService {
-   readonly TIPO_MOV_TRANSFERENCIA_ENTRANTE = 'TRANSFERENCIA SALIENTE';
-   readonly TIPO_MOV_TRANSFERENCIA_SALIENTE = 'TRANSFERENCIA ENTRANTE';
-   readonly TIPO_MOV_PEDIDO = 'PEDIDO';
-   readonly TIPO_MOV_CARGA_SALDO = 'CARGA DE SALDO';
 
    constructor(private http: HttpClient) { }
 
@@ -20,7 +19,7 @@ export class MovementService {
       const queryHeaders = new HttpHeaders().append('Content-Type', 'application/json');
 
       return this.http
-         .get<Movement[]>(`${environment.apiUrl}/movimientos`, {
+         .get<Movement[]>(`${environment.apiUrl}${API.MOVEMENTS}`, {
             headers: queryHeaders,
             observe: 'response'
          })
@@ -31,6 +30,29 @@ export class MovementService {
             })
          );
    }
+
+   createMovement(sourceId: string, targetId: string, transferType: MOVEMENTS, amount: number): Observable<ResponseAPI<Movement>> {
+      const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      let body = {
+         amount,
+         type: {
+            code: transferType
+         },
+         source_id: sourceId,
+         target_id: targetId,
+      };
+
+      return this.http
+        .post<ResponseAPI<Movement>>(`${environment.apiUrl}${API.MOVEMENTS}`, body, {
+          headers: queryHeaders,
+          observe: "response"
+        })
+        .pipe(
+          map<HttpResponse<ResponseAPI<Movement>>, ResponseAPI<Movement>>(response => {
+            return response.body;
+          })
+        );
+    }
 
    private formatMovements(movements: Movement[]): Movement[] {
       // movements.forEach((movement, index, array) => {

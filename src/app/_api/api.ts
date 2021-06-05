@@ -16,6 +16,8 @@ export enum API {
    MOVEMENTS = "/movements",
    USER = "/user",
    USER_PROFESSORSHIP = "/user/professorship",
+   USER_STUDENT = "/user/student",
+   USER_SCHOLARSHIP = "/user/scholarship",
    USERS = "/users",
    USERS_ADMINS = "/users/admins",
    USERS_STUDENTS = "/users/students",

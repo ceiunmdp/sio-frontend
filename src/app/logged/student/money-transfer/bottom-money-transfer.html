@@ -1,0 +1,50 @@
+<div fxLayout="row wrap" fxLayoutAlign="space-between stretch">
+   <div fxLayout="row wrap" fxLayoutAlign="start center">
+      <h2 class="text-secondary-darker pt-1">
+         Transferencia de saldo
+      </h2>
+   </div>
+   <div fxLayout="row wrap" fxLayoutAlign="start center">
+      <h2 class="text-secondary-darker pt-1">
+         Saldo actual: {{this?.currentUser?.balance | moneda }}
+      </h2>
+   </div>
+   <!-- <div fxLayout="row wrap" fxLayoutAlign="start center">
+      <mat-icon class="text-secondary">alternate_email</mat-icon>
+      <span>  </span>
+   </div> -->
+</div>
+<div fxLayout="column" fxLayoutGap="3%" class="mx-3 my-5">
+   <div fxLayout="row wrap" fxLayoutAlign="space-between stretch">
+      <div fxLayout="row wrap" fxLayoutAlign="start center">
+         <mat-icon class="mrs-1 text-secondary">perm_identity</mat-icon>
+         <span> {{this?.transferMoneyUser?.display_name}} </span>
+      </div>
+      <div fxLayout="row wrap" fxLayoutAlign="start center">
+         <mat-icon class="mrs-1 text-secondary">assignment_ind</mat-icon>
+         <span> {{this?.transferMoneyUser?.dni | number}} </span>
+      </div>
+      <div fxLayout="row wrap" fxLayoutAlign="start center">
+         <mat-icon class="text-secondary">alternate_email</mat-icon>
+         <span> {{this?.transferMoneyUser?.email }} </span>
+      </div>
+   </div>
+
+   <form [formGroup]="this.transferForm" fxLayout="row wrap" fxLayoutAlign="center center" class=" mt-3">
+      <cei-number-input fxFlex="70" [fontSize]="'16px'" [form]="this.transferForm" [name]="this.MONEY"
+         [minValue]="1" [placeholder]="'Ingrese el dinero a transferir'" [prefix]="'$'" class="mb-5 mt-4">
+      </cei-number-input>
+      <div fxFlex="100" fxLayout="row" class="mt-5" fxLayoutAlign="space-between ">
+         <button type="button" (click)="this.onCancelCharge()" fxFlex="45%" mat-raised-button color="warn">
+            Cancelar
+         </button>
+         <button type="button" (click)="this.onClickChargeBalance()" [disabled]="!transferForm.valid" fxFlex="45%"
+            mat-raised-button color="primary">
+            Transferir
+         </button>
+      </div>
+   </form>
+</div>
+
+<swal (confirm)="onConfirmSwal()" #responseSwal> </swal>
+<swal (confirm)="chargeBalance()" #questionSwal> </swal>

@@ -15,40 +15,9 @@ export class MovementsComponent implements OnInit {
 
    ngOnInit() {
       this.generalService.sendMessage({ title: this.TITLE });
-      this.addIcons();
-      this.movementService.getAllMovements().subscribe(movements => {
-         this.movements = movements;
-      });
+      // this.movementService.getAllMovements().subscribe(movements => {
+      //    this.movements = movements;
+      // });
 
-      //   this.movements.push(new Movement(1, 'yo', 'Anexo', 100, 'Carga de saldo', 'load-move', new Date()));
-      //   this.movements.push(
-      //      new Movement(
-      //         2,
-      //         'Sebastian Canonaco',
-      //         'Manuel Nucci',
-      //         100,
-      //         'Transferencia de saldo',
-      //         'transfer-move',
-      //         new Date()
-      //      )
-      //   );
-      //   this.movements.push(
-      //      new Movement(
-      //         3,
-      //         'Emanuel Ponce',
-      //         'Sebastian Canonaco',
-      //         100,
-      //         'Transferencia de saldo',
-      //         'transfer-move',
-      //         new Date()
-      //      )
-      //   );
-      //   this.movements.push(new Movement(4, 'Sebastian Canonaco', 'Central', 100, 'Pedido', 'order-move', new Date()));
-   }
-
-   private addIcons() {
-      this.generalService.addIcon('transfer-move', 'transfer.svg');
-      this.generalService.addIcon('order-move', 'file.svg');
-      this.generalService.addIcon('load-move', 'money.svg');
    }
 }
