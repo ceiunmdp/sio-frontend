@@ -1,17 +1,18 @@
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { environment } from "src/environments/environment";
-import { Order } from "src/app/_models/orders/order";
-import { HttpParams, HttpHeaders, HttpResponse, HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { OR, AND } from 'src/app/_helpers/filterBuilder';
-import { ResponseAPI } from 'src/app/_models/response-api';
-import { RestUtilitiesService } from 'src/app/_services/rest-utilities.service';
 import { API } from 'src/app/_api/api';
-import { Student } from 'src/app/_models/users/user';
+import { AND, OR } from 'src/app/_helpers/filterBuilder';
+import { Order } from "src/app/_models/orders/order";
 import { Pagination } from 'src/app/_models/pagination';
+import { ResponseAPI } from 'src/app/_models/response-api';
 import { Sort } from 'src/app/_models/sort';
+import { Student } from 'src/app/_models/users/user';
+import { MOVEMENTS } from "src/app/_movements/movements";
 import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { RestUtilitiesService } from 'src/app/_services/rest-utilities.service';
+import { environment } from "src/environments/environment";
 
 @Injectable({
    providedIn: "root"
@@ -62,12 +63,12 @@ export class SedeService {
       body = {
          amount,
          type: {
-            // TODO: Pasar a enum
-            code: "top_up"
+            code: MOVEMENTS.TOP_UP
          },
          source_id: this.authService.currentUserValue.id,
          target_id: idUser,
       };
+      console.log('BODY',body)
       return this.http
          .post<any>(`${environment.apiUrl}${API.MOVEMENTS}`, JSON.stringify(body), {
             headers: queryHeaders,

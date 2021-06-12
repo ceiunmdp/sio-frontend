@@ -19,7 +19,6 @@ import { HomeModule } from './home/home.module';
 import { LoggedRoutingModule } from './logged-routing.module';
 import { LoggedComponent } from './logged.component';
 import { NavbarComponent } from './sections/navbar/navbar.component';
-import { MaterialModule } from '../material/material.module';
 // import { BreadcrumbModule } from 'xng-breadcrumb';
 
 @NgModule({

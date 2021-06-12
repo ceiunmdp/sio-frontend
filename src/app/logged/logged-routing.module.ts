@@ -1,10 +1,9 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+import { RoleGuard } from "../_auth/role.guard";
 import { Roles } from "../_roles/roles";
 import { BalanceComponent } from "./balance/balance.component";
 import { LoggedComponent } from "./logged.component";
-import { AuthGuard } from "../_auth/auth.guard";
-import { RoleGuard } from "../_auth/role.guard";
 
 const loggedRoutes: Routes = [
    {
@@ -38,8 +37,8 @@ const loggedRoutes: Routes = [
          {
             path: "sede",
             loadChildren: () => import("./sede/sede.module").then(mod => mod.SedeModule),
-            canLoad: [RoleGuard],
-            data: { expectedRoles: [Roles.Sede, Roles.Admin] }
+            //canLoad: [RoleGuard],
+            //data: { expectedRoles: [Roles.Sede, Roles.Admin] }
             // ¿Preload de este módulo?
          },
          {
