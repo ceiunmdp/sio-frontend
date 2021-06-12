@@ -8,10 +8,11 @@ import { FormsModule } from '@angular/forms';
 import { UtilsModule } from 'src/app/_utils/utils.module';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { MatIconModule } from '@angular/material';
+import { MovementsComponent } from './movements/movements.component';
 
 
 @NgModule({
-  declarations: [MoneyTransferComponent, BottomMoneyTransferComponent],
+  declarations: [MoneyTransferComponent, BottomMoneyTransferComponent, MovementsComponent],
   imports: [
     CommonModule,
     MaterialModule,

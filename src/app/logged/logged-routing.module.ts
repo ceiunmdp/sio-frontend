@@ -3,7 +3,6 @@ import { RouterModule, Routes } from "@angular/router";
 import { Roles } from "../_roles/roles";
 import { BalanceComponent } from "./balance/balance.component";
 import { LoggedComponent } from "./logged.component";
-import { MovementsComponent } from "./movements/movements.component";
 import { AuthGuard } from "../_auth/auth.guard";
 import { RoleGuard } from "../_auth/role.guard";
 
@@ -23,12 +22,6 @@ const loggedRoutes: Routes = [
             //    // loadChildren: () =>
             //    //    import('./../../modules/cases/cases.module').then((mod) => mod.CasesModule),
             // canActivate: [RoleGuard],
-         },
-         {
-            path: "movimientos",
-            component: MovementsComponent,
-            canActivate: [RoleGuard],
-            data: { expectedRoles: [Roles.Estudiante] }
          },
          {
             path: "cargar-saldo",

@@ -1,32 +1,37 @@
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { API } from '../_api/api';
+import { AND, OR } from '../_helpers/filterBuilder';
 import { Movement } from '../_models/movement';
+import { Pagination } from '../_models/pagination';
 import { ResponseAPI } from '../_models/response-api';
+import { Sort } from '../_models/sort';
 import { MOVEMENTS } from '../_movements/movements';
+import { RestUtilitiesService } from './rest-utilities.service';
 
 @Injectable({
    providedIn: 'root'
 })
 export class MovementService {
 
-   constructor(private http: HttpClient) { }
+   constructor(private http: HttpClient, private restService: RestUtilitiesService) { }
 
-   public getAllMovements(): Observable<Movement[]> {
-      const queryHeaders = new HttpHeaders().append('Content-Type', 'application/json');
+   getMyMovements(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<Movement[]>> {
+      const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort, pagination })
 
       return this.http
-         .get<Movement[]>(`${environment.apiUrl}${API.MOVEMENTS}`, {
+         .get(`${environment.apiUrl}${API.MOVEMENTS}${API.ME}`, {
             headers: queryHeaders,
-            observe: 'response'
+            observe: "response",
+            params: params
          })
-         .pipe<Movement[]>(
-            map<HttpResponse<Movement[]>, Movement[]>(res => {
-               const movements = res.body;
-               return this.formatMovements(movements);
+         .pipe(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
             })
          );
    }

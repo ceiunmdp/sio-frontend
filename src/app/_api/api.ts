@@ -24,5 +24,6 @@ export enum API {
    USERS_PROFESSORSHIPS = "/users/professorships",
    USERS_CAMPUS = "/users/campus",
    USERS_SCHOLARSHIPS = "/users/scholarships",
+   ME= "/me"
 
 }

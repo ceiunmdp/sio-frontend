@@ -3,5 +3,6 @@ export enum MOVEMENTS {
     CANCELLED_ORDER = 'cancelled_order',
     TOP_UP = 'top_up',
     TRANSFER = 'transfer',
+    ALL = ''
  }
  
