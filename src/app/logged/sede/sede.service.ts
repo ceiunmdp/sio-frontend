@@ -125,16 +125,16 @@ export class SedeService {
          );
    }
 
-   patchOrder(orderId: number, stateId: number): Observable<any> {
+   patchOrder(orderId: string, stateCode: string): Observable<any> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
       let body;
       body = {
          state: {
-            id: stateId
+            code: stateCode
          }
       };
       return this.http
-         .patch<any>(`${environment.apiUrl}/user/orders/${orderId}`, JSON.stringify(body), {
+         .patch<any>(`${environment.apiUrl}/orders/${orderId}`, JSON.stringify(body), {
             headers: queryHeaders,
             observe: "response"
          })

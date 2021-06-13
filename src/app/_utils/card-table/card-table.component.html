@@ -7,7 +7,9 @@
     </mat-card-header>
     <mat-card-content>
         <div fxLayout="column">
-            <ng-content select="[filterInputs]"></ng-content>
+            <div fxLayoutAlign="center center">
+              <ng-content select="[filterInputs]"></ng-content>
+            </div>
             <ng-content select="[table]"></ng-content>
             <mat-paginator *ngIf="showPaginator" [pageIndex]="this.metaData?.current_page - 1"
                 [pageSize]="this.metaData?.items_per_page" [length]="this.metaData?.total_items" fxFlex="100"

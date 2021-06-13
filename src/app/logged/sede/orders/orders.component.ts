@@ -84,6 +84,11 @@ export class BottomSheetFiles implements OnInit {
 
    onUpdateBindingGroup = (bindingGroup) => {
     console.log(bindingGroup);
+    const ringedGroupIndex = this.ringedGroups.findIndex(ringedGroup => ringedGroup.id == bindingGroup.id);
+    if(ringedGroupIndex != -1) {
+      this.ringedGroups[ringedGroupIndex].state = {...bindingGroup.state};
+      this.cd.markForCheck();
+    }
    }
 
    onUpdateOrderFile = (orderFile) => {
@@ -228,6 +233,7 @@ export class OrdersComponent implements OnInit {
    FILE_STATES = FILE_STATES;
    orders: OrderCampus[] = [];
    isLoadingPendingOrders: boolean;
+   isLoadingPatchOrder = {};
    displayedColumns: string[] = [
       "id",
       "dateOrdered",
@@ -271,7 +277,6 @@ export class OrdersComponent implements OnInit {
       this.isLoadingPendingOrders = false;
     }
 
-    //TODO: probar cuando esté andando el cambio de estado de un pedido
     onUpdatedOrder = (order) => { 
       const orderIndex = this.orders.findIndex(_order => _order.id == order.id);
       if(order.state === ORDER_STATES.CANCELADO || order.state === ORDER_STATES.ENTREGADO || order.state === ORDER_STATES.NO_ENTREGADO){
@@ -290,9 +295,11 @@ export class OrdersComponent implements OnInit {
     }
 
     updateBottomSheetData(order) {
-      const instance = this._bottomSheet._openedBottomSheetRef.instance;
-      if(instance.order.id == order.id){
-        instance.actualState = {...order.state};
+      if(this._bottomSheet && this._bottomSheet._openedBottomSheetRef && this._bottomSheet._openedBottomSheetRef.instance){
+        const instance = this._bottomSheet._openedBottomSheetRef.instance;
+        if(instance.order.id == order.id){
+          instance.actualState = {...order.state};
+        }
       }
     }
 
@@ -324,6 +331,11 @@ export class OrdersComponent implements OnInit {
       default:
         return item[property];
     }
+  }
+
+  onClickChangeStateOrder(orderId: string, stateCode: string) {
+    this.patchOrder(orderId, stateCode)
+      .catch(err => this.handleErrors(err));
   }
 
   //  onClickChangeStateOrder(stateId: number, order: OrderCampus) {
@@ -405,14 +417,16 @@ export class OrdersComponent implements OnInit {
     * SERVICES *
     ************/
 
-   patchOrder(orderId: number, stateId: number): Promise<OrderCampus> {
+   patchOrder(orderId: string, stateCode: string): Promise<any> {
+      this.isLoadingPatchOrder[orderId] = true;
       return new Promise((resolve, reject) => {
-         this.sedeService.patchOrder(orderId, stateId).subscribe(
+         this.sedeService.patchOrder(orderId, stateCode).subscribe(
             (order) => resolve(order),
             (error) => {
                reject(error)
             },
          );
-      });
+      })
+        .finally(() => this.isLoadingPatchOrder[orderId] = false);
    }
 }

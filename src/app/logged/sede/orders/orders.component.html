@@ -80,7 +80,8 @@
                      </button>
                      <button
                         *ngIf="element.state.id !== ORDER_STATES.CANCELADO && element.state.id !== ORDER_STATES.ENTREGADO"
-                        mat-icon-button [matMenuTriggerFor]="menuActions" [matMenuTriggerData]="{ order: element }">
+                        mat-icon-button [matMenuTriggerFor]="menuActions" [matMenuTriggerData]="{ order: element }"
+                        [disabled]="this.isLoadingPatchOrder[element.id]">
                         <mat-icon [color]="'primary'">menu</mat-icon>
                      </button>
                      <!-- <button mat-raised-button color="accent" (click)="openBottomSheet(element.id)">Ver más</button> -->
@@ -118,20 +119,20 @@
 </div>
 <mat-menu #menuActions="matMenu">
    <ng-template matMenuContent let-order="order">
-      <button *ngIf="order.state.id === ORDER_STATES.EN_PROCESO || order.state.id == ORDER_STATES.SOLICITADO"
-         mat-menu-item fxLayoutAlign="center stretch"
-         (click)="onClickChangeStateOrder(this.ORDER_STATES.CANCELADO, order)">
-         Cancelar
-      </button>
-      <button *ngIf="order.state.id === ORDER_STATES.PARA_RETIRAR || order.state.id == ORDER_STATES.NO_ENTREGADO"
-         mat-menu-item fxLayoutAlign="center stretch"
-         (click)="onClickChangeStateOrder(this.ORDER_STATES.ENTREGADO, order)">
-         Entregar
-      </button>
-      <button *ngIf="order.state.id === ORDER_STATES.PARA_RETIRAR" mat-menu-item fxLayoutAlign="center stretch"
-         (click)="onClickChangeStateOrder(this.ORDER_STATES.NO_ENTREGADO, order)">
-         Sin entregar
-      </button>
+     <button *ngIf="order.state.code === ORDER_STATES.PARA_RETIRAR || order.state.code == ORDER_STATES.NO_ENTREGADO"
+     mat-menu-item fxLayoutAlign="center stretch"
+     (click)="onClickChangeStateOrder(order.id, this.ORDER_STATES.ENTREGADO)">
+      Entregar
+    </button>
+    <button *ngIf="order.state.code === ORDER_STATES.PARA_RETIRAR" mat-menu-item fxLayoutAlign="center stretch"
+    (click)="onClickChangeStateOrder(order.id, this.ORDER_STATES.NO_ENTREGADO)">
+      Sin entregar
+    </button>
+    <button *ngIf="order.state.code === ORDER_STATES.EN_PROCESO || order.state.code == ORDER_STATES.SOLICITADO"
+      mat-menu-item fxLayoutAlign="center stretch"
+      (click)="onClickChangeStateOrder(order.id, this.ORDER_STATES.CANCELADO)">
+      Cancelar
+    </button>
    </ng-template>
 </mat-menu>
 <!-- <cei-alert-error #alertError></cei-alert-error> -->

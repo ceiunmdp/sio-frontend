@@ -16,10 +16,10 @@ export enum OPERATORS {
 }
 
 export interface OR {
-   OR: OR[] | AND[] | WHERE[]
+    OR: (OR | AND | WHERE)[];
 }
 export interface AND {
-   AND: OR[] | AND[] | WHERE[]
+   AND: (OR | AND | WHERE) []
 }
 export interface WHERE {
    [key: string]: {
@@ -27,25 +27,25 @@ export interface WHERE {
    }
 }
 export class FilterBuilder {
-   public or(...args: OR[] | AND[] | WHERE[]): OR {
-      return {
-         OR: args
-      }
-   }
+    public or(...args: (OR | AND | WHERE)[]): OR {
+        return {
+            OR: args,
+        };
+    }
 
-   public and(...args: OR[] | AND[] | WHERE[]): AND {
-      return {
-         AND: args
-      }
-   }
+    public and(...args: (OR | AND | WHERE)[]): AND {
+        return {
+            AND: args,
+        };
+    }
 
-   public where(property: string, operator: OPERATORS, value: string | number | Date | string[]): WHERE {
-      const c: any = property;
-      const _value =  Array.isArray(value) ? value.join(',') : value;
-      return {
-         [c]: {
-            [operator]: value
-         }
-      }
-   }
+    public where(property: string, operator: OPERATORS, value: string | number | Date | string[]): WHERE {
+        const c: any = property;
+        const _value = Array.isArray(value) ? value.join(',') : value;
+        return {
+            [c]: {
+                [operator]: value,
+            },
+        };
+    }
 }

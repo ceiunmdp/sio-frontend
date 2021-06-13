@@ -58,7 +58,7 @@
                   </h5>
                </h2>
             </div>
-            <ng-container *ngIf="orderFile.state.code == FILE_STATES.PRINTING || orderFile.state.code == FILE_STATES.TO_PRINT">
+            <ng-container *ngIf="this.order.state.code !== ORDER_STATES.CANCELADO && this.order.state.code !== ORDER_STATES.NO_ENTREGADO && (orderFile.state.code == FILE_STATES.PRINTING || orderFile.state.code == FILE_STATES.TO_PRINT)">
               <div class="separator separator-center mt-1">
                  <mat-icon class="text-secondary">print</mat-icon>
               </div>
@@ -130,12 +130,12 @@
                   </h5>
                </h2>
            </div>
-            <div class="separator separator-center mt-1">
+            <div class="separator separator-center mt-1" *ngIf="this.order.state.code !== ORDER_STATES.CANCELADO && this.order.state.code !== ORDER_STATES.NO_ENTREGADO && ringed.state.code == RING_STATES.TO_RING">
                <mat-icon class="text-secondary">check_circle_outline</mat-icon>
             </div>
 
-            <div fxLayoutAlign="center center">
-               <button [color]="'accent'" *ngIf="ringed.state.code == RING_STATES.RINGED; else spanPorAnillar"
+            <div fxLayoutAlign="center center" *ngIf="this.order.state.code !== ORDER_STATES.CANCELADO && this.order.state.code !== ORDER_STATES.NO_ENTREGADO && ringed.state.code == RING_STATES.TO_RING">
+               <!-- <button [color]="'accent'" *ngIf="ringed.state.code == RING_STATES.RINGED; else spanPorAnillar"
                   mat-button (click)="onChangeRingState(order.id, ringed.id, RING_STATES.TO_RING)">
                   Por anillar
                </button>
@@ -143,8 +143,18 @@
                   <span class="text-secondary mr-2">
                      Por anillar
                   </span>
-               </ng-template>
-
+                </ng-template> -->
+                <span class="text-secondary mr-2">
+                   Por anillar
+                </span>
+               <mat-icon class="text-secondary"
+                  [ngStyle]="{'transform': ringed.state.code == RING_STATES.RINGED ? 'rotate(180deg)' : ''}">
+                  label_important</mat-icon>
+               <button mat-button
+                  [color]="'accent'" (click)="onChangeRingState(order.id, ringed.id, RING_STATES.RINGED)">
+                  Anillar
+               </button>
+<!--                
                <mat-icon class="text-secondary"
                   [ngStyle]="{'transform': ringed.state.code == RING_STATES.RINGED ? 'rotate(180deg)' : ''}">
                   label_important</mat-icon>
@@ -156,7 +166,7 @@
                   <span class="text-secondary ml-2">
                      Anillado
                   </span>
-               </ng-template>
+               </ng-template> -->
             </div>
 
          </div>
