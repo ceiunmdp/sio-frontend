@@ -1,3 +1,4 @@
+import { API } from './../../../../_api/api';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { CustomValidators } from 'src/app/_validators/custom-validators';
@@ -15,7 +16,7 @@ import { Course } from 'src/app/_models/orders/course';
   styleUrls: ['./create-edit-user.component.scss']
 })
 export class CreateEditUserComponent implements OnInit {
-  @Input() typeUserSelected: typeUserFilter.CAMPUS_USER | typeUserFilter.PROFESSOR_SHIP | typeUserFilter.ADMIN;
+  @Input() typeUserSelected: typeUserFilter.CAMPUS_USER | typeUserFilter.PROFESSOR_SHIP | typeUserFilter.ADMIN | typeUserFilter.SCHOLARSHIP;
   @Input() user;
   @Output('created') onCreated = new EventEmitter();
   @Output('cancelled') onCancelled = new EventEmitter();
@@ -32,6 +33,8 @@ export class CreateEditUserComponent implements OnInit {
     PASSWORD: 'password',
     CAMPUS: 'campus_id', // For Campus User
     COURSE: 'course_id', // For ProfessorShip
+    AVAILABLE_COPIES: 'available_copies', // For ScholarShip
+    REMAINING_COPIES: 'remaining_copies', // For ScholarShip
     COURSE_SEARCHING: 'course_searching'
   };
 
@@ -50,7 +53,6 @@ export class CreateEditUserComponent implements OnInit {
           this.campuses = response.data.items;
           this.userForm = this.createForm(this.user)(this.typeUserSelected);
         }, e => console.error(e));
-
         break;
       case typeUserFilter.PROFESSOR_SHIP:
         if (!!this.user) {
@@ -66,6 +68,8 @@ export class CreateEditUserComponent implements OnInit {
           this.userForm = this.createForm(this.user)(this.typeUserSelected);
         }
         break;
+      case typeUserFilter.SCHOLARSHIP:
+        this.userForm = this.createForm(this.user)(this.typeUserSelected);
       default:
         break;
     }
@@ -88,6 +92,14 @@ export class CreateEditUserComponent implements OnInit {
         })
         return specificForm;
       }
+      const handleScholarShip = () => {
+        const specificForm = this.formBuilder.group({
+          ...genericForm.controls,
+          [this.NAMES_FORM_POST_USER.AVAILABLE_COPIES]: [!!user ? user.available_copies: '', [CustomValidators.required("Sede requerida")]],
+          [this.NAMES_FORM_POST_USER.REMAINING_COPIES]: [!!user ? user.remaining_copies : '', [CustomValidators.required("Sede requerida")]],
+        })
+        return specificForm;
+      }
       const handleProfessorShip = () => {
         const specificForm = this.formBuilder.group({
           ...genericForm.controls,
@@ -103,6 +115,8 @@ export class CreateEditUserComponent implements OnInit {
           return handleCampusUser();
         case this.typeUsers.PROFESSOR_SHIP:
           return handleProfessorShip();
+        case this.typeUsers.SCHOLARSHIP:
+          return handleScholarShip();
         default:
           break;
       }
@@ -113,7 +127,7 @@ export class CreateEditUserComponent implements OnInit {
     this.onCancelled.emit();
   }
 
-  onSubmitForm(typeUser: typeUserFilter.ADMIN | typeUserFilter.CAMPUS_USER | typeUserFilter.PROFESSOR_SHIP) {
+  onSubmitForm(typeUser: typeUserFilter.ADMIN | typeUserFilter.CAMPUS_USER | typeUserFilter.PROFESSOR_SHIP | typeUserFilter.SCHOLARSHIP) {
     this.isLoadingPostUser = true;
     let resourceUrl$: Observable<any>;
     const body = JSON.parse(JSON.stringify(this.userForm.value));
@@ -127,6 +141,9 @@ export class CreateEditUserComponent implements OnInit {
         break;
       case typeUserFilter.PROFESSOR_SHIP:
         resourceUrl$ = this.authService.postProfessorShip(body);
+        break;
+      case typeUserFilter.SCHOLARSHIP:
+        resourceUrl$ = this.authService.patchUserStudentScholarship(API.USERS_SCHOLARSHIPS, body, this.user.id);
         break;
     }
     resourceUrl$.subscribe(res => console.log(res), e => { console.error(e); this.isLoadingPostUser = false; }, () => { this.isLoadingPostUser = false; this.onCreated.emit() });

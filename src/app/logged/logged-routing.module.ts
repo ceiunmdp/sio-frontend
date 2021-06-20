@@ -1,11 +1,9 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+import { RoleGuard } from "../_auth/role.guard";
 import { Roles } from "../_roles/roles";
 import { BalanceComponent } from "./balance/balance.component";
 import { LoggedComponent } from "./logged.component";
-import { MovementsComponent } from "./movements/movements.component";
-import { AuthGuard } from "../_auth/auth.guard";
-import { RoleGuard } from "../_auth/role.guard";
 
 const loggedRoutes: Routes = [
    {
@@ -25,12 +23,6 @@ const loggedRoutes: Routes = [
             // canActivate: [RoleGuard],
          },
          {
-            path: "movimientos",
-            component: MovementsComponent,
-            canActivate: [RoleGuard],
-            data: { expectedRoles: [Roles.Estudiante] }
-         },
-         {
             path: "cargar-saldo",
             component: BalanceComponent,
             canActivate: [RoleGuard],
@@ -45,8 +37,8 @@ const loggedRoutes: Routes = [
          {
             path: "sede",
             loadChildren: () => import("./sede/sede.module").then(mod => mod.SedeModule),
-            canLoad: [RoleGuard],
-            data: { expectedRoles: [Roles.Sede, Roles.Admin] }
+            //canLoad: [RoleGuard],
+            //data: { expectedRoles: [Roles.Sede, Roles.Admin] }
             // ¿Preload de este módulo?
          },
          {
@@ -56,9 +48,21 @@ const loggedRoutes: Routes = [
             data: { expectedRoles: [Roles.Admin], breadcumb: 'Admin' }
          },
          {
+            path: "catedra",
+            loadChildren: () => import("./professorship/professorship.module").then(mod => mod.ProfessorshipModule),
+            // canActivate: [RoleGuard],
+            // data: { expectedRoles: [Roles.Catedra], breadcumb: 'Catedra' }
+         },
+         {
+            path: "estudiante",
+            loadChildren: () => import("./student/student.module").then(mod => mod.StudentModule),
+            // canActivate: [RoleGuard],
+            // data: { expectedRoles: [Roles.Catedra], breadcumb: 'Catedra' }
+         },
+         {
             path: "home",
             loadChildren: () => import("./home/home.module").then(mod => mod.HomeModule),
-         },
+         }
       ]
    }
 ];

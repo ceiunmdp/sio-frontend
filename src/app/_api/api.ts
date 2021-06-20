@@ -1,4 +1,5 @@
 export enum API {
+   AVAILABLE_COPIES_RELOADER = "/available-copies-reloader",
    LOGIN = "login",
    LOGOUT = "logout",
    CAMPUSES = "/campus",
@@ -14,6 +15,9 @@ export enum API {
    COURSES = "/courses",
    MOVEMENTS = "/movements",
    USER = "/user",
+   USER_PROFESSORSHIP = "/user/professorship",
+   USER_STUDENT = "/user/student",
+   USER_SCHOLARSHIP = "/user/scholarship",
    USERS = "/users",
    USERS_ADMINS = "/users/admins",
    USERS_STUDENTS = "/users/students",
@@ -21,4 +25,6 @@ export enum API {
    USERS_CAMPUS = "/users/campus",
    USERS_SCHOLARSHIPS = "/users/scholarships",
    PRINTERS = "/printers",
+   ME= "/me"
+
 }

@@ -2,6 +2,15 @@
     <cei-card-table [metaData]="this.metaDataUsers" [title]="this.typeUserFilterSelected"
         (page)="onPaginatorEvent($event)">
         <div controlButtons fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="15px">
+            <button mat-raised-button color="accent" (click)="this.degradeOrPromote(typeUserFilter.STUDENT)"*ngIf="this.typeUserFilterSelected == typeUserFilter.STUDENT">
+                Promover a becados
+            </button>
+            <button mat-raised-button color="accent" (click)="this.degradeOrPromote(typeUserFilter.SCHOLARSHIP)"*ngIf="this.typeUserFilterSelected == typeUserFilter.SCHOLARSHIP">
+                Degradar a estudiantes
+            </button>
+            <button mat-raised-button color="accent" (click)="this.onReloadCopies()"*ngIf="this.typeUserFilterSelected == typeUserFilter.SCHOLARSHIP">
+                Restaurar copias
+            </button>
             <button mat-icon-button matTooltip="Crear usuario" [matMenuTriggerFor]="menuCreate">
                 <mat-icon>add</mat-icon>
             </button>
@@ -24,6 +33,13 @@
         <ng-container table *ngIf="!this.isLoadingGetUsers; else loadingDiv">
             <table fxFlex="100" mat-table *ngIf="this?.dataSourceUsers?.data?.length > 0; else emptyTable"
                 [dataSource]="dataSourceUsers">
+                <!-- Checkbox for scholarships and students -->
+                <ng-container matColumnDef="selection" sticky>
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let user">
+                        <mat-checkbox (change)="onCheckbox($event.checked, user)"></mat-checkbox>
+                    </td>
+                </ng-container>
                 <!-- Id Column -->
                 <ng-container matColumnDef="id" sticky>
                     <th mat-header-cell *matHeaderCellDef>Id</th>
@@ -80,6 +96,19 @@
                             [matTooltip]="user?.email_verified ? 'Email verificado':'Email no verificado'">
                             {{ user?.email_verified ? 'mark_email_read': 'mark_email_unread'}}
                         </mat-icon>
+                    </td>
+                </ng-container>
+                <!-- Scholarship Column -->
+                <ng-container matColumnDef="scholarship" sticky>
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let user">
+                        <button mat-icon-button (click)="onChangeScholarshipUser(user)">
+                            <mat-icon
+                                [ngClass]="{'text-warn': user?.type === 'Student', 'text-primary': user?.type === 'Student' }"
+                                svgIcon="scholarship"
+                                [matTooltip]="user?.type === 'Student' ? 'Usuario No Becado':'Usuario Becado'">
+                            </mat-icon>
+                        </button>
                     </td>
                 </ng-container>
                 <!-- Actions Column -->

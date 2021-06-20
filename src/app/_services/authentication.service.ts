@@ -203,6 +203,23 @@ export class AuthenticationService {
             );
     }
 
+    patchUserStudentScholarship(apiRoute, body, userId: string): Observable<any> {
+        const queryHeaders = new HttpHeaders().append(
+            "Content-Type",
+            "application/json"
+        );
+        return this.http
+            .patch<any>(`${environment.apiUrl}${apiRoute}/${userId}`, body, {
+                headers: queryHeaders,
+                observe: "response"
+            })
+            .pipe<any>(
+                map<HttpResponse<any>, any>(response => {
+                    return response.body;
+                })
+            );
+    }
+
     patchAdmin(body: Partial<AdminPost>, adminId: string): Observable<any> {
         const queryHeaders = new HttpHeaders().append(
             "Content-Type",
@@ -276,13 +293,13 @@ export class AuthenticationService {
                 url = `${APIS.USERS_ADMINS}/${basicUser.id}`
                 break;
             case USER_TYPES.ESTUDIANTE:
-                url = `${APIS.USERS_STUDENTS}/${basicUser.id}`
+                url = `${APIS.USER_STUDENT}`
                 break;
             case USER_TYPES.BECADO:
                 url = `${APIS.USERS_SCHOLARSHIPS}/${basicUser.id}`
                 break;
             case USER_TYPES.CATEDRA:
-                url = `${APIS.USERS_PROFESSORSHIPS}/${basicUser.id}`
+                url = `${APIS.USER_PROFESSORSHIP}`
                 break;
             case USER_TYPES.SEDE:
                 url = `/user/campus`

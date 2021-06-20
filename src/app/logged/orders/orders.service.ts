@@ -390,6 +390,22 @@ export class OrdersService {
         return externalOrder;
     }
 
+    getOwnFiles(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<File[]>> {
+      const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      const params: HttpParams = this.restService.formatCreateAndAppendQps({filter, sort, pagination})
+      return this.http.get(environment.apiUrl + API.FILES + "/me",
+        {
+          headers: queryHeaders,
+          observe: "response",
+          params
+        }).pipe(
+          map<HttpResponse<any>, any>(result => {
+            return result.body;
+            // return courses.map((courseResponse: CourseResponse) => { const course: any = courseResponse; course.children = []; course.type = TREE_TYPES.COURSE; return course });
+          })
+        );
+    }
+
     buildTreeFiles(files: File[]): Career[] {
         // const tree: Career[] = [];
         // let career: Career | undefined;

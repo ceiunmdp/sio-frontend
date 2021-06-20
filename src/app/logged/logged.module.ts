@@ -18,13 +18,11 @@ import { BalanceComponent } from './balance/balance.component';
 import { HomeModule } from './home/home.module';
 import { LoggedRoutingModule } from './logged-routing.module';
 import { LoggedComponent } from './logged.component';
-import { MovementsComponent } from './movements/movements.component';
 import { NavbarComponent } from './sections/navbar/navbar.component';
-import { MaterialModule } from '../material/material.module';
 // import { BreadcrumbModule } from 'xng-breadcrumb';
 
 @NgModule({
-   declarations: [LoggedComponent, NavbarComponent, MovementsComponent, BalanceComponent],
+   declarations: [LoggedComponent, NavbarComponent, BalanceComponent],
    imports: [
       HomeModule,
       CommonModule,

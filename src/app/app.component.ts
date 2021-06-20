@@ -69,5 +69,6 @@ export class AppComponent implements OnInit {
       this.generalService.addIcon("transferir", "transfer.svg");
       this.generalService.addIcon("movimientos", "movimientos.svg");
       this.generalService.addIcon("mis_pedidos", "mis_pedidos.svg");
+      this.generalService.addIcon("scholarship", "scholarship.svg");
    }
 }
