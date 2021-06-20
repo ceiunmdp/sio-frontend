@@ -36,7 +36,7 @@ export class TextSearchingInputComponent implements OnInit {
           filter((e: KeyboardEvent) => !e.key.includes('Arrow')),
           map((event: any) => event.target.value),
           startWith(''),
-          filter((value: string) => (value.length != 1 && value.length != 2)),
+          // filter((value: string) => (value.length != 1 && value.length != 2)),
           skip(1),
           debounce((string: string) => (string.length > 1) ? timer(500) : timer(1250))
         ).subscribe((st) => {

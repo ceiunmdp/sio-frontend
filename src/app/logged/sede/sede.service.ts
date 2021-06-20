@@ -11,6 +11,7 @@ import { Sort } from 'src/app/_models/sort';
 import { Student } from 'src/app/_models/users/user';
 import { MOVEMENTS } from "src/app/_movements/movements";
 import { AuthenticationService } from 'src/app/_services/authentication.service';
+import {Printer} from "src/app/_models/printer";
 import { RestUtilitiesService } from 'src/app/_services/rest-utilities.service';
 import { environment } from "src/environments/environment";
 
@@ -81,18 +82,18 @@ export class SedeService {
          );
    }
 
-   patchOrderFile(orderId: number, orderFileId: number, stateId: number): Observable<any> {
+   patchOrderFile(orderId: number, orderFileId: number, stateCode: string, printer_id?: string): Observable<any> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
       let body;
-
       body = {
          state: {
-            id: stateId
-         }
+            code: stateCode
+         },
+         // ! Test printer
+         ...(!!printer_id && { printer_id })
       };
-
       return this.http
-         .patch<any>(`${environment.apiUrl}/user/orders/${orderId}/order-files/${orderFileId}`, JSON.stringify(body), {
+         .patch<any>(`${environment.apiUrl}/orders/${orderId}/order-files/${orderFileId}`, JSON.stringify(body), {
             headers: queryHeaders,
             observe: "response"
          })
@@ -103,18 +104,18 @@ export class SedeService {
          );
    }
 
-   patchOrderRing(orderId: number, ringGroupId: number, stateId: number): Observable<any> {
+   patchOrderRing(orderId: number, ringGroupId: number, stateCode: string): Observable<any> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
       let body;
 
       body = {
          state: {
-            id: stateId
+            code: stateCode
          }
       };
 
       return this.http
-         .patch<any>(`${environment.apiUrl}/user/orders/${orderId}/ringed-groups/${ringGroupId}`, JSON.stringify(body), {
+         .patch<any>(`${environment.apiUrl}/orders/${orderId}/binding-groups/${ringGroupId}`, JSON.stringify(body), {
             headers: queryHeaders,
             observe: "response"
          })
@@ -125,16 +126,16 @@ export class SedeService {
          );
    }
 
-   patchOrder(orderId: number, stateId: number): Observable<any> {
+   patchOrder(orderId: string, stateCode: string): Observable<any> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
       let body;
       body = {
          state: {
-            id: stateId
+            code: stateCode
          }
       };
       return this.http
-         .patch<any>(`${environment.apiUrl}/user/orders/${orderId}`, JSON.stringify(body), {
+         .patch<any>(`${environment.apiUrl}/orders/${orderId}`, JSON.stringify(body), {
             headers: queryHeaders,
             observe: "response"
          })
@@ -143,5 +144,18 @@ export class SedeService {
                return response.body.data;
             })
          );
+   }
+
+   getPrinters() {
+      const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      return this.http.get(environment.apiUrl + API.PRINTERS,
+          {
+            headers: queryHeaders,
+            observe: "response",
+          }).pipe(
+            map<HttpResponse<ResponseAPI<Printer[]>>, any>(result => {
+                return result.body.data;
+            })
+          );
    }
 }

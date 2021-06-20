@@ -14,7 +14,7 @@
          <div fxFlex="100">
             <div fxLayout="column wrap" class="ml-2">
                <div class="text-secondary mb-1" fxLayoutAlign="space-between stretch">
-                  <span class="mat-h1"> Pedido #{{ this.order.id }} </span>
+                  <span class="mat-h1"> Pedido #{{ this.order.id_number }} </span>
                   <button fxLayout="row wrap" fxLayoutAlign="center" mat-button (click)="openBottomSheet()">
                      <mat-icon class="mr-3">remove_red_eye</mat-icon>
                      <span>Detalles</span>
@@ -34,6 +34,9 @@
                      <span>
                         {{ order.total }}
                      </span>
+                     <span class="text-primary mls-2" *ngIf="order.discount">
+                      (-{{ order.discount | moneda}})
+                    </span>
                   </div>
 
                   <div fxFlex="1 1 auto" fxLayout="row wrap" fxLayoutAlign="start center">

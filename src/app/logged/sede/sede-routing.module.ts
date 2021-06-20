@@ -15,7 +15,7 @@ const routes: Routes = [
       component: OrdersComponent
    },
    {
-      path: "pedidos-historico",
+      path: "pedidos-historicos",
       component: HistoricOrdersComponent
    },
    {

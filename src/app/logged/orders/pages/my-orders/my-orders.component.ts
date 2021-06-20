@@ -35,7 +35,7 @@ export class MyOrdersComponent implements OnInit {
   ROUTES = Routes;
   readonly TITLE = "Mis pedidos";
   orders: Order[] = [];
-  displayedColumns: string[] = ["id", "date", "campus", "state", "totalPrice", "actions"];
+  displayedColumns: string[] = ["id", "date", "campus", "state", "subtotal", "totalPrice", "actions"];
   dataSourceOrders;
   pipeMoneda = new MonedaPipe();
   historicOrdersShow: boolean;
@@ -50,7 +50,7 @@ export class MyOrdersComponent implements OnInit {
   ngOnInit() {
     this.generalService.sendMessage({ title: this.TITLE });
     this.fb = new FilterBuilder();
-    this.sort = [{ field: 'create_date', sort: "DESC" }]
+    this.sort = [{ field: 'order.createDate', sort: "DESC" }]
     this.getActiveOrders(this.sort, this.pagination);
     this.dataSourceOrders = new MatTableDataSource();
   }
@@ -67,9 +67,7 @@ export class MyOrdersComponent implements OnInit {
   getActiveOrders(sort?: Sort[], pagination?: Pagination) {
     const filter = this.fb.and(
       this.fb.or(
-        this.fb.where('state.code', OPERATORS.IS, 'requested'),
-        this.fb.where('state.code', OPERATORS.IS, 'in_process'),
-        this.fb.where('state.code', OPERATORS.IS, 'ready')
+        this.fb.where('state.code', OPERATORS.IN, ['requested', 'in_process', 'ready'])
       )
     );
     this.getOrdersService(filter, sort, pagination)
@@ -79,9 +77,7 @@ export class MyOrdersComponent implements OnInit {
 
   getHistoricOrders(sort?: Sort[], pagination?: Pagination) {
     const filter = this.fb.or(
-      this.fb.where('state.code', OPERATORS.IS, 'cancelled'),
-      this.fb.where('state.code', OPERATORS.IS, 'undelivered'),
-      this.fb.where('state.code', OPERATORS.IS, 'delivered')
+      this.fb.where('state.code', OPERATORS.IN, ['cancelled', 'undelivered', 'delivered'])
     );
     this.getOrdersService(filter, sort, pagination)
         .then(_ => (this.historicOrdersShow = true))

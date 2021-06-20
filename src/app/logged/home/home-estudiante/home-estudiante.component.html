@@ -63,6 +63,9 @@
                <!-- <span fxFlex.gt-md="25" fxFlex.lt-lg="15">
                   <span fxHide="true" fxShow.gt-md>Pedido</span> #{{ order.id }}
                </span> -->
+               <span fxFlex.gt-md="37" fxFlex.lt-lg="1 1 auto" class="text-accent">
+                  #{{ order.id_number }}
+               </span>
                <span fxFlex.gt-md="37" fxFlex.lt-lg="1 1 auto" class="text-secondary">
                   {{ order.tracking[0].timestamp | date: "dd/MM/yy H:mm" }}
                </span>

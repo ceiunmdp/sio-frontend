@@ -52,7 +52,7 @@ export class HttpErrorResponseHandlerService {
                 case 422: // Unprocessable Entity (parameters invalid)
                     // Check how does the response comes
                     // Show the response in the appropiate form fields
-                    message = error.message[0];
+                    message = error.message;
                     break;
                 case 500: // Internal Server Error
                     // Show a message telling that the server had a problem

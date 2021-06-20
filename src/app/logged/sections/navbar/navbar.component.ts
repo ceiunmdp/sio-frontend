@@ -53,6 +53,7 @@ export class NavbarComponent implements OnInit {
    logout() {
       this.authService.logout().subscribe(
          () => {
+           console.log(this.authService.currentUserValue);
             this.authService.removeCurrentUser();
             this.router.navigate([Routes.LOGIN]);
          },
