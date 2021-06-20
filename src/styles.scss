@@ -14,7 +14,7 @@ html, body {
    height: 100%;
    margin: 0;
  }
- 
+
 
 // body {
 //    // font-weight: lighter;
@@ -1028,4 +1028,9 @@ hr {
 
 .showOnHover:hover {
    opacity: 1 !important;
+}
+@media (min-width: 768px) {
+  .mat-bottom-sheet-container {
+    min-width: 65vw !important;
+  }
 }

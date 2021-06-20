@@ -2,7 +2,7 @@
    <h2 class="text-secondary">
       Detalles del pedido
       <span class="text-secondary">
-         #{{this.order.id}}
+         #{{this.order.id_number}}
       </span>
    </h2>
 </div>
@@ -100,7 +100,7 @@
           </mat-icon>
         </div>
       </ng-template>
-      
+
       <!-- Anillados -->
       <mat-expansion-panel *ngFor="let ringed of this.ringedGroups; let i=index">
          <mat-expansion-panel-header>
@@ -154,7 +154,7 @@
                   [color]="'accent'" (click)="onChangeRingState(order.id, ringed.id, RING_STATES.RINGED)">
                   Anillar
                </button>
-<!--                
+<!--
                <mat-icon class="text-secondary"
                   [ngStyle]="{'transform': ringed.state.code == RING_STATES.RINGED ? 'rotate(180deg)' : ''}">
                   label_important</mat-icon>

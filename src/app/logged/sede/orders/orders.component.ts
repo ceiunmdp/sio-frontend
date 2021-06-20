@@ -41,7 +41,7 @@ export class BottomSheetFiles implements OnInit {
    isLoadingPrinters = false;
    noPrinterOption = {
      id: 0,
-     name: 'Impresión manual' 
+     name: 'Impresión manual'
    };
    printerForm: FormGroup;
    order;
@@ -62,7 +62,7 @@ export class BottomSheetFiles implements OnInit {
       console.log(data);
    }
 
-   ngOnInit() { 
+   ngOnInit() {
       this.wsOrdersService.joinOrderRoom(this.order.id);
       this.wsOrdersService.subscribeToUpdatedBindingGroup(this.onUpdateBindingGroup);
       this.wsOrdersService.subscribeToUpdatedOrderFile(this.onUpdateOrderFile);
@@ -156,14 +156,14 @@ export class BottomSheetFiles implements OnInit {
         }
         // Si ya existe, inserto el archivo en el order correspondiente.
         else {
-          ringed.files.push(order.file.name); 
+          ringed.files.push(order.file.name);
           ringed.files[order.position - 1] = order.file.name;
         }
       }
     });
     return ringedGroups;
   }
-  
+
    /************
     * SERVICES *
     ************/
@@ -239,8 +239,9 @@ export class OrdersComponent implements OnInit {
       "dateOrdered",
       "dni",
       "nameAndSurname",
+      "subtotal",
       "totalPrice",
-      "amountPaid",
+      // "amountPaid",
       "state",
       "actions"
    ];
@@ -277,7 +278,7 @@ export class OrdersComponent implements OnInit {
       this.isLoadingPendingOrders = false;
     }
 
-    onUpdatedOrder = (order) => { 
+    onUpdatedOrder = (order) => {
       const orderIndex = this.orders.findIndex(_order => _order.id == order.id);
       if(order.state === ORDER_STATES.CANCELADO || order.state === ORDER_STATES.ENTREGADO || order.state === ORDER_STATES.NO_ENTREGADO){
         if(orderIndex != -1){
@@ -338,34 +339,21 @@ export class OrdersComponent implements OnInit {
       .catch(err => this.handleErrors(err));
   }
 
-  //  onClickChangeStateOrder(stateId: number, order: OrderCampus) {
-  //     console.log(stateId, order)
-  //     this.patchOrder(order.id, stateId)
-  //        .then(orderUpdated => {
-  //           const indexOrderUpdated = this.orders.findIndex(order => order.id === orderUpdated.id);
-  //           if (indexOrderUpdated !== -1) {
-  //              this.orders[indexOrderUpdated] = orderUpdated;
-  //              this.updateMatTableOrders();
-  //           }
-  //        })
-  //        .catch(err => this.handleErrors(err));
-  //  }
-
    private filterPredicate = (data, filter) => {
-      const id = data.id;
+      const id = data.id_number;
       const userNameAndSurname = data.student && data.student.display_name ? data.student.display_name.toLowerCase() : '';
       const document = data.student.dni ? data.student.dni.toString() : "";
       const state = data.state.name.toLowerCase().toString();
       const date = this.datePipe.transform(data.tracking[0].timestamp, "dd/MM/yy H:mm");
       return (
-        id.indexOf(filter) != -1 ||
+        id == filter ||
         userNameAndSurname.indexOf(filter) != -1 ||
         state.indexOf(filter) != -1 ||
         document.indexOf(filter) != -1 ||
         date.lastIndexOf(filter) != -1
       );
   };
-   
+
    openBottomSheet(order): void {
      order.isLoading = true;
      this.orderService.getOrderFiles(order.id)
@@ -374,7 +362,7 @@ export class OrdersComponent implements OnInit {
       .then(orderFiles => this.setItemsPrice(orderFiles))
       .then(orderFiles => {
         const _order = {...order, orderFiles}
-        const data = {_order, actualState: order.state } 
+        const data = {_order, actualState: order.state }
         this._bottomSheet._openedBottomSheetRef = this._bottomSheet.open(BottomSheetFiles, { data });
       })
       .finally(() => order.isLoading = false);

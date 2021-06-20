@@ -35,7 +35,7 @@ export class MyOrdersComponent implements OnInit {
   ROUTES = Routes;
   readonly TITLE = "Mis pedidos";
   orders: Order[] = [];
-  displayedColumns: string[] = ["id", "date", "campus", "state", "totalPrice", "actions"];
+  displayedColumns: string[] = ["id", "date", "campus", "state", "subtotal", "totalPrice", "actions"];
   dataSourceOrders;
   pipeMoneda = new MonedaPipe();
   historicOrdersShow: boolean;
