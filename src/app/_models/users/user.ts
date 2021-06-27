@@ -8,6 +8,7 @@ export interface User {
    email_verified?: boolean;
    token?: string;
    type?: string;
+   rootPath?: string;
 }
 
 export interface Student extends User {

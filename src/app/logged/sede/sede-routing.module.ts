@@ -2,7 +2,6 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { MovementsComponent } from "../../shared/movements/movements/movements.component";
 import { ChargeBalanceComponent } from "./charge-balance/charge-balance.component";
-import { HistoricOrdersComponent } from "./historic-orders/historic-orders.component";
 import { OrdersComponent } from "./orders/orders.component";
 
 const routes: Routes = [
@@ -13,10 +12,6 @@ const routes: Routes = [
    {
       path: "pedidos",
       component: OrdersComponent
-   },
-   {
-      path: "pedidos-historicos",
-      component: HistoricOrdersComponent
    },
    {
       path: "estudiantes",

@@ -1,6 +1,3 @@
-import Swal from 'sweetalert2';
-import { Binding } from './../../../_models/binding';
-import { Item } from './../../../_models/item';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatTableDataSource, PageEvent } from '@angular/material';
 import { from, Observable, Subscription } from 'rxjs';
@@ -11,7 +8,9 @@ import { LinksAPI, MetadataAPI } from 'src/app/_models/response-api';
 import { Sort } from 'src/app/_models/sort';
 import { AdminService } from 'src/app/_services/admin.service';
 import { GeneralService } from 'src/app/_services/general.service';
+import Swal from 'sweetalert2';
 import { OrdersService } from '../../orders/orders.service';
+import { Binding } from './../../../_models/binding';
 
 enum STEPS {
   LIST,
@@ -27,9 +26,9 @@ export class BindingsComponent implements OnInit {
   inputFilterValue = ''
   public STEPS = STEPS;
   step: STEPS;
-  bindings: Binding[]; isLoadingGetBindings = false; _items: Subscription;
+  bindings: Binding[]; isLoadingGetBindings = false; _bindings: Subscription;
   selectedBinding: Binding; // .. !null when edit button is clicked 
-  dataSourceBindings: MatTableDataSource<Item>; isLoadingGetItems = false;
+  dataSourceBindings: MatTableDataSource<Binding>; isLoadingGetItems = false;
   displayedColumns: string[] = [
     'bindingName',
     'bindingPrice',
@@ -56,7 +55,7 @@ export class BindingsComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this._items.unsubscribe();
+    this._bindings.unsubscribe();
   }
 
   onPaginatorEvent(event: PageEvent) {
@@ -111,7 +110,7 @@ export class BindingsComponent implements OnInit {
   getBindings(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<Binding[]> {
     this.isLoadingGetBindings = true;
     const promise: Promise<any> = new Promise((res, rej) => {
-      this.orderService.getBindings(filter, sort, pagination).pipe(
+      this._bindings = this.orderService.getBindings(filter, sort, pagination).pipe(
         finalize(() => {
           this.isLoadingGetBindings = false; setTimeout(() => {
             // this.setDataSourceAttributes();

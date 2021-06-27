@@ -1,4 +1,3 @@
-import { Item } from './../../../_models/item';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatTableDataSource, PageEvent } from '@angular/material';
 import { from, Observable, Subscription } from 'rxjs';
@@ -10,6 +9,7 @@ import { Sort } from 'src/app/_models/sort';
 import { AdminService } from 'src/app/_services/admin.service';
 import { GeneralService } from 'src/app/_services/general.service';
 import { OrdersService } from '../../orders/orders.service';
+import { Item } from './../../../_models/item';
 
 enum STEPS {
   LIST,
@@ -109,7 +109,7 @@ export class ItemsComponent implements OnInit {
   getItems(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<Item[]> {
     this.isLoadingGetItems = true;
     const promise: Promise<any> = new Promise((res, rej) => {
-      this.orderService.getItems(filter, sort, pagination).pipe(
+      this._items = this.orderService.getItems(filter, sort, pagination).pipe(
         finalize(() => {
           this.isLoadingGetItems = false; setTimeout(() => {
             // this.setDataSourceAttributes();

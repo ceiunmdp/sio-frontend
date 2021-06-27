@@ -69,7 +69,6 @@ export class SedeService {
          source_id: this.authService.currentUserValue.id,
          target_id: idUser,
       };
-      console.log('BODY',body)
       return this.http
          .post<any>(`${environment.apiUrl}${API.MOVEMENTS}`, JSON.stringify(body), {
             headers: queryHeaders,

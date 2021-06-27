@@ -1,4 +1,3 @@
-import { Career } from './../../../_models/orders/career';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatTableDataSource, PageEvent } from '@angular/material';
 import { from, Observable, Subscription } from 'rxjs';
@@ -12,6 +11,7 @@ import { AdminService } from 'src/app/_services/admin.service';
 import { GeneralService } from 'src/app/_services/general.service';
 import Swal from 'sweetalert2';
 import { OrdersService } from '../../orders/orders.service';
+import { Career } from './../../../_models/orders/career';
 
 enum STEPS {
   LIST,
@@ -112,7 +112,7 @@ export class CareersComponent implements OnInit {
   getCareers(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<Career[]> {
     this.isLoadingGetCareers = true;
     const promise: Promise<any> = new Promise((res, rej) => {
-      this.orderService.getCareers(filter, sort, pagination).pipe(
+      this._careers = this.orderService.getCareers(filter, sort, pagination).pipe(
         finalize(() => {
           this.isLoadingGetCareers = false; setTimeout(() => {
             // this.setDataSourceAttributes();

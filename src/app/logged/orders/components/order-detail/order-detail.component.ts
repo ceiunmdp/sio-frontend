@@ -1,12 +1,13 @@
-import { Component, OnInit, ViewChild, Inject, ChangeDetectorRef } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from "@angular/core";
+import { MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from "@angular/material";
 import { ActivatedRoute, Router } from "@angular/router";
+import { finalize } from "rxjs/operators";
 import { OrdersService } from "src/app/logged/orders/orders.service";
-import { GeneralService } from "src/app/_services/general.service";
-import { Routes } from "src/app/_routes/routes";
-import { MatBottomSheet, MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from "@angular/material";
-import {Order} from "src/app/_models/orders/order";
+import { Order } from "src/app/_models/orders/order";
 import { ORDER_STATES } from "src/app/_orderStates/states";
-import {finalize} from "rxjs/operators";
+import { Routes } from "src/app/_routes/routes";
+import { AuthenticationService } from "src/app/_services/authentication.service";
+import { GeneralService } from "src/app/_services/general.service";
 
 // Bottom sheet component
 @Component({
@@ -97,6 +98,7 @@ export class OrderDetailComponent implements OnInit {
    order: Order;
    orderId: any;
    routes = Routes;
+   rootPath: string;
    ORDER_STATES = ORDER_STATES;
    isLoadingGetOrders = false;
 
@@ -104,6 +106,7 @@ export class OrderDetailComponent implements OnInit {
    constructor(
       public generalService: GeneralService,
       public orderService: OrdersService,
+      public authService: AuthenticationService,
       private route: ActivatedRoute,
       public router: Router,
       private _bottomSheet: MatBottomSheet
@@ -112,6 +115,7 @@ export class OrderDetailComponent implements OnInit {
    }
 
    ngOnInit() {
+      this.rootPath = this.authService.currentUserValue.rootPath;
       this.orderId = this.route.snapshot.paramMap.get("order-id");
       if(!this.order){
         this.isLoadingGetOrders = true;

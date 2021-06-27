@@ -1,20 +1,27 @@
 export enum Routes {
+   //Root paths
+   ADMIN_ROOT_PATH= "/cei/admin",
+   STUDENT_ROOT_PATH= "/cei/estudiante",
+   CAMPUS_ROOT_PATH= "/cei/sede",
+   PROFESSORSHIP_ROOT_PATH= "/cei/catedra",
+
    LOGIN = "/",
    HOME = "/cei/home",
-   MOVEMENTS = "/cei/movimientos",
-   ADD_MONEY = "/cei/cargar-saldo",
-   ORDERS = "/cei/pedidos",
-   NEW_ORDER = "/cei/pedidos/nuevo-pedido",
-   MY_ORDERS = "/cei/pedidos/mis-pedidos",
-   ORDER_DETAIL = "/cei/pedidos/pedido",
-   TRANSFER_MONEY = "/cei/pedidos/transferir",
+   NEW_ORDER = "/pedidos/nuevo-pedido",
+   MY_ORDERS = "/pedidos/mis-pedidos",
+   ORDER_DETAIL = "/pedidos/pedido",
+   TRANSFER_MONEY = "/transferencia",
+   MY_MOVEMENTS = "/movimientos",
 
    // Sede routes
-   STUDENT_LIST = "/cei/sede/estudiantes",
-   ACTIVE_ORDERS = "/cei/sede/pedidos",
-   HISTORICAL_ORDERS = "/cei/sede/historico-pedidos",
+   TOP_UP = "/estudiantes",
 
    // Admin routes
-   ADMIN = "/cei/admin",
-   FILE_MANAGEMENT = "/cei/admin/archivos"
+   COURSES = "/materias",
+   CAREERS = "/carreras",
+   FILES = "/archivos",
+   PARAMETERS = "/parametricas",
+   ITEMS = "/articulos",
+   BINDINGS = "/anillados",
+   USERS = "/usuarios"
 }

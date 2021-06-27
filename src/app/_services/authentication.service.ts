@@ -1,18 +1,19 @@
-import { HttpClient, HttpHeaders, HttpResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { User, Student } from '../_models/users/user';
-import { GeneralService } from './general.service';
-import { USER_TYPES } from '../_users/types';
-import { API as APIS, API } from '../_api/api';
-import { OR, AND } from '../_helpers/filterBuilder';
-import { Sort } from '../_models/sort';
+import { API, API as APIS } from '../_api/api';
+import { AND, OR } from '../_helpers/filterBuilder';
 import { Pagination } from '../_models/pagination';
 import { ResponseAPI } from '../_models/response-api';
+import { Sort } from '../_models/sort';
+import { Student, User } from '../_models/users/user';
+import { Routes } from '../_routes/routes';
+import { USER_TYPES } from '../_users/types';
+import { GeneralService } from './general.service';
 import { RestUtilitiesService } from './rest-utilities.service';
 
 export interface AdminPost {
@@ -277,8 +278,8 @@ export class AuthenticationService {
                     return response.body.data;
                 }),
                 // Acá pedir al usuario particular
-                mergeMap(basicUser => { console.log(basicUser); return this.getSpecificUserData(basicUser) }),
-                map(user => { return { ...basicUser, ...user } }),
+                mergeMap(basicUser => this.getSpecificUserData(basicUser)),
+                map(user => { console.log('basico', basicUser);return { ...basicUser, ...user } }),
                 tap(user => console.log('usuario final:', user))
             );
     }
@@ -287,22 +288,28 @@ export class AuthenticationService {
     private getSpecificUserData(basicUser: Partial<User>): Observable<User> {
         const queryHeaders = new HttpHeaders().append('Content-Type', 'application/json');
         const type = basicUser.type;
+        let rootPath;
         var url;
         switch (type) {
             case USER_TYPES.ADMIN:
-                url = `${APIS.USERS_ADMINS}/${basicUser.id}`
+                rootPath = Routes.ADMIN_ROOT_PATH;
+                url = `${APIS.USER_ADMIN}`
                 break;
             case USER_TYPES.ESTUDIANTE:
+                rootPath = Routes.STUDENT_ROOT_PATH;
                 url = `${APIS.USER_STUDENT}`
                 break;
             case USER_TYPES.BECADO:
-                url = `${APIS.USERS_SCHOLARSHIPS}/${basicUser.id}`
+                rootPath = Routes.STUDENT_ROOT_PATH;
+                url = `${APIS.USER_SCHOLARSHIP}`
                 break;
             case USER_TYPES.CATEDRA:
+                rootPath = Routes.PROFESSORSHIP_ROOT_PATH;
                 url = `${APIS.USER_PROFESSORSHIP}`
                 break;
             case USER_TYPES.SEDE:
-                url = `/user/campus`
+                rootPath = Routes.CAMPUS_ROOT_PATH;
+                url = `${APIS.USER_CAMPUS}`
                 break;
             default:
                 break;
@@ -311,6 +318,7 @@ export class AuthenticationService {
             .get(environment.apiUrl + url, { headers: queryHeaders, observe: 'response' })
             .pipe(
                 map<HttpResponse<any>, any>(response => {
+                    response.body.data.rootPath = rootPath;
                     return response.body.data;
                 })
             );

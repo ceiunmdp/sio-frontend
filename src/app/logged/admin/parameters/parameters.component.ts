@@ -1,15 +1,14 @@
-import { finalize } from 'rxjs/operators';
-import { GeneralService } from './../../../_services/general.service';
-import { AdminService } from './../../../_services/admin.service';
-import { Sort } from 'src/app/_models/sort';
-import { AND, OR, FilterBuilder, OPERATORS } from './../../../_helpers/filterBuilder';
-import { Pagination } from './../../../_models/pagination';
-import { MetadataAPI, LinksAPI } from 'src/app/_models/response-api';
-import { Parameter } from './../../../_models/parameter';
-import { ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatTableDataSource, PageEvent } from '@angular/material';
-import { Component, OnInit } from '@angular/core';
 import { from, Observable, Subscription } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { LinksAPI, MetadataAPI } from 'src/app/_models/response-api';
+import { Sort } from 'src/app/_models/sort';
+import { AND, FilterBuilder, OPERATORS, OR } from './../../../_helpers/filterBuilder';
+import { Pagination } from './../../../_models/pagination';
+import { Parameter } from './../../../_models/parameter';
+import { AdminService } from './../../../_services/admin.service';
+import { GeneralService } from './../../../_services/general.service';
 
 enum STEPS {
   LIST,
@@ -89,7 +88,7 @@ export class ParametersComponent implements OnInit {
   getParameters(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<Parameter[]> {
     this.isLoadingGetParameters = true;
     const promise: Promise<any> = new Promise((res, rej) => {
-      this.adminService.getParameters(filter, sort, pagination).pipe(
+      this._parameters = this.adminService.getParameters(filter, sort, pagination).pipe(
         finalize(() => {
           this.isLoadingGetParameters = false; setTimeout(() => {
             // this.setDataSourceAttributes();

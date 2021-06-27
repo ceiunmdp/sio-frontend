@@ -1,24 +1,24 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatTableDataSource, PageEvent } from '@angular/material';
-import { File } from 'src/app/_models/orders/file';
-import { from, Observable, Subscription } from 'rxjs';
-import { LinksAPI, MetadataAPI } from 'src/app/_models/response-api';
-import { Pagination } from 'src/app/_models/pagination';
-import { AND, FilterBuilder, OPERATORS, OR } from 'src/app/_helpers/filterBuilder';
-import { Sort } from 'src/app/_models/sort';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
-import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
-import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
-import { AdminService } from 'src/app/_services/admin.service';
-import { OrdersService } from '../../orders/orders.service';
-import { GeneralService } from 'src/app/_services/general.service';
-import { AuthenticationService } from 'src/app/_services/authentication.service';
-import { User } from 'src/app/_models/users/user';
-import { finalize } from 'rxjs/operators';
-import { CustomValidators } from 'src/app/_validators/custom-validators';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatPaginator, MatTableDataSource, PageEvent } from '@angular/material';
+import { Router } from '@angular/router';
+import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
+import { from, Observable, Subscription } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { AND, FilterBuilder, OPERATORS, OR } from 'src/app/_helpers/filterBuilder';
+import { File } from 'src/app/_models/orders/file';
+import { Pagination } from 'src/app/_models/pagination';
+import { LinksAPI, MetadataAPI } from 'src/app/_models/response-api';
+import { Sort } from 'src/app/_models/sort';
+import { User } from 'src/app/_models/users/user';
+import { AdminService } from 'src/app/_services/admin.service';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { GeneralService } from 'src/app/_services/general.service';
+import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
+import { CustomValidators } from 'src/app/_validators/custom-validators';
 import Swal from 'sweetalert2';
+import { OrdersService } from '../../orders/orders.service';
 
 export interface FileUpload {
   name: string;
@@ -130,7 +130,7 @@ export class FileManagementComponent implements OnInit {
   getFiles(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<File[]> {
     this.isLoadingGetFiles = true;
     const promise: Promise<any> = new Promise((res, rej) => {
-      this.orderService.getOwnFiles(filter, sort, pagination).pipe(
+      this._files = this.orderService.getOwnFiles(filter, sort, pagination).pipe(
         finalize(() => {
           this.isLoadingGetFiles = false; setTimeout(() => {
             // this.setDataSourceAttributes();

@@ -1,25 +1,23 @@
-import { MatPaginator, PageEvent } from '@angular/material';
-import { AdminService } from '../../../_services/admin.service';
-import { GeneralService } from '../../../_services/general.service';
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatPaginator, MatTableDataSource, PageEvent } from '@angular/material';
+import { Router } from '@angular/router';
+import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { from, Observable, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { AND, FilterBuilder, OPERATORS, OR } from 'src/app/_helpers/filterBuilder';
-import { Sort } from 'src/app/_models/sort';
-import { Pagination } from 'src/app/_models/pagination';
-import { Parameter } from 'src/app/_models/parameter';
-import { LinksAPI, MetadataAPI } from 'src/app/_models/response-api';
-import { OrdersService } from '../../orders/orders.service';
 import { Course } from 'src/app/_models/orders/course';
 import { File } from 'src/app/_models/orders/file';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { CustomValidators } from 'src/app/_validators/custom-validators';
-import { HttpErrorResponse } from '@angular/common/http';
+import { Pagination } from 'src/app/_models/pagination';
+import { LinksAPI, MetadataAPI } from 'src/app/_models/response-api';
+import { Sort } from 'src/app/_models/sort';
 import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
-import { Router } from '@angular/router';
+import { CustomValidators } from 'src/app/_validators/custom-validators';
 import Swal from 'sweetalert2';
-import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
+import { AdminService } from '../../../_services/admin.service';
+import { GeneralService } from '../../../_services/general.service';
+import { OrdersService } from '../../orders/orders.service';
 
 export interface FileUpload {
   name: string;
@@ -109,8 +107,8 @@ export class FilesComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this._courses.unsubscribe();
-    this._files.unsubscribe();
+    if (!!this._courses) this._courses.unsubscribe();
+    if (!!this._files) this._files.unsubscribe();
   }
 
   onPaginatorEvent(event: PageEvent) {
@@ -158,7 +156,7 @@ export class FilesComponent implements OnInit {
   getCourses(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<Course[]> {
     this.isLoadingGetCourses = true;
     const promise: Promise<any> = new Promise((res, rej) => {
-      this.orderService.getCourses(filter, sort, pagination).pipe(
+      this._courses = this.orderService.getCourses(filter, sort, pagination).pipe(
         finalize(() => {
           this.isLoadingGetCourses = false; setTimeout(() => {
             // this.setDataSourceAttributes();
@@ -185,7 +183,7 @@ export class FilesComponent implements OnInit {
   getFiles(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<File[]> {
     this.isLoadingGetCourses = true;
     const promise: Promise<any> = new Promise((res, rej) => {
-      this.orderService.getFilesV2(filter, sort, pagination).pipe(
+      this._files = this.orderService.getFilesV2(filter, sort, pagination).pipe(
         finalize(() => {
           this.isLoadingGetCourses = false; setTimeout(() => {
             // this.setDataSourceAttributes();

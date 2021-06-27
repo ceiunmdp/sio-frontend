@@ -80,7 +80,7 @@ export class MovementsComponent implements OnInit {
   getMyMovements(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<Movement[]> {
     this.isLoadingGetMovements = true;
     const promise: Promise<any> = new Promise((res, rej) => {
-      this.movementService.getMyMovements(filter, sort, pagination).pipe(
+      this._movements = this.movementService.getMyMovements(filter, sort, pagination).pipe(
         finalize(() => {
           this.isLoadingGetMovements = false; setTimeout(() => {
             // this.setDataSourceAttributes();

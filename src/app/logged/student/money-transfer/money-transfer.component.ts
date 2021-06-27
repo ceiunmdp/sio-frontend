@@ -1,24 +1,20 @@
-import { AdminService } from 'src/app/_services/admin.service';
-import { API } from './../../../_api/api';
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatBottomSheet, MatBottomSheetRef, MatTableDataSource, MAT_BOTTOM_SHEET_DATA, PageEvent } from '@angular/material';
+import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { from, Observable, Subscription } from 'rxjs';
-import { finalize, map } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 import { AND, FilterBuilder, OPERATORS, OR } from 'src/app/_helpers/filterBuilder';
 import { Pagination } from 'src/app/_models/pagination';
-import { LinksAPI, MetadataAPI, ResponseAPI } from 'src/app/_models/response-api';
+import { LinksAPI, MetadataAPI } from 'src/app/_models/response-api';
 import { Sort } from 'src/app/_models/sort';
 import { User } from 'src/app/_models/users/user';
-import { AuthenticationService } from 'src/app/_services/authentication.service';
-import { USER_TYPES } from 'src/app/_users/types';
-import Swal from 'sweetalert2';
-import { GeneralService } from 'src/app/_services/general.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { CustomValidators } from 'src/app/_validators/custom-validators';
-import { SwalPortalComponent } from '@sweetalert2/ngx-sweetalert2/lib/swal-portal.component';
-import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
-import { MovementService } from 'src/app/_services/movement.service';
 import { MOVEMENTS } from 'src/app/_movements/movements';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { GeneralService } from 'src/app/_services/general.service';
+import { MovementService } from 'src/app/_services/movement.service';
+import { CustomValidators } from 'src/app/_validators/custom-validators';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'cei-money-transfer',
@@ -66,6 +62,10 @@ export class MoneyTransferComponent implements OnInit {
     this.displayedColumns = this.displayedUsersColumns;
     this.filter = this.fb.and(this.fb.where('disabled', OPERATORS.IS, 'false'));
     this.allUsersCheckbox = false;
+  }
+
+  ngOnDestroy(): void {
+    this._users.unsubscribe();
   }
 
   getUserData(): Observable<any> {
@@ -136,7 +136,7 @@ export class MoneyTransferComponent implements OnInit {
   getUsers(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<User[]> {
     this.isLoadingGetUsers = true;
     const promise: Promise<any> = new Promise((res, rej) => {
-      this.authService.getStudents(filter, sort, pagination).pipe(
+      this._users = this.authService.getStudents(filter, sort, pagination).pipe(
         finalize(() => {
           this.isLoadingGetUsers = false;
         })

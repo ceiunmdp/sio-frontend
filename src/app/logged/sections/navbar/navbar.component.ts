@@ -1,14 +1,14 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { Observable } from "rxjs";
+import { MenuItems } from "src/app/_menu-items/menuItems";
+import { Functionality } from 'src/app/_models/menu/functionality';
 import { User } from "src/app/_models/users/user";
 import { Routes } from "src/app/_routes/routes";
-import { MenuItems } from "src/app/_menu-items/menuItems";
 import { GeneralService } from "src/app/_services/general.service";
 import { AuthenticationService } from "../../../_services/authentication.service";
 import { HttpErrorResponseHandlerService } from "./../../../_services/http-error-response-handler.service";
-import { Observable } from "rxjs";
-import { Functionality } from 'src/app/_models/menu/functionality';
 
 @Component({
    selector: "cei-navbar",
@@ -21,6 +21,7 @@ export class NavbarComponent implements OnInit {
    routes = Routes; // Necessary for the view
    menuItems = MenuItems;
    isDarkTheme$: Observable<boolean>;
+   rootPath: string;
 
    constructor(
       private generalService: GeneralService,
@@ -34,6 +35,7 @@ export class NavbarComponent implements OnInit {
       this.isDarkTheme$ = this.generalService.getDarkTheme();
 
       this.user = this.authService.currentUserValue;
+      this.rootPath = this.user.rootPath;
       this.getMenu();
    }
 

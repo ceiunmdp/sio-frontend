@@ -29,7 +29,7 @@
       <span class="title-menu pl-5">{{ mainMenu.name }}</span>
       <div class="my-5">
          <a *ngFor="let functionality of mainMenu.sub_functionalities" class="item-menu" mat-list-item
-            routerLink="{{ routes[functionality.code.toUpperCase()] }}" [routerLinkActive]="['is-active']">
+            routerLink="{{ this.rootPath + routes[functionality.code.toUpperCase()] }}" [routerLinkActive]="['is-active']">
             <div [ngSwitch]="functionality.code" [ngClass]="{
                   'mr-5': true,
                   'text-secondary': true
@@ -43,7 +43,7 @@
                <mat-icon *ngSwitchCase="menuItems.HISTORICAL_ORDERS">
                   history
                </mat-icon>
-               <mat-icon [svgIcon]="'transferir_saldo_simple'" *ngSwitchCase="menuItems.TRANSFER_MONEY"> </mat-icon>
+               <mat-icon [svgIcon]="'transferir_saldo_simple'" *ngSwitchCase="menuItems.TOP_UP"> </mat-icon>
                <mat-icon [svgIcon]="'movimientos'" *ngSwitchCase="menuItems.MOVEMENTS"> </mat-icon>
                <mat-icon *ngSwitchCase="menuItems.STUDENT_LIST">
                   list
