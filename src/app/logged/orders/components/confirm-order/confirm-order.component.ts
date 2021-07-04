@@ -5,6 +5,8 @@ import {CustomValidators} from 'src/app/_validators/custom-validators';
 import {Binding} from 'src/app/_models/binding';
 import {MatTableDataSource} from '@angular/material';
 import {OrdersService, PRICES_CODES} from '../../orders.service';
+import {AuthenticationService} from 'src/app/_services/authentication.service';
+import {USER_TYPES} from 'src/app/_users/types';
 
 @Component({
   selector: 'cei-confirm-order',
@@ -18,14 +20,19 @@ export class ConfirmOrderComponent implements OnInit {
   @Input() isPosting;
   @Output('submit') finalOrder = new EventEmitter;
   totalPrice: number = 0;
+  finalPrice: number = 0;
+  discount: number = 0;
   dataSource: MatTableDataSource<any>;
   bindingsDetail: Binding[];
   filesDetail: any[];
   confirmOrderForm: FormGroup;
   public readonly CAMPUS = 'campus_id' // Form array ppal
   displayedColumns: string[] = ["file", "quantity", "totalPages", "unitPrice", "totalPrice"];
+  displayedFooter1: string[] = ["subtotalTitle", "emptyFooter", "emptyFooter", "emptyFooter", "subtotalVal"];
+  displayedFooter2: string[] = ["discountTitle", "emptyFooter", "emptyFooter", "emptyFooter", "discountVal"];
+  displayedFooter3: string[] = ["totalTitle", "emptyFooter", "emptyFooter", "emptyFooter", "totalVal"];
 
-  constructor(private formBuilder: FormBuilder, private orderService: OrdersService) {}
+  constructor(private formBuilder: FormBuilder, private orderService: OrdersService, private authService: AuthenticationService) {}
 
 
   ngOnInit() {
@@ -39,11 +46,77 @@ export class ConfirmOrderComponent implements OnInit {
       this.bindingsDetail = this.getBindingsFromOrder(this.order);
       this.filesDetail = this.getFilesFromOrder(this.order);
       this.dataSource = new MatTableDataSource(this.filesDetail.concat(this.bindingsDetail));
-      this.totalPrice = this.calculateTotalPrice();
+      const {subtotal, total, discount} = this.calculatePrices();
+      this.totalPrice = subtotal;
+      this.discount = discount;
+      this.finalPrice = total;
     }
   }
 
-  calculateTotalPrice = (): number => this.dataSource.data.reduce((accum, current) => accum += current.totalPrice, 0)
+  calculatePrices = (): {total: number, subtotal: number, discount: number} => {
+    let prices = {
+      subtotal: this.calculateSubtotal(),
+      discount: 0,
+      total: 0
+    };
+    if (this.authService.currentUserValue.type === USER_TYPES.BECADO) {
+      prices['discount'] = this.calculateDiscount(this.getSimpleAndDoubleSidedQuantity());
+      prices['total'] = prices['subtotal'] - prices['discount'];
+    } else {
+      prices['discount'] = 0;
+      prices['total'] = prices['subtotal'];
+    }
+    return prices;
+  }
+
+  calculateSubtotal = (): number => this.dataSource.data.reduce((accum, current) => accum += current.totalPrice, 0);
+
+
+  calculateDiscount = (simpleAndDoubleSidedQuantity: {doubleSided: number, simpleSided: number}): number => {
+    let availablesCopies = this.authService.currentUserValue['available_copies'];
+    let doubleSidedToDiscount;
+    let simpleSidedToDiscount;
+
+    if (simpleAndDoubleSidedQuantity.doubleSided <= availablesCopies) {
+      doubleSidedToDiscount = simpleAndDoubleSidedQuantity.doubleSided;
+      availablesCopies -= simpleAndDoubleSidedQuantity.doubleSided;
+    } else {
+      doubleSidedToDiscount = availablesCopies;
+      availablesCopies = 0;
+    }
+
+    if (availablesCopies > 0) {
+      if (simpleAndDoubleSidedQuantity.simpleSided <= availablesCopies) {
+        simpleSidedToDiscount = simpleAndDoubleSidedQuantity.simpleSided;
+      } else {
+        simpleSidedToDiscount = availablesCopies;
+      }
+    }
+
+    const doubleSidedPriceDiscounted = this.calculatePrice(doubleSidedToDiscount, false, true);
+    const simpleSidedPriceDiscounted = this.calculatePrice(simpleSidedToDiscount, false, false);
+    const discount = doubleSidedPriceDiscounted + simpleSidedPriceDiscounted;
+    console.log(availablesCopies);
+    console.log(this.order);
+    return discount;
+  }
+
+  getSimpleAndDoubleSidedQuantity() {
+    console.log(this.filesDetail);
+    
+    const o = this.filesDetail.reduce(
+      (objectAccum, file) => {
+        objectAccum[file.double_sided ? 'doubleSided' : 'simpleSided'] += file.totalPages;
+        return objectAccum;
+      }, 
+      {
+        doubleSided: 0,
+        simpleSided: 0
+      }
+    );
+    console.log(o);
+    return o;
+  }
 
 
   getBindingsFromOrder(order) {
