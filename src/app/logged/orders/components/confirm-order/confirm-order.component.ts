@@ -40,8 +40,6 @@ export class ConfirmOrderComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
-    //Add '${implements OnChanges}' to the class.
     if (!!changes && !!changes.order && !!changes.order.currentValue) {
       this.bindingsDetail = this.getBindingsFromOrder(this.order);
       this.filesDetail = this.getFilesFromOrder(this.order);
@@ -71,53 +69,52 @@ export class ConfirmOrderComponent implements OnInit {
 
   calculateSubtotal = (): number => this.dataSource.data.reduce((accum, current) => accum += current.totalPrice, 0);
 
+  applyDiscounts = (availableCopies, ...discounts): {availableCopies: number, totalDiscount: number} => {
+    return discounts.reduce((object, discountObj) => {
+      const quantityToDiscount = discountObj.quantity <= object.availableCopies ? discountObj.quantity : object.availableCopies;
+      object.availableCopies -= quantityToDiscount;
+      if (quantityToDiscount > 0) { object.totalDiscount += discountObj.fn(quantityToDiscount); }
+      return object;
+    }, {
+      availableCopies,
+      totalDiscount: 0
+    });
+  }
 
-  calculateDiscount = (simpleAndDoubleSidedQuantity: {doubleSided: number, simpleSided: number}): number => {
+  doubleSidedColorDiscount = (quantity) => this.calculatePrice(quantity, true, true);
+  simpleSidedColorDiscount = (quantity) => this.calculatePrice(quantity, true, false);
+  doubleSidedNoColorDiscount = (quantity) => this.calculatePrice(quantity, false, true);
+  simpleSidedNoColorDiscount = (quantity) => this.calculatePrice(quantity, false, false);
+
+  calculateDiscount = (simpleAndDoubleSidedQuantity: {doubleSided: number, simpleSided: number, simpleSidedColour: number, doubleSidedColour: number}): number => {
     let availablesCopies = this.authService.currentUserValue['available_copies'];
-    let doubleSidedToDiscount;
-    let simpleSidedToDiscount;
-
-    if (simpleAndDoubleSidedQuantity.doubleSided <= availablesCopies) {
-      doubleSidedToDiscount = simpleAndDoubleSidedQuantity.doubleSided;
-      availablesCopies -= simpleAndDoubleSidedQuantity.doubleSided;
-    } else {
-      doubleSidedToDiscount = availablesCopies;
-      availablesCopies = 0;
-    }
-
-    if (availablesCopies > 0) {
-      if (simpleAndDoubleSidedQuantity.simpleSided <= availablesCopies) {
-        simpleSidedToDiscount = simpleAndDoubleSidedQuantity.simpleSided;
-      } else {
-        simpleSidedToDiscount = availablesCopies;
-      }
-    }
-
-    const doubleSidedPriceDiscounted = this.calculatePrice(doubleSidedToDiscount, false, true);
-    const simpleSidedPriceDiscounted = this.calculatePrice(simpleSidedToDiscount, false, false);
-    const discount = doubleSidedPriceDiscounted + simpleSidedPriceDiscounted;
-    console.log(availablesCopies);
-    console.log(this.order);
-    return discount;
+    const {totalDiscount} = this.applyDiscounts(availablesCopies,
+        {fn: this.doubleSidedColorDiscount, quantity: simpleAndDoubleSidedQuantity.doubleSidedColour},
+        {fn: this.doubleSidedNoColorDiscount, quantity: simpleAndDoubleSidedQuantity.doubleSided},
+        {fn: this.simpleSidedColorDiscount, quantity: simpleAndDoubleSidedQuantity.simpleSidedColour},
+        {fn: this.simpleSidedNoColorDiscount, quantity: simpleAndDoubleSidedQuantity.simpleSided}
+      );
+    return totalDiscount;
   }
 
   getSimpleAndDoubleSidedQuantity() {
-    console.log(this.filesDetail);
-    
-    const o = this.filesDetail.reduce(
+    return this.filesDetail.reduce(
       (objectAccum, file) => {
-        objectAccum[file.double_sided ? 'doubleSided' : 'simpleSided'] += file.totalPages;
+        if(file.colour) {
+          objectAccum[file.double_sided ? 'doubleSidedColour' : 'simpleSidedColour'] += file.totalPages;  
+        } else {
+          objectAccum[file.double_sided ? 'doubleSided' : 'simpleSided'] += file.totalPages;
+        }
         return objectAccum;
-      }, 
+      },
       {
         doubleSided: 0,
-        simpleSided: 0
+        simpleSided: 0,
+        doubleSidedColour: 0,
+        simpleSidedColour: 0
       }
     );
-    console.log(o);
-    return o;
   }
-
 
   getBindingsFromOrder(order) {
     const bindings: Binding[] = [];
