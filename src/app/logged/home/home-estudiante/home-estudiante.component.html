@@ -43,10 +43,15 @@
    <!-- Saldo -->
    <mat-card class="card-shadow" fxFlex="100" [ngClass.lt-md]="{ 'border-radius-0': true }">
       <mat-card-header>
-         <mat-card-subtitle>
-            <span class="mat-h3">Saldo en la cuenta</span> <br /><br />
-            <span class="mat-h3">$ </span>
-            <span class="mat-display-1">{{ this.authService.currentUserValue.balance }}</span> <br />
+         <mat-card-subtitle fxFlex="100">
+           <div fxLayout="row" fxLayoutAlign="space-between">
+             <div>
+               <span class="mat-h3">Saldo en la cuenta</span> <br /><br />
+               <span class="mat-h3">$ </span>
+               <span class="mat-display-1">{{ this.authService.currentUserValue.balance }}</span>
+               <span class="mat-h3 mls-2" *ngIf="this.authService.currentUserValue.type == this.userType.BECADO && this.authService.currentUserValue.remaining_copies > 0"> (+{{this.authService.currentUserValue.remaining_copies}} copias gratuitas)</span> <br />
+             </div>
+           </div>
          </mat-card-subtitle>
       </mat-card-header>
    </mat-card>

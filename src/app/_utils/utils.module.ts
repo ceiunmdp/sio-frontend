@@ -13,7 +13,8 @@ import {
    MatMenuModule,
    MatRadioModule,
    MatPaginatorModule,
-   MatCheckboxModule
+   MatCheckboxModule,
+   MatTooltipModule
 } from "@angular/material";
 import { MatCardModule } from "@angular/material/card";
 import { MatInputModule } from "@angular/material/input";
@@ -93,6 +94,7 @@ export function playerFactory() {
       NgxMatSelectSearchModule,
       MatPaginatorModule,
       MatCheckboxModule,
+      MatTooltipModule,
       LottieModule.forRoot({ player: playerFactory })
    ],
    exports: [

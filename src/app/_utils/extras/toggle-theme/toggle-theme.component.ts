@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { AuthenticationService } from "src/app/_services/authentication.service";
 import { GeneralService } from "src/app/_services/general.service";
+import {USER_TYPES} from "src/app/_users/types";
 
 @Component({
    selector: "cei-toggle-theme",
@@ -9,7 +10,7 @@ import { GeneralService } from "src/app/_services/general.service";
 })
 export class ToggleThemeComponent implements OnInit {
    isDarkTheme: boolean;
-
+   public userType = USER_TYPES;
    constructor(private generalService: GeneralService, public authService: AuthenticationService) {}
 
    ngOnInit() {

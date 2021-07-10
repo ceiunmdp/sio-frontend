@@ -22,6 +22,8 @@ export class ConfirmOrderComponent implements OnInit {
   totalPrice: number = 0;
   finalPrice: number = 0;
   discount: number = 0;
+  availablesCopies: number;
+  usedCopies: number;
   dataSource: MatTableDataSource<any>;
   bindingsDetail: Binding[];
   filesDetail: any[];
@@ -69,15 +71,19 @@ export class ConfirmOrderComponent implements OnInit {
 
   calculateSubtotal = (): number => this.dataSource.data.reduce((accum, current) => accum += current.totalPrice, 0);
 
-  applyDiscounts = (availableCopies, ...discounts): {availableCopies: number, totalDiscount: number} => {
+  applyDiscounts = (availableCopies, ...discounts): {availableCopies: number, totalDiscount: number, usedCopies: number} => {
     return discounts.reduce((object, discountObj) => {
       const quantityToDiscount = discountObj.quantity <= object.availableCopies ? discountObj.quantity : object.availableCopies;
       object.availableCopies -= quantityToDiscount;
-      if (quantityToDiscount > 0) { object.totalDiscount += discountObj.fn(quantityToDiscount); }
+      if (quantityToDiscount > 0) { 
+        object.totalDiscount += discountObj.fn(quantityToDiscount); 
+        object.usedCopies += quantityToDiscount;
+      }
       return object;
     }, {
       availableCopies,
-      totalDiscount: 0
+      totalDiscount: 0,
+      usedCopies: 0
     });
   }
 
@@ -86,14 +92,17 @@ export class ConfirmOrderComponent implements OnInit {
   doubleSidedNoColorDiscount = (quantity) => this.calculatePrice(quantity, false, true);
   simpleSidedNoColorDiscount = (quantity) => this.calculatePrice(quantity, false, false);
 
-  calculateDiscount = (simpleAndDoubleSidedQuantity: {doubleSided: number, simpleSided: number, simpleSidedColour: number, doubleSidedColour: number}): number => {
-    let availablesCopies = this.authService.currentUserValue['available_copies'];
-    const {totalDiscount} = this.applyDiscounts(availablesCopies,
+  calculateDiscount = (simpleAndDoubleSidedQuantity: {doubleSided: number, simpleSided: number,
+    simpleSidedColour: number, doubleSidedColour: number}): number => {
+    const availablesCopies = this.authService.currentUserValue['remaining_copies'];
+    const {totalDiscount, usedCopies} = this.applyDiscounts(availablesCopies,
         {fn: this.doubleSidedColorDiscount, quantity: simpleAndDoubleSidedQuantity.doubleSidedColour},
         {fn: this.doubleSidedNoColorDiscount, quantity: simpleAndDoubleSidedQuantity.doubleSided},
         {fn: this.simpleSidedColorDiscount, quantity: simpleAndDoubleSidedQuantity.simpleSidedColour},
         {fn: this.simpleSidedNoColorDiscount, quantity: simpleAndDoubleSidedQuantity.simpleSided}
       );
+    this.usedCopies = usedCopies;
+    this.availablesCopies = availablesCopies;
     return totalDiscount;
   }
 

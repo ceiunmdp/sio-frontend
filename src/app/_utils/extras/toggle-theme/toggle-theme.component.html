@@ -1,10 +1,19 @@
 <!-- <mat-slide-toggle [checked]="isDarkTheme" (change)="toggleDarkTheme($event.checked)">
    <span class="mat-body-2">Dark theme</span>
 </mat-slide-toggle> -->
-
-<button mat-icon-button [matMenuTriggerFor]="menuTheme">
-   <mat-icon matBadge="15" matBadgeColor="warn">brush</mat-icon>
-</button>
+<div fxLayoutAlign="start center" fxLayoutGap="20px">
+  <button mat-icon-button [matMenuTriggerFor]="menuTheme">
+     <mat-icon matBadge="15" matBadgeColor="warn">brush</mat-icon>
+  </button>
+  <div *ngIf="this.authService.currentUserValue?.type == this.userType.BECADO" fxLayoutAlign="center center" matTooltip="Copias disponibles por beca">
+    <mat-icon>add_shopping_cart</mat-icon>
+    <span class="mat-h4 mb-0 mls-1">{{this.authService.currentUserValue.remaining_copies}}</span>
+  </div>
+  <div fxLayoutAlign="center center" *ngIf="!!this.authService.currentUserValue" matTooltip="Saldo disponible">
+    <mat-icon>attach_money</mat-icon>
+    <span class="mat-h4 mb-0">{{this.authService.currentUserValue.balance}}</span>
+  </div>
+</div>
 
 <mat-menu #menuTheme="matMenu" style="z-index: 2000 !important;">
    <!-- <mat-radio-group labelPosition="before" fxLayout="column">

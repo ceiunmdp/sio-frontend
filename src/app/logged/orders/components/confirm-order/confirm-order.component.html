@@ -69,7 +69,9 @@
       </ng-container>
 
       <ng-container matColumnDef="discountTitle">
-        <td mat-footer-cell *matFooterCellDef class="text-primary">Descuento</td>
+        <td mat-footer-cell *matFooterCellDef class="text-primary">
+            Descuento *
+        </td>
       </ng-container>
       <ng-container matColumnDef="discountVal">
         <td mat-footer-cell *matFooterCellDef class="text-primary">-{{this.discount | moneda}}</td>
@@ -98,13 +100,21 @@
 
       <!-- Disclaimer column -->
       <ng-container matColumnDef="disclaimer">
-        <td mat-footer-cell *matFooterCellDef colspan="2">
+        <td mat-footer-cell *matFooterCellDef colspan="5">
           <span *ngIf="this.confirmOrderForm.valid" class="accent">
             Verifique los datos del pedido y luego presione finalizar.
           </span>
           <span *ngIf="!this.confirmOrderForm.get(this.CAMPUS).valid" class="warn">
             Por favor, seleccione en la parte superior la sede donde lo retirará
           </span>
+        </td>
+      </ng-container>
+      <!-- DisclaimerDiscount column -->
+      <ng-container matColumnDef="disclaimerDiscount">
+        <td mat-footer-cell *matFooterCellDef colspan="5">
+          <i class="text-secondary" >
+            * Se utilizarán {{usedCopies}} de las {{availablesCopies}} copias disponibles que posee por su condición de becado
+          </i>
         </td>
       </ng-container>
 
@@ -116,6 +126,10 @@
         <tr mat-footer-row *matFooterRowDef="displayedFooter2"></tr>
       </ng-container>
       <tr mat-footer-row *matFooterRowDef="displayedFooter3"></tr>
+      <ng-container *ngIf="this.discount > 0">
+        <tr mat-footer-row *matFooterRowDef="['disclaimerDiscount']"></tr>
+      </ng-container>
+      
       <tr mat-footer-row *matFooterRowDef="['disclaimer']" class="example-second-footer-row"></tr>
     </table>
   </div>

@@ -6,6 +6,7 @@ import {Order} from "src/app/_models/orders/order";
 import {Pagination} from "src/app/_models/pagination";
 import {Routes} from "src/app/_routes/routes";
 import {AuthenticationService} from "src/app/_services/authentication.service";
+import {USER_TYPES} from "src/app/_users/types";
 import {OrdersService} from "../../orders/orders.service";
 
 @Component({
@@ -19,6 +20,7 @@ export class HomeEstudianteComponent implements OnInit {
    routes = Routes;
    fb: FilterBuilder = new FilterBuilder();
    isLoadingGetOrders = false;
+   public userType = USER_TYPES;
 
    constructor(public orderService: OrdersService, public authService: AuthenticationService) {}
 
