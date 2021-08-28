@@ -1,8 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Career } from 'src/app/_models/orders/career';
-import { Year } from 'src/app/_models/orders/year';
-import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
 import { AdminService } from 'src/app/_services/admin.service';
+import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import { CustomValidators } from 'src/app/_validators/custom-validators';
 
 @Component({
@@ -16,13 +18,15 @@ export class CreateEditCareerComponent implements OnInit {
   @Output('created') onCreated = new EventEmitter();
   @Output('cancelled') onCancelled = new EventEmitter();
   isLoadingPostCareer = false;
+  @ViewChild('alertError', { static: true }) alertError;
+  messageError: string;
 
   careerForm: FormGroup;
   public readonly NAMES_FORM_POST_CAREER = {
     CAREER_NAME: 'name',
   };
 
-  constructor(private adminService: AdminService, private formBuilder: FormBuilder) { }
+  constructor(private adminService: AdminService, public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private formBuilder: FormBuilder) { }
 
   ngOnInit() {
     this.careerForm = this.createCareerForm(this.career);
@@ -49,16 +53,20 @@ export class CreateEditCareerComponent implements OnInit {
   postCareer() {
     this.isLoadingPostCareer = true;
     this.adminService.postCareer(this.careerForm.value).subscribe(response => {
-      console.log(response);
-    }, e => console.log(e), () => { this.isLoadingPostCareer = false; this.onCreated.emit() });
+    }, e => {this.handleErrors(e);this.isLoadingPostCareer = false}, () => { this.isLoadingPostCareer = false; this.onCreated.emit() });
   }
 
   patchCareer(careerId: string) {
     this.isLoadingPostCareer = true;
-    console.log('career form', this.careerForm.value)
     this.adminService.patchCareer(this.careerForm.value, careerId).subscribe(response => {
-      console.log(response);
-    }, e => console.log(e), () => { this.isLoadingPostCareer = false; this.onCreated.emit() });
+    }, e => {this.handleErrors(e);this.isLoadingPostCareer = false}, () => { this.isLoadingPostCareer = false; this.onCreated.emit() });
+  }
+
+  handleErrors(err: HttpErrorResponse) {
+    this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
+    if (this.messageError) {
+      this.alertError.openError(this.messageError);
+    }
   }
 
 }

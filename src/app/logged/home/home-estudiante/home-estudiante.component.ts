@@ -1,13 +1,13 @@
-import {Component, OnInit} from "@angular/core";
-import {Sort} from "@angular/material";
-import {finalize} from "rxjs/operators";
-import {FilterBuilder, OPERATORS} from "src/app/_helpers/filterBuilder";
-import {Order} from "src/app/_models/orders/order";
-import {Pagination} from "src/app/_models/pagination";
-import {Routes} from "src/app/_routes/routes";
-import {AuthenticationService} from "src/app/_services/authentication.service";
-import {USER_TYPES} from "src/app/_users/types";
-import {OrdersService} from "../../orders/orders.service";
+import { Component, OnInit } from "@angular/core";
+import { Sort } from "@angular/material";
+import { finalize } from "rxjs/operators";
+import { FilterBuilder, OPERATORS } from "src/app/_helpers/filterBuilder";
+import { Order } from "src/app/_models/orders/order";
+import { Pagination } from "src/app/_models/pagination";
+import { Routes } from "src/app/_routes/routes";
+import { AuthenticationService } from "src/app/_services/authentication.service";
+import { USER_TYPES } from "src/app/_users/types";
+import { OrdersService } from "../../orders/orders.service";
 
 @Component({
    selector: "cei-home-estudiante",
@@ -20,12 +20,14 @@ export class HomeEstudianteComponent implements OnInit {
    routes = Routes;
    fb: FilterBuilder = new FilterBuilder();
    isLoadingGetOrders = false;
+   rootPath: string;
    public userType = USER_TYPES;
 
    constructor(public orderService: OrdersService, public authService: AuthenticationService) {}
 
    ngOnInit() {
       this.getActiveOrders();
+      this.rootPath = this.authService.currentUserValue.rootPath;
    }
 
    getActiveOrders(sort?: Sort[], pagination?: Pagination) {

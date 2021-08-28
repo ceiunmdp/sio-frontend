@@ -7,7 +7,7 @@
          fxFlex.gt-md="20"
          [icon]="'nuevo_pedido'"
          [text]="'Nuevo pedido'"
-         [routerLink]="[routes.NEW_ORDER]"
+         [routerLink]="this.rootPath + [routes.NEW_ORDER]"
          routerLinkActive="router-link-active"
       >
       </cei-card-icon>
@@ -17,7 +17,7 @@
          fxFlex.gt-md="20"
          [icon]="'mis_pedidos_simple'"
          [text]="'Mis pedidos'"
-         [routerLink]="[routes.MY_ORDERS]"
+         [routerLink]="this.rootPath + [routes.MY_ORDERS]"
       ></cei-card-icon>
       <cei-card-icon
          ceiMaterialElevation
@@ -25,7 +25,7 @@
          fxFlex.gt-md="20"
          [icon]="'movimientos'"
          [text]="'Movimientos'"
-         [routerLink]="[routes.MOVEMENTS]"
+         [routerLink]="this.rootPath + [routes.MY_MOVEMENTS]"
          [ngClass.lt-md]="{ 'mt-4': true }"
       ></cei-card-icon>
       <cei-card-icon
@@ -34,7 +34,7 @@
          fxFlex.gt-md="20"
          [icon]="'transferir_saldo'"
          [text]="'Transferir saldo'"
-         [routerLink]="[routes.ADD_MONEY]"
+         [routerLink]="this.rootPath + [routes.TRANSFER_MONEY]"
          class="px-0"
          [ngClass.lt-md]="{ 'mt-4': true, 'px-0': true }"
       >

@@ -1,5 +1,7 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatTableDataSource, PageEvent } from '@angular/material';
+import { Router } from '@angular/router';
 import { from, Observable, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { AND, FilterBuilder, OPERATORS, OR } from 'src/app/_helpers/filterBuilder';
@@ -8,6 +10,7 @@ import { LinksAPI, MetadataAPI } from 'src/app/_models/response-api';
 import { Sort } from 'src/app/_models/sort';
 import { AdminService } from 'src/app/_services/admin.service';
 import { GeneralService } from 'src/app/_services/general.service';
+import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import Swal from 'sweetalert2';
 import { OrdersService } from '../../orders/orders.service';
 import { Binding } from './../../../_models/binding';
@@ -23,6 +26,8 @@ enum STEPS {
 })
 export class BindingsComponent implements OnInit {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  @ViewChild('alertError', { static: true }) alertError;
+  messageError: string;
   inputFilterValue = ''
   public STEPS = STEPS;
   step: STEPS;
@@ -44,7 +49,7 @@ export class BindingsComponent implements OnInit {
   sort: Sort[];
   fb: FilterBuilder;
 
-  constructor(private adminService: AdminService, private orderService: OrdersService, public generalService: GeneralService) { }
+  constructor(private adminService: AdminService, public router: Router, private orderService: OrdersService, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, public generalService: GeneralService) { }
 
   ngOnInit() {
     this.fb = new FilterBuilder();
@@ -93,7 +98,7 @@ export class BindingsComponent implements OnInit {
             text: 'Anillado borrado correctamente',
             icon: 'success'
           })
-        }).catch(e => console.log('error', e))
+        }).catch(err => this.handleErrors(err))
       },
       allowOutsideClick: () => !Swal.isLoading()
     })
@@ -118,13 +123,21 @@ export class BindingsComponent implements OnInit {
         })
       ).subscribe(
         (data) => { this.metaDataItems = data.data.meta; this.linksItems = data.data.links; this.dataSourceBindings.data = data.data.items; res(data.data.items) },
-        (e) => { rej(e) },
+        (e) => { this.handleErrors(e);rej(e) },
       )
     })
     return from(promise);
   }
 
-  deleteBinding(bindingId: string): Promise<Binding> {
-    return this.adminService.deleteBinding(bindingId).toPromise().then(res => { this.onRefresh(); return res })
+  deleteBinding(bindingId: string): Promise<void | Binding> {
+    return this.adminService.deleteBinding(bindingId).toPromise().then(res => { this.onRefresh(); return res }).catch(err => { this.handleErrors(err) })
   }
+
+  handleErrors(err: HttpErrorResponse) {
+    this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
+    if (this.messageError) {
+      this.alertError.openError(this.messageError);
+    }
+  }
+  
 }

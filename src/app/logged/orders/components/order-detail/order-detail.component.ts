@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from "@angular/common/http";
 import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from "@angular/core";
 import { MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from "@angular/material";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -8,6 +9,7 @@ import { ORDER_STATES } from "src/app/_orderStates/states";
 import { Routes } from "src/app/_routes/routes";
 import { AuthenticationService } from "src/app/_services/authentication.service";
 import { GeneralService } from "src/app/_services/general.service";
+import { HttpErrorResponseHandlerService } from "src/app/_services/http-error-response-handler.service";
 
 // Bottom sheet component
 @Component({
@@ -18,15 +20,22 @@ import { GeneralService } from "src/app/_services/general.service";
 export class BottomSheetFiles implements OnInit {
   ringedGroups: any[];
   isLoadingOrderDetail = true;
+  rootPath: string;
+  @ViewChild('alertError', { static: true }) alertError;
+  messageError: string;
 
   constructor(
+    public router: Router,
+    private httpErrorResponseHandlerService: HttpErrorResponseHandlerService,
     private _bottomSheetRef: MatBottomSheetRef<BottomSheetFiles>,
     private orderService: OrdersService,
     private cd: ChangeDetectorRef,
+    private authService: AuthenticationService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any
   ) {}
 
   ngOnInit() {
+    this.rootPath = this.authService.currentUserValue.rootPath;
     this.getOrderDetail()
       .then(orderFiles => {
         this.ringedGroups = this.createRingedGroups(orderFiles);
@@ -40,6 +49,7 @@ export class BottomSheetFiles implements OnInit {
     this.isLoadingOrderDetail = true;
     return this.orderService.getOrderFiles(this.data.id).toPromise()
       .then(data => data.items)
+      .catch(err => { this.handleErrors(err); this.isLoadingOrderDetail = false })
       .finally(() => this.isLoadingOrderDetail = false);
   }
 
@@ -87,6 +97,13 @@ export class BottomSheetFiles implements OnInit {
     });
     return ringedGroups;
   }
+
+  handleErrors(err: HttpErrorResponse) {
+    this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
+    if (this.messageError) {
+      this.alertError.openError(this.messageError);
+    }
+  }
 }
 
 @Component({
@@ -101,9 +118,12 @@ export class OrderDetailComponent implements OnInit {
    rootPath: string;
    ORDER_STATES = ORDER_STATES;
    isLoadingGetOrders = false;
+   @ViewChild('alertError', { static: true }) alertError;
+   messageError: string;
 
    @ViewChild("orderCancelSwal", { static: true }) orderCancelSwal;
    constructor(
+      private httpErrorResponseHandlerService: HttpErrorResponseHandlerService,
       public generalService: GeneralService,
       public orderService: OrdersService,
       public authService: AuthenticationService,
@@ -125,7 +145,7 @@ export class OrderDetailComponent implements OnInit {
           .subscribe(order => {
             this.order = this.sortTracking(order);
             this.generalService.sendMessage({ title: `Detalles del pedido` });
-          });
+          }, err => { this.handleErrors(err); this.isLoadingGetOrders = false });
       } else{
         this.order = this.sortTracking(this.order);
       }
@@ -148,10 +168,17 @@ export class OrderDetailComponent implements OnInit {
     }; 
     this.orderService.patchOrder(body,this.order.id).subscribe(message => {
         this.orderCancelSwal.fire();
-    });
+    }, err => this.handleErrors(err));
    }
 
    openBottomSheet(): void {
       this._bottomSheet.open(BottomSheetFiles, { data: this.order });
    }
+
+  handleErrors(err: HttpErrorResponse) {
+    this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
+    if (this.messageError) {
+      this.alertError.openError(this.messageError);
+    }
+  }
 }

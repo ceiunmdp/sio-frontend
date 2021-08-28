@@ -1,9 +1,12 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatTableDataSource, PageEvent } from '@angular/material';
+import { Router } from '@angular/router';
 import { from, Observable, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { LinksAPI, MetadataAPI } from 'src/app/_models/response-api';
 import { Sort } from 'src/app/_models/sort';
+import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import { AND, FilterBuilder, OPERATORS, OR } from './../../../_helpers/filterBuilder';
 import { Pagination } from './../../../_models/pagination';
 import { Parameter } from './../../../_models/parameter';
@@ -42,8 +45,9 @@ export class ParametersComponent implements OnInit {
   filter: OR | AND;
   sort: Sort[];
   fb: FilterBuilder;
-
-  constructor(private adminService: AdminService, public generalService: GeneralService) { }
+  @ViewChild('alertError', { static: true }) alertError;
+  messageError: string;
+  constructor(public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private adminService: AdminService, public generalService: GeneralService) { }
 
   ngOnInit() {
     this.fb = new FilterBuilder();
@@ -96,10 +100,16 @@ export class ParametersComponent implements OnInit {
         })
       ).subscribe(
         (data) => { this.metaDataParameters = data.data.meta; this.linksItems = data.data.links; this.dataSourceParameters.data = data.data.items; res(data.data.items) },
-        (e) => { rej(e) },
+        (e) => { this.handleErrors(e); rej(e) },
       )
     })
     return from(promise);
   }
 
+  handleErrors(err: HttpErrorResponse) {
+      this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
+      if (this.messageError) {
+      this.alertError.openError(this.messageError);
+      }
+  }
 }

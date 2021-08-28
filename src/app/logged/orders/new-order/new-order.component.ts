@@ -16,13 +16,16 @@ import {
 import { ErrorStateMatcher, MatSnackBarRef } from "@angular/material";
 import { MatTreeNestedDataSource } from "@angular/material/tree";
 import { Router } from "@angular/router";
-import { saveAs } from "file-saver";
 import {
    AbstractModelSettings,
    AdhocModelSettings,
    ModelSettingsBuilder,
    ReactiveFormsRuleService
 } from "ng-form-rules";
+import { ITEM_TYPES } from "src/app/_items/types";
+import { Campus } from "src/app/_models/campus";
+import { Item } from "src/app/_models/item";
+import { Course } from "src/app/_models/orders/course";
 import { Routes } from "src/app/_routes/routes";
 import { AuthenticationService } from "src/app/_services/authentication.service";
 import { GeneralService } from "src/app/_services/general.service";
@@ -30,10 +33,6 @@ import { HttpErrorResponseHandlerService } from "src/app/_services/http-error-re
 import { MonedaPipe } from "src/app/_utils/moneda.pipe";
 import { CustomValidators } from "src/app/_validators/custom-validators";
 import { OrdersService } from "../orders.service";
-import { Campus } from "src/app/_models/campus";
-import { Item } from "src/app/_models/item";
-import { ITEM_TYPES } from "src/app/_items/types";
-import { Course } from "src/app/_models/orders/course";
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -1254,8 +1253,6 @@ export class NewOrderComponent implements OnInit {
    }
 
    handleErrors(err: HttpErrorResponse) {
-      console.log(err);
-
       this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
       if (this.messageError) {
          this.alertError.openError(this.messageError);

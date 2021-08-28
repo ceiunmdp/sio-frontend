@@ -1,5 +1,7 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatTableDataSource, PageEvent } from '@angular/material';
+import { Router } from '@angular/router';
 import { from, Observable, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { AND, FilterBuilder, OPERATORS, OR } from 'src/app/_helpers/filterBuilder';
@@ -8,6 +10,7 @@ import { LinksAPI, MetadataAPI } from 'src/app/_models/response-api';
 import { Sort } from 'src/app/_models/sort';
 import { AdminService } from 'src/app/_services/admin.service';
 import { GeneralService } from 'src/app/_services/general.service';
+import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import { OrdersService } from '../../orders/orders.service';
 import { Item } from './../../../_models/item';
 
@@ -41,8 +44,10 @@ export class ItemsComponent implements OnInit {
   filter: OR | AND;
   sort: Sort[];
   fb: FilterBuilder;
+  @ViewChild('alertError', { static: true }) alertError;
+  messageError: string;
 
-  constructor(private adminService: AdminService, private orderService: OrdersService, public generalService: GeneralService) { }
+  constructor(public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private adminService: AdminService, private orderService: OrdersService, public generalService: GeneralService) { }
 
   ngOnInit() {
     this.fb = new FilterBuilder();
@@ -117,7 +122,7 @@ export class ItemsComponent implements OnInit {
         })
       ).subscribe(
         (data) => { this.metaDataItems = data.data.meta; this.linksItems = data.data.links; this.dataSourceItems.data = data.data.items; res(data.data.items) },
-        (e) => { rej(e) },
+        (e) => { this.handleErrors(e); rej(e) },
       )
     })
     return from(promise);
@@ -126,4 +131,10 @@ export class ItemsComponent implements OnInit {
   // deleteItem(itemId: string): Promise<Item> {
   //   return this.adminService.deleteItem(itemId).toPromise().then(res => { this.onRefresh(); return res })
   // }
+  handleErrors(err: HttpErrorResponse) {
+      this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
+      if (this.messageError) {
+        this.alertError.openError(this.messageError);
+      }
+  }
 }

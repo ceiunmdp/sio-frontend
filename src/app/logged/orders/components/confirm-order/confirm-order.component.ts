@@ -1,12 +1,15 @@
-import {Component, OnInit, Input, SimpleChanges, Output, EventEmitter} from '@angular/core';
-import {FormGroup, FormBuilder} from '@angular/forms';
-import {Campus} from 'src/app/_models/campus';
-import {CustomValidators} from 'src/app/_validators/custom-validators';
-import {Binding} from 'src/app/_models/binding';
-import {MatTableDataSource} from '@angular/material';
-import {OrdersService, PRICES_CODES} from '../../orders.service';
-import {AuthenticationService} from 'src/app/_services/authentication.service';
-import {USER_TYPES} from 'src/app/_users/types';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatTableDataSource } from '@angular/material';
+import { Router } from '@angular/router';
+import { Binding } from 'src/app/_models/binding';
+import { Campus } from 'src/app/_models/campus';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
+import { USER_TYPES } from 'src/app/_users/types';
+import { CustomValidators } from 'src/app/_validators/custom-validators';
+import { OrdersService, PRICES_CODES } from '../../orders.service';
 
 @Component({
   selector: 'cei-confirm-order',
@@ -33,8 +36,10 @@ export class ConfirmOrderComponent implements OnInit {
   displayedFooter1: string[] = ["subtotalTitle", "emptyFooter", "emptyFooter", "emptyFooter", "subtotalVal"];
   displayedFooter2: string[] = ["discountTitle", "emptyFooter", "emptyFooter", "emptyFooter", "discountVal"];
   displayedFooter3: string[] = ["totalTitle", "emptyFooter", "emptyFooter", "emptyFooter", "totalVal"];
+  @ViewChild('alertError', { static: true }) alertError;
+  messageError: string;
 
-  constructor(private formBuilder: FormBuilder, private orderService: OrdersService, private authService: AuthenticationService) {}
+  constructor(public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private formBuilder: FormBuilder, private orderService: OrdersService, private authService: AuthenticationService) {}
 
 
   ngOnInit() {
@@ -226,4 +231,11 @@ export class ConfirmOrderComponent implements OnInit {
 
   calculateIdCampus = (element) => element.id
   calculateNameCampus = (element) => element.name
+
+  handleErrors(err: HttpErrorResponse) {
+    this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
+    if (this.messageError) {
+      this.alertError.openError(this.messageError);
+    }
+  }
 }

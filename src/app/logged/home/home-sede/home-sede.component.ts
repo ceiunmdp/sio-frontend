@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { GeneralService } from 'src/app/_services/general.service';
 import { Routes } from 'src/app/_routes/routes';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
 
 interface Pedido {
    nombre: string;
@@ -16,10 +16,12 @@ export class HomeSedeComponent implements OnInit {
    public routes = Routes;
    pedidos: Pedido[] = [];
    displayedColumns: string[] = ['nombre', 'estado'];
+   rootPath: string
 
-   constructor() {}
+   constructor(public authService: AuthenticationService) {}
 
    ngOnInit() {
+      this.rootPath = this.authService.currentUserValue.rootPath;
       for (let i = 0; i < 4; i++) {
          this.pedidos.push({
             nombre: 'Pedido n°' + i.toString(),

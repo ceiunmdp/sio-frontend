@@ -1,6 +1,8 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatBottomSheet, MatBottomSheetRef, MatTableDataSource, MAT_BOTTOM_SHEET_DATA, PageEvent } from '@angular/material';
+import { Router } from '@angular/router';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { from, Observable, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -12,6 +14,7 @@ import { User } from 'src/app/_models/users/user';
 import { MOVEMENTS } from 'src/app/_movements/movements';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { GeneralService } from 'src/app/_services/general.service';
+import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import { MovementService } from 'src/app/_services/movement.service';
 import { CustomValidators } from 'src/app/_validators/custom-validators';
 import Swal from 'sweetalert2';
@@ -48,7 +51,13 @@ export class MoneyTransferComponent implements OnInit {
   sort: Sort[];
   fb: FilterBuilder;
   allUsersCheckbox;
+  @ViewChild('alertError', { static: true }) alertError;
+  messageError: string;
+
+
   constructor(
+    public router: Router,
+    private httpErrorResponseHandlerService: HttpErrorResponseHandlerService,
     private authService: AuthenticationService, 
     private generalService: GeneralService,
     private _bottomSheet: MatBottomSheet,
@@ -56,7 +65,7 @@ export class MoneyTransferComponent implements OnInit {
 
   ngOnInit() {
     this.fb = new FilterBuilder();
-    this.getUserData();
+    this.getUserData().toPromise().catch(err => this.handleErrors(err));
     this.generalService.sendMessage({title: 'Transferencia de saldo'})
     this.dataSourceUsers = new MatTableDataSource();
     this.displayedColumns = this.displayedUsersColumns;
@@ -68,6 +77,13 @@ export class MoneyTransferComponent implements OnInit {
     this._users.unsubscribe();
   }
 
+  handleErrors(err: HttpErrorResponse) {
+    this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
+    if (this.messageError) {
+      this.alertError.openError(this.messageError);
+    }
+  }
+
   getUserData(): Observable<any> {
     this.isLoadingGetUserData = true;
     this.authService.getUserData()
@@ -75,7 +91,7 @@ export class MoneyTransferComponent implements OnInit {
       this.authService.getUserData().pipe(
         finalize(() => {
           this.isLoadingGetUserData = false;
-          this.getUsers(this.filter, this.sort, this.pagination);
+          this.getUsers(this.filter, this.sort, this.pagination).toPromise().catch(err => this.handleErrors(err));;
         })
       ).subscribe(
         (data) => { 
@@ -89,11 +105,11 @@ export class MoneyTransferComponent implements OnInit {
 
   onPaginatorEvent(event: PageEvent) {
     this.pagination = { limit: event.pageSize, page: event.pageIndex + 1 }
-    this.getUsers(this.filter, this.sort, this.pagination);
+    this.getUsers(this.filter, this.sort, this.pagination).toPromise().catch(err => this.handleErrors(err));
   }
 
-  onRefresh(): Promise<User[]> {
-    return this.getUsers(this.filter, this.sort, this.pagination).toPromise();
+  onRefresh(): Promise<void | User[]> {
+    return this.getUsers(this.filter, this.sort, this.pagination).toPromise().catch(err => this.handleErrors(err));
   }
   
   displayTransferForm(user) {
@@ -123,7 +139,7 @@ export class MoneyTransferComponent implements OnInit {
       this.fb.where('dni', OPERATORS.CONTAINS, st),
       this.fb.where('email', OPERATORS.CONTAINS, st)
     );
-    this.getUsers(this.filter)
+    this.getUsers(this.filter).toPromise().catch(err => this.handleErrors(err));
   }
 
   fromCreateOrEditToList(refresh = false) {

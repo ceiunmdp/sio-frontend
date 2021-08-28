@@ -82,7 +82,7 @@
 </div>
 
 <swal #orderCancelSwal title="Pedido cancelado correctamente" icon="success" [confirmButtonText]="'Ok'"
-   (confirm)="this.router.navigate([routes.MY_ORDERS])">
+   (confirm)="this.router.navigate(this.rootPath + [routes.MY_ORDERS])">
 </swal>
 <swal #confirmCancelSwal title="¿Seguro desea cancelar el pedido?" type="question" (confirm)="doCancel()"
    [showCancelButton]="true" [confirmButtonText]="'Sí'" [cancelButtonText]="'No'">
@@ -90,3 +90,4 @@
 <ng-template #loadingDiv>
     <app-spinner fxFlex="100" fxLayoutAlign="center start"></app-spinner>
 </ng-template>
+<cei-alert-error #alertError></cei-alert-error>

@@ -1,9 +1,11 @@
-import { Binding } from './../../../../_models/binding';
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Career } from 'src/app/_models/orders/career';
-import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AdminService } from 'src/app/_services/admin.service';
+import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import { CustomValidators } from 'src/app/_validators/custom-validators';
+import { Binding } from './../../../../_models/binding';
 
 @Component({
   selector: 'cei-create-edit-bindings',
@@ -16,6 +18,8 @@ export class CreateEditBindingsComponent implements OnInit {
   @Output('created') onCreated = new EventEmitter();
   @Output('cancelled') onCancelled = new EventEmitter();
   isLoadingPostBinding = false;
+  @ViewChild('alertError', { static: true }) alertError;
+  messageError: string;
 
   bindingForm: FormGroup;
   public readonly NAMES_FORM_POST_BINDING = {
@@ -24,7 +28,7 @@ export class CreateEditBindingsComponent implements OnInit {
     BINDING_SHEETS_LIMIT: 'sheets_limit'
   };
 
-  constructor(private adminService: AdminService, private formBuilder: FormBuilder) { }
+  constructor(private adminService: AdminService, public router: Router, private formBuilder: FormBuilder, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService) { }
 
   ngOnInit() {
     this.bindingForm = this.createBindingForm(this.binding);
@@ -53,12 +57,22 @@ export class CreateEditBindingsComponent implements OnInit {
   postBinding() {
     this.isLoadingPostBinding = true;
     this.adminService.postBinding(this.bindingForm.value).subscribe(response => {
-    }, e => console.log(e), () => { this.isLoadingPostBinding = false; this.onCreated.emit() });
+    },
+    err => {this.handleErrors(err); this.isLoadingPostBinding = false},
+    () => { this.isLoadingPostBinding = false; this.onCreated.emit() }
+    );
   }
 
   patchBinding(bindingId: string) {
     this.isLoadingPostBinding = true;
     this.adminService.patchBinding(this.bindingForm.value, bindingId).subscribe(response => {
-    }, e => console.log(e), () => { this.isLoadingPostBinding = false; this.onCreated.emit() });
+    }, err => this.handleErrors(err), () => { this.isLoadingPostBinding = false; this.onCreated.emit() });
+  }
+
+  handleErrors(err: HttpErrorResponse) {
+    this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
+    if (this.messageError) {
+      this.alertError.openError(this.messageError);
+    }
   }
 }

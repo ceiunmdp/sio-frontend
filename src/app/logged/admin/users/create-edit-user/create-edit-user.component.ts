@@ -1,14 +1,17 @@
-import { API } from './../../../../_api/api';
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { CustomValidators } from 'src/app/_validators/custom-validators';
-import { typeUserFilter } from '../users.component';
-import { Subscription, Observable } from 'rxjs';
+import { Router } from '@angular/router';
+import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { OrdersService } from 'src/app/logged/orders/orders.service';
 import { FilterBuilder, OPERATORS } from 'src/app/_helpers/filterBuilder';
-import { map } from 'rxjs/operators';
-import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { Course } from 'src/app/_models/orders/course';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
+import { CustomValidators } from 'src/app/_validators/custom-validators';
+import { typeUserFilter } from '../users.component';
+import { API } from './../../../../_api/api';
 
 @Component({
   selector: 'cei-create-edit-user',
@@ -37,8 +40,10 @@ export class CreateEditUserComponent implements OnInit {
     REMAINING_COPIES: 'remaining_copies', // For ScholarShip
     COURSE_SEARCHING: 'course_searching'
   };
+  @ViewChild('alertError', { static: true }) alertError;
+  messageError: string;
 
-  constructor(private formBuilder: FormBuilder, private orderService: OrdersService, private authService: AuthenticationService) {
+  constructor(public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private formBuilder: FormBuilder, private orderService: OrdersService, private authService: AuthenticationService) {
     this.fb = new FilterBuilder()
   }
 
@@ -52,7 +57,7 @@ export class CreateEditUserComponent implements OnInit {
         this._campuses = this.getCampuses().subscribe(response => {
           this.campuses = response.data.items;
           this.userForm = this.createForm(this.user)(this.typeUserSelected);
-        }, e => console.error(e));
+        }, e => this.handleErrors(e));
         break;
       case typeUserFilter.PROFESSOR_SHIP:
         if (!!this.user) {
@@ -62,7 +67,7 @@ export class CreateEditUserComponent implements OnInit {
               this.elementsCourses = courses
               this.userForm = this.createForm(this.user)(this.typeUserSelected);
               this.loadingElementsCourses = false;
-            },e => this.loadingElementsCourses = false, () => this.loadingElementsCourses = false
+            },e => {this.handleErrors(e); this.loadingElementsCourses = false}, () => this.loadingElementsCourses = false
           )
         } else {
           this.userForm = this.createForm(this.user)(this.typeUserSelected);
@@ -146,7 +151,7 @@ export class CreateEditUserComponent implements OnInit {
         resourceUrl$ = this.authService.patchUserStudentScholarship(API.USERS_SCHOLARSHIPS, body, this.user.id);
         break;
     }
-    resourceUrl$.subscribe(res => console.log(res), e => { console.error(e); this.isLoadingPostUser = false; }, () => { this.isLoadingPostUser = false; this.onCreated.emit() });
+    resourceUrl$.subscribe(res => console.log(res), e => { this.handleErrors(e); this.isLoadingPostUser = false; }, () => { this.isLoadingPostUser = false; this.onCreated.emit() });
   }
 
   // Services 
@@ -165,5 +170,10 @@ export class CreateEditUserComponent implements OnInit {
     return this.orderService.getCourses(filter).pipe(map(response => response.data.items))
   }
 
-
+  handleErrors(err: HttpErrorResponse) {
+    this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
+    if (this.messageError) {
+      this.alertError.openError(this.messageError);
+    }
+  }
 }

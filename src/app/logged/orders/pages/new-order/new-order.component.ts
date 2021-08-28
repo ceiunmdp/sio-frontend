@@ -1,16 +1,17 @@
-import {Component, OnInit, ChangeDetectorRef, ViewChild} from '@angular/core';
-import {StepperSelectionEvent} from '@angular/cdk/stepper';
-import {_OnDataChange as dataFiles} from '../../components/files/files.component';
-import {OrdersService} from '../../orders.service';
-import {Item} from 'src/app/_models/item';
-import {Binding} from 'src/app/_models/binding';
-import {Campus} from 'src/app/_models/campus';
-import {File} from 'src/app/_models/orders/file';
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { Binding } from 'src/app/_models/binding';
+import { Campus } from 'src/app/_models/campus';
+import { Item } from 'src/app/_models/item';
+import { File } from 'src/app/_models/orders/file';
+import { Routes } from 'src/app/_routes/routes';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import Swal from 'sweetalert2';
-import {Router} from '@angular/router';
-import {Routes} from 'src/app/_routes/routes';
-import {HttpErrorResponse} from '@angular/common/http';
-import {AuthenticationService} from 'src/app/_services/authentication.service';
+import { _OnDataChange as dataFiles } from '../../components/files/files.component';
+import { OrdersService } from '../../orders.service';
 
 export interface UnproccesedOrder {
   campus_id: string,
@@ -46,13 +47,15 @@ export class NewOrderComponent implements OnInit {
   campuses: Campus[];
   confirmOrderData;
   isPosting = false;
+  messageError: string;
+  @ViewChild('alertError', { static: true }) alertError;
 
-  constructor(private cd: ChangeDetectorRef, private orderService: OrdersService, private router: Router, private authService: AuthenticationService) {}
+  constructor(private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private cd: ChangeDetectorRef, private orderService: OrdersService, private router: Router, private authService: AuthenticationService) {}
 
   ngOnInit() {
-    this.getBindings().then(data => this.bindings = data.data.items);
-    this.getItems().then(data => this.items = data.data.items);
-    this.getCampuses().then(campuses => this.campuses = campuses)
+    this.getBindings().then(data => this.bindings = data.data.items).catch(error => this.handleErrors(error));
+    this.getItems().then(data => this.items = data.data.items).catch(error => this.handleErrors(error));
+    this.getCampuses().then(campuses => this.campuses = campuses).catch(error => this.handleErrors(error));
   }
 
   onStepChange(stepperSelection: StepperSelectionEvent) {
@@ -156,6 +159,13 @@ export class NewOrderComponent implements OnInit {
           }
         );
       })
+  }
+
+  handleErrors(err: HttpErrorResponse) {
+    this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
+    if (this.messageError) {
+      this.alertError.openError(this.messageError);
+    }
   }
 
 }

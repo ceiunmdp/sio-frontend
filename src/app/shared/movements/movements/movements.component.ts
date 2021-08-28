@@ -1,5 +1,7 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatTableDataSource, PageEvent } from '@angular/material';
+import { Router } from '@angular/router';
 import { from, Observable, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { AND, FilterBuilder, OPERATORS, OR } from 'src/app/_helpers/filterBuilder';
@@ -10,6 +12,7 @@ import { Sort } from 'src/app/_models/sort';
 import { MOVEMENTS } from 'src/app/_movements/movements';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { GeneralService } from 'src/app/_services/general.service';
+import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import { MovementService } from 'src/app/_services/movement.service';
 
 export enum movementType {
@@ -50,15 +53,17 @@ export class MovementsComponent implements OnInit {
   filter: OR | AND;
   sort: Sort[];
   fb: FilterBuilder;
+  @ViewChild('alertError', { static: true }) alertError;
+  messageError: string;
 
-  constructor(private authenticationService: AuthenticationService, private movementService: MovementService, public generalService: GeneralService) { }
+  constructor(public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private authenticationService: AuthenticationService, private movementService: MovementService, public generalService: GeneralService) { }
 
   ngOnInit() {
     this.fb = new FilterBuilder();
     this.generalService.sendMessage({title: 'Movimientos'})
     this.movementTypeSelected = this.movementsEnum.ALL;
     this.sort = [{ field: 'movement.createDate', sort: "DESC" }]
-    this.getMyMovements(this.filter, this.sort, this.pagination);
+    this.getMyMovements(this.filter, this.sort, this.pagination).toPromise().catch(error => this.handleErrors(error))
     this.dataSourceMovements = new MatTableDataSource();
   }
 
@@ -68,11 +73,11 @@ export class MovementsComponent implements OnInit {
 
   onPaginatorEvent(event: PageEvent) {
     this.pagination = { limit: event.pageSize, page: event.pageIndex + 1 }
-    this.getMyMovements(this.filter, this.sort, this.pagination);
+    this.getMyMovements(this.filter, this.sort, this.pagination).toPromise().catch(error => this.handleErrors(error))
   }
 
-  onRefresh(): Promise<Movement[]> {
-    return this.getMyMovements(this.filter, this.sort, this.pagination).toPromise();
+  onRefresh(): Promise<void | Movement[]> {
+    return this.getMyMovements(this.filter, this.sort, this.pagination).toPromise().catch(error => this.handleErrors(error))
   }
 
   // Services
@@ -100,11 +105,18 @@ export class MovementsComponent implements OnInit {
     this.movementTypeSelected = movementType;
     console.log(this.movementTypeSelected);
     this.filter = !!movementType ? this.fb.and(this.fb.where('type.code', OPERATORS.IS, movementType)) : null;
-    this.getMyMovements(this.filter, this.sort, this.pagination)
+    this.getMyMovements(this.filter, this.sort, this.pagination).toPromise().catch(error => this.handleErrors(error))
   }
 
   isIncome(movement: Movement) {
     return movement.target.id === this.authenticationService.currentUserValue.id;
+  }
+
+  handleErrors(err: HttpErrorResponse) {
+    this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
+    if (this.messageError) {
+      this.alertError.openError(this.messageError);
+    }
   }
 
 }

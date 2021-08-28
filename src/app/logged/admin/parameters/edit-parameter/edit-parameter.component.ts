@@ -1,10 +1,11 @@
-import { CustomValidators } from './../../../../_validators/custom-validators';
-import { FormBuilder } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AdminService } from 'src/app/_services/admin.service';
-import { FormGroup } from '@angular/forms';
+import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import { Parameter } from './../../../../_models/parameter';
-import { Input, Output, EventEmitter } from '@angular/core';
-import { Component, OnInit } from '@angular/core';
+import { CustomValidators } from './../../../../_validators/custom-validators';
 
 @Component({
   selector: 'cei-edit-parameter',
@@ -18,12 +19,14 @@ export class EditParameterComponent implements OnInit {
   @Output('cancelled') onCancelled = new EventEmitter();
   isLoadingPatchParameter = false;
 
+  @ViewChild('alertError', { static: true }) alertError;
+  messageError: string;
   parameterForm: FormGroup;
   public readonly NAMES_FORM_PATCH_PARAMETER = {
     PARAMETER_VALUE: 'value',
   };
 
-  constructor(private adminService: AdminService, private formBuilder: FormBuilder) { }
+  constructor(public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private adminService: AdminService, private formBuilder: FormBuilder) { }
 
   ngOnInit() {
     this.parameterForm = this.createParameterForm(this.parameter);
@@ -50,8 +53,13 @@ export class EditParameterComponent implements OnInit {
   patchParameter(parameterId: string) {
     this.isLoadingPatchParameter = true;
     this.adminService.patchParameter(this.parameterForm.value, parameterId).subscribe(response => {
-      console.log(response);
-    }, e => console.log(e), () => { this.isLoadingPatchParameter = false; this.onCreated.emit() });
+    }, e => {this.handleErrors(e); this.isLoadingPatchParameter = false }, () => { this.isLoadingPatchParameter = false; this.onCreated.emit() });
   }
 
+  handleErrors(err: HttpErrorResponse) {
+      this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
+      if (this.messageError) {
+        this.alertError.openError(this.messageError);
+      }
+  }  
 }

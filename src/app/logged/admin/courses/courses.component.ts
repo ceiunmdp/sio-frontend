@@ -1,5 +1,7 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatTableDataSource, PageEvent } from '@angular/material';
+import { MatTableDataSource, PageEvent } from '@angular/material';
+import { Router } from '@angular/router';
 import { from, Observable, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { AND, FilterBuilder, OPERATORS, OR } from 'src/app/_helpers/filterBuilder';
@@ -11,6 +13,7 @@ import { LinksAPI, MetadataAPI } from 'src/app/_models/response-api';
 import { Sort } from 'src/app/_models/sort';
 import { AdminService } from 'src/app/_services/admin.service';
 import { GeneralService } from 'src/app/_services/general.service';
+import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import Swal from 'sweetalert2';
 import { OrdersService } from '../../orders/orders.service';
 
@@ -44,8 +47,10 @@ export class CoursesComponent implements OnInit {
   filter: OR | AND;
   sort: Sort[];
   fb: FilterBuilder;
+  @ViewChild('alertError', { static: true }) alertError;
+  messageError: string;
 
-  constructor(private adminService: AdminService, private orderService: OrdersService, public generalService: GeneralService) { }
+  constructor(private adminService: AdminService, public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private orderService: OrdersService, public generalService: GeneralService) { }
 
   ngOnInit() {
     this.fb = new FilterBuilder();
@@ -98,7 +103,7 @@ export class CoursesComponent implements OnInit {
             text: 'Materia borrada correctamente',
             icon: 'success'
           })
-        }).catch(e => console.log('error', e))
+        }).catch(e => this.handleErrors(e))
       },
       allowOutsideClick: () => !Swal.isLoading()
     })
@@ -117,7 +122,7 @@ export class CoursesComponent implements OnInit {
     const sort: Sort[] = [{ field: 'career.name', sort: 'ASC' }]
     this._careers = this.orderService.getCareers(null, sort).subscribe(response => {
       this.careers = response.data.items; console.log(this.careers);
-    }, e => console.log(e), () => this.isLoadingGetCareers = false);
+    }, e => {this.handleErrors(e); this.isLoadingGetCareers = false}, () => this.isLoadingGetCareers = false);
   }
 
   getYears() {
@@ -125,7 +130,7 @@ export class CoursesComponent implements OnInit {
     const sort: Sort[] = [{ field: 'relation.name', sort: 'ASC' }]
     this._years = this.orderService.getYears(null, sort).subscribe(response => {
       this.years = response.data.items; console.log(this.years);
-    }, e => console.log(e), () => this.isLoadingGetYears = false);
+    }, e => { this.handleErrors(e); this.isLoadingGetYears = false }, () => this.isLoadingGetYears = false);
   }
 
   getCourses(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<Course[]> {
@@ -139,13 +144,21 @@ export class CoursesComponent implements OnInit {
         })
       ).subscribe(
         (data) => { this.metaDataCourses = data.data.meta; this.linksCourses = data.data.links; this.dataSourceCourses.data = data.data.items; res(data.data.items) },
-        (e) => { rej(e) },
+        (e) => { this.handleErrors(e); rej(e) },
       )
     })
     return from(promise);
   }
 
-  deleteCourse(courseId: string): Promise<Course> {
-    return this.adminService.deleteCourse(courseId).toPromise().then(res => { this.onRefresh(); return res })
+  deleteCourse(courseId: string): Promise<void | Course> {
+    return this.adminService.deleteCourse(courseId).toPromise().then(res => { this.onRefresh(); return res }).catch(err => this.handleErrors(err))
   }
+
+  handleErrors(err: HttpErrorResponse) {
+    this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
+    if (this.messageError) {
+      this.alertError.openError(this.messageError);
+    }
+  }
+
 }

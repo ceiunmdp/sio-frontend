@@ -89,6 +89,7 @@ export class HistoricOrdersComponent implements OnInit {
                 const data = { _order, actualState: order.state };
                 this._bottomSheet._openedBottomSheetRef = this._bottomSheet.open(BottomSheetFiles, { data });
             })
+            .catch(err => {this.handleErrors(err)})
             .finally(() => (order.isLoading = false));
     }
 

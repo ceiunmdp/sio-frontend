@@ -1,13 +1,13 @@
-import { Routes } from 'src/app/_routes/routes';
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, OnInit, ViewChild } from "@angular/core";
+import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from "@angular/router";
+import { Subscription } from 'rxjs';
 import { CODE_FIREBASE_AUTH } from 'src/app/_api/codeFirebaseAuth';
 import { User } from "src/app/_models/users/user";
+import { Routes } from 'src/app/_routes/routes';
 import { AuthenticationService } from "src/app/_services/authentication.service";
 import { HttpErrorResponseHandlerService } from "src/app/_services/http-error-response-handler.service";
-import { AngularFireAuth } from '@angular/fire/auth';
-import {Subscription} from 'rxjs';
 
 @Component({
    selector: "cei-start-page",
@@ -52,7 +52,7 @@ export class StartPageComponent implements OnInit {
          .then((u: Partial<User>) => {
             this.authService.updateCurrentUser(u);
             if (this.authService.redirectUrl) {
-               this.router.navigate([this.authService.redirectUrl]);
+               this.router.navigate(/*TODO rootpath*/[this.authService.redirectUrl]);
             } else {
                this.router.navigate([Routes.HOME]);
             }

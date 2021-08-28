@@ -1,11 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Career } from 'src/app/_models/orders/career';
-import { Year } from 'src/app/_models/orders/year';
-import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
-import { AdminService } from 'src/app/_services/admin.service';
-import { CustomValidators } from 'src/app/_validators/custom-validators';
 import { Course } from 'src/app/_models/orders/course';
+import { Year } from 'src/app/_models/orders/year';
 import { Relation } from 'src/app/_models/relation';
+import { AdminService } from 'src/app/_services/admin.service';
+import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
+import { CustomValidators } from 'src/app/_validators/custom-validators';
 
 @Component({
   selector: 'cei-create-edit-course',
@@ -19,6 +22,9 @@ export class CreateEditCourseComponent implements OnInit {
   @Output('created') onCreated = new EventEmitter();
   @Output('cancelled') onCancelled = new EventEmitter();
   isLoadingPostCourse = false;
+
+  @ViewChild('alertError', { static: true }) alertError;
+  messageError: string;
 
   courseForm: FormGroup;
   public readonly NAMES_FORM_POST_COURSE = {
@@ -34,7 +40,7 @@ export class CreateEditCourseComponent implements OnInit {
     return this.courseForm.get(this.NAMES_FORM_POST_COURSE.RELATIONS) as FormArray;
   }
 
-  constructor(private adminService: AdminService, private formBuilder: FormBuilder) { }
+  constructor(private adminService: AdminService, private formBuilder: FormBuilder, public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService) { }
 
   ngOnInit() {
     this.courseForm = this.createCourseForm(this.course);
@@ -90,15 +96,20 @@ export class CreateEditCourseComponent implements OnInit {
   postCourse() {
     this.isLoadingPostCourse = true;
     this.adminService.postCourse(this.courseForm.value).subscribe(response => {
-      console.log(response);
-    }, e => console.log(e), () => { this.isLoadingPostCourse = false; this.onCreated.emit() });
+    }, e => { this.handleErrors(e); this.isLoadingPostCourse = false }, () => { this.isLoadingPostCourse = false; this.onCreated.emit() });
   }
 
   patchCourse(courseId: string) {
     this.isLoadingPostCourse = true;
     this.adminService.patchCourse(this.courseForm.value, courseId).subscribe(response => {
-      console.log(response);
-    }, e => console.log(e), () => { this.isLoadingPostCourse = false; this.onCreated.emit() });
+    }, e => { this.handleErrors(e); this.isLoadingPostCourse = false }, () => { this.isLoadingPostCourse = false; this.onCreated.emit() });
+  }
+
+  handleErrors(err: HttpErrorResponse) {
+    this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
+    if (this.messageError) {
+      this.alertError.openError(this.messageError);
+    }
   }
 
 }

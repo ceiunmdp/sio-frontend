@@ -164,7 +164,7 @@ export class FilesComponent implements OnInit {
         })
       ).subscribe(
         (data) => { this.metaDataCourses = data.data.meta; this.linksCourses = data.data.links; this.dataSourceCourses.data = data.data.items; res(data.data.items) },
-        (e) => { rej(e) },
+        (e) => { this.handleErrors(e); rej(e) },
       )
     })
     return from(promise);
@@ -191,7 +191,7 @@ export class FilesComponent implements OnInit {
         })
       ).subscribe(
         (data) => { this.metaDataFiles = data.data.meta; this.linksFiles = data.data.links; this.dataSourceFiles.data = data.data.items; res(data.data.items); this.step = this.STEPS.LIST_FILES;},
-        (e) => { rej(e) },
+        (e) => { this.handleErrors(e); rej(e) },
       )
     })
     return from(promise);
@@ -208,7 +208,7 @@ export class FilesComponent implements OnInit {
         })
       ).subscribe(
         (data) => { this.metaDataFiles = data.data.meta; this.linksFiles = data.data.links; this.dataSourceFiles.data = data.data.items; res(data.data.items); this.step = this.STEPS.LIST_FILES;},
-        (e) => { rej(e) },
+        (e) => { this.handleErrors(e); rej(e) },
       )
     })
     return from(promise);
@@ -220,12 +220,14 @@ export class FilesComponent implements OnInit {
     this.inputFilterValueCourses = '';
     this.selectedFile = null;
     this.selectedCourse = null;
+    this.selectedCourses = [];
     this.generalService.sendMessage({ title: this.TITLE });
     this.onRefresh()
   }
 
   displayAddFiles() {
     this.step = this.STEPS.ADD_FILES
+    this.files = new Map();
     this.filesForm = this.createFilesForm();
   }
 

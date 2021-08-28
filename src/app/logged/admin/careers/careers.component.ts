@@ -1,5 +1,7 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatTableDataSource, PageEvent } from '@angular/material';
+import { Router } from '@angular/router';
 import { from, Observable, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { AND, FilterBuilder, OPERATORS, OR } from 'src/app/_helpers/filterBuilder';
@@ -9,6 +11,7 @@ import { LinksAPI, MetadataAPI } from 'src/app/_models/response-api';
 import { Sort } from 'src/app/_models/sort';
 import { AdminService } from 'src/app/_services/admin.service';
 import { GeneralService } from 'src/app/_services/general.service';
+import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import Swal from 'sweetalert2';
 import { OrdersService } from '../../orders/orders.service';
 import { Career } from './../../../_models/orders/career';
@@ -43,8 +46,10 @@ export class CareersComponent implements OnInit {
   filter: OR | AND;
   sort: Sort[];
   fb: FilterBuilder;
+  @ViewChild('alertError', { static: true }) alertError;
+  messageError: string;
 
-  constructor(private adminService: AdminService, private orderService: OrdersService, public generalService: GeneralService) { }
+  constructor(private adminService: AdminService, public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private orderService: OrdersService, public generalService: GeneralService) { }
 
   ngOnInit() {
     this.fb = new FilterBuilder();
@@ -95,7 +100,7 @@ export class CareersComponent implements OnInit {
             text: 'Materia borrada correctamente',
             icon: 'success'
           })
-        }).catch(e => console.log('error', e))
+        }).catch(e => this.handleErrors(e))
       },
       allowOutsideClick: () => !Swal.isLoading()
     })
@@ -120,7 +125,7 @@ export class CareersComponent implements OnInit {
         })
       ).subscribe(
         (data) => { this.metaDataCareers = data.data.meta; this.linksCareers = data.data.links; this.dataSourceCareers.data = data.data.items; res(data.data.items) },
-        (e) => { rej(e) },
+        (e) => { this.handleErrors(e); rej(e) },
       )
     })
     return from(promise);
@@ -131,10 +136,18 @@ export class CareersComponent implements OnInit {
     const sort: Sort[] = [{ field: 'relation.name', sort: 'ASC' }]
     this._years = this.orderService.getYears(null, sort).subscribe(response => {
       this.years = response.data.items; console.log(this.years);
-    }, e => console.log(e), () => this.isLoadingGetYears = false);
+    }, e => {this.handleErrors(e); this.isLoadingGetYears = false}, () => this.isLoadingGetYears = false);
   }
 
-  deleteCareer(careerId: string): Promise<Career> {
-    return this.adminService.deleteCareer(careerId).toPromise().then(res => { this.onRefresh(); return res })
+  deleteCareer(careerId: string): Promise<void | Career> {
+    return this.adminService.deleteCareer(careerId).toPromise().then(res => { this.onRefresh(); return res }).catch(error => this.handleErrors(error))
   }
+
+  handleErrors(err: HttpErrorResponse) {
+    this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
+    if (this.messageError) {
+      this.alertError.openError(this.messageError);
+    }
+  }
+
 }

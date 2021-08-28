@@ -1,14 +1,15 @@
+import { DatePipe } from "@angular/common";
+import { HttpErrorResponse } from "@angular/common/http";
 import { Component, OnInit, ViewChild } from "@angular/core";
+import { MatPaginator, MatSort, MatTableDataSource } from "@angular/material";
+import { Router } from "@angular/router";
 import { OrdersService } from "src/app/logged/orders/orders.service";
 import { Order } from "src/app/_models/orders/order";
+import { Routes } from "src/app/_routes/routes";
+import { AuthenticationService } from "src/app/_services/authentication.service";
 import { GeneralService } from "src/app/_services/general.service";
 import { HttpErrorResponseHandlerService } from "src/app/_services/http-error-response-handler.service";
-import { Router } from "@angular/router";
-import { HttpErrorResponse } from "@angular/common/http";
 import { MonedaPipe } from "src/app/_utils/moneda.pipe";
-import { Routes } from "src/app/_routes/routes";
-import { MatPaginator, MatSort, MatTableDataSource } from "@angular/material";
-import { DatePipe } from "@angular/common";
 
 @Component({
    selector: "cei-my-orders",
@@ -34,11 +35,13 @@ export class MyOrdersComponent implements OnInit {
    dataSource;
    pipeMoneda = new MonedaPipe();
    historicOrdersShow: boolean;
+   rootPath: string;
 
    constructor(
       private datePipe: DatePipe,
       public generalService: GeneralService,
       public orderService: OrdersService,
+      private authService: AuthenticationService,
       public router: Router,
       private httpErrorResponseHandlerService: HttpErrorResponseHandlerService
    ) {}
@@ -122,7 +125,7 @@ export class MyOrdersComponent implements OnInit {
 
    onClickOrderDetail(order) {
       console.log(order, `${Routes.ORDER_DETAIL}/${order.id}`);
-      this.router.navigate([`${Routes.ORDER_DETAIL}/${order.id}`], { state: { order } });
+      this.router.navigate([`${this.rootPath}${Routes.ORDER_DETAIL}/${order.id}`], { state: { order } });
    }
 
    handleErrors(err: HttpErrorResponse) {

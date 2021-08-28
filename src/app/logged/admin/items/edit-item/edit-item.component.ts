@@ -1,8 +1,11 @@
-import { CustomValidators } from './../../../../_validators/custom-validators';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Item } from 'src/app/_models/item';
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
 import { AdminService } from 'src/app/_services/admin.service';
+import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
+import { CustomValidators } from './../../../../_validators/custom-validators';
 
 @Component({
   selector: 'cei-edit-item',
@@ -15,13 +18,14 @@ export class EditItemComponent implements OnInit {
   @Output('created') onCreated = new EventEmitter();
   @Output('cancelled') onCancelled = new EventEmitter();
   isLoadingPatchItem = false;
-
+  @ViewChild('alertError', { static: true }) alertError;
+  messageError: string;
   itemForm: FormGroup;
   public readonly NAMES_FORM_PATCH_ITEM = {
     ITEM_PRICE: 'price',
   };
 
-  constructor(private adminService: AdminService, private formBuilder: FormBuilder) { }
+  constructor(public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private adminService: AdminService, private formBuilder: FormBuilder) { }
 
   ngOnInit() {
     this.itemForm = this.createItemForm(this.item);
@@ -50,7 +54,14 @@ export class EditItemComponent implements OnInit {
     console.log('item form', this.itemForm.value)
     this.adminService.patchItem(this.itemForm.value, itemId).subscribe(response => {
       console.log(response);
-    }, e => console.log(e), () => { this.isLoadingPatchItem = false; this.onCreated.emit() });
+    }, e => {this.handleErrors(e); this.isLoadingPatchItem}, () => { this.isLoadingPatchItem = false; this.onCreated.emit() });
+  }
+
+  handleErrors(err: HttpErrorResponse) {
+    this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
+    if (this.messageError) {
+      this.alertError.openError(this.messageError);
+    }
   }
 
 }

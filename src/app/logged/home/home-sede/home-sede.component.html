@@ -6,7 +6,7 @@
          fxFlex="48"
          [icon]="'pedidos_en_curso'"
          [text]="'Pedidos en curso'"
-         [routerLink]="routes.ACTIVE_ORDERS"
+         [routerLink]="this.rootPath + routes.MY_ORDERS"
          routerLinkActive="router-link-active"
       >
       </cei-card-icon>
@@ -15,7 +15,7 @@
          fxFlex="48"
          [icon]="'cargar_saldo'"
          [text]="'Cargar saldo'"
-         [routerLink]="routes.STUDENT_LIST"
+         [routerLink]="this.rootPath + routes.TOP_UP"
       >
       </cei-card-icon>
    </div>

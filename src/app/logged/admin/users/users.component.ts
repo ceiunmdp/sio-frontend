@@ -1,7 +1,7 @@
-import { AdminService } from 'src/app/_services/admin.service';
-import { API } from './../../../_api/api';
-import { Component, OnInit } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource, PageEvent } from '@angular/material';
+import { Router } from '@angular/router';
 import { from, Observable, Subscription } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 import { AND, FilterBuilder, OPERATORS, OR } from 'src/app/_helpers/filterBuilder';
@@ -9,9 +9,12 @@ import { Pagination } from 'src/app/_models/pagination';
 import { LinksAPI, MetadataAPI, ResponseAPI } from 'src/app/_models/response-api';
 import { Sort } from 'src/app/_models/sort';
 import { User } from 'src/app/_models/users/user';
+import { AdminService } from 'src/app/_services/admin.service';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import { USER_TYPES } from 'src/app/_users/types';
 import Swal from 'sweetalert2';
+import { API } from './../../../_api/api';
 
 export enum typeUserFilter {
   ALL = 'Todos los usuarios',
@@ -108,7 +111,10 @@ export class UsersComponent implements OnInit {
   sort: Sort[];
   fb: FilterBuilder;
   allUsersCheckbox;
-  constructor(private authService: AuthenticationService, private adminService: AdminService) { }
+  @ViewChild('alertError', { static: true }) alertError;
+  messageError: string;
+
+  constructor(public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private authService: AuthenticationService, private adminService: AdminService) { }
 
   ngOnInit() {
     this.step = STEPS.LIST;
@@ -142,7 +148,6 @@ export class UsersComponent implements OnInit {
     if (!allUsers) {
       this.filter = this.fb.and(this.fb.where('disabled', OPERATORS.CONTAINS, 'false'));
     }
-    console.log(this.filter);
 
     this.getUsers(this.typeUserFilterSelected, this.filter)
   }
@@ -208,7 +213,7 @@ export class UsersComponent implements OnInit {
             icon: 'success'
           })
           this.onRefresh();
-        })
+        }).catch(err => this.handleErrors(err))
       }
     })
   }
@@ -232,7 +237,7 @@ export class UsersComponent implements OnInit {
             icon: 'success'
           })
           this.onRefresh();
-        })
+        }).catch(err => this.handleErrors(err))
       }
     })
   }
@@ -255,7 +260,7 @@ export class UsersComponent implements OnInit {
           Swal.fire({
             title: `Copias restauradas exitosamente`,
             icon: 'success'
-          })
+          }).catch(err => this.handleErrors(err))
           this.onRefresh();
         })
       }
@@ -331,7 +336,7 @@ export class UsersComponent implements OnInit {
         })
       ).subscribe(
         (data) => { this.metaDataUsers = { ...data.data.meta }; this.linksUsers = data.data.links; this.dataSourceUsers.data = data.data.items; res(data.data.items) },
-        (e) => { rej(e) },
+        (e) => { this.handleErrors(e); rej(e) },
       )
     })
     return from(promise);
@@ -362,9 +367,16 @@ export class UsersComponent implements OnInit {
             icon: 'success'
           })
           this.onRefresh();
-        })
+        }).catch(err => this.handleErrors(err))
       }
     })
+  }
+
+  handleErrors(err: HttpErrorResponse) {
+    this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
+    if (this.messageError) {
+      this.alertError.openError(this.messageError);
+    }
   }
 
 }

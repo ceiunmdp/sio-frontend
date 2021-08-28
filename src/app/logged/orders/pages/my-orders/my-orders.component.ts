@@ -1,18 +1,19 @@
-import {HttpErrorResponse} from '@angular/common/http';
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {MatTableDataSource, PageEvent} from '@angular/material';
-import {Router} from '@angular/router';
-import {finalize} from 'rxjs/operators';
-import {AND, FilterBuilder, OPERATORS, OR} from 'src/app/_helpers/filterBuilder';
-import {Order} from 'src/app/_models/orders/order';
-import {Pagination} from 'src/app/_models/pagination';
-import {LinksAPI, MetadataAPI} from 'src/app/_models/response-api';
-import {Sort} from 'src/app/_models/sort';
-import {Routes} from 'src/app/_routes/routes';
-import {GeneralService} from 'src/app/_services/general.service';
-import {HttpErrorResponseHandlerService} from 'src/app/_services/http-error-response-handler.service';
-import {MonedaPipe} from 'src/app/_utils/moneda.pipe';
-import {OrdersService} from '../../orders.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatTableDataSource, PageEvent } from '@angular/material';
+import { Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
+import { AND, FilterBuilder, OPERATORS, OR } from 'src/app/_helpers/filterBuilder';
+import { Order } from 'src/app/_models/orders/order';
+import { Pagination } from 'src/app/_models/pagination';
+import { LinksAPI, MetadataAPI } from 'src/app/_models/response-api';
+import { Sort } from 'src/app/_models/sort';
+import { Routes } from 'src/app/_routes/routes';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { GeneralService } from 'src/app/_services/general.service';
+import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
+import { MonedaPipe } from 'src/app/_utils/moneda.pipe';
+import { OrdersService } from '../../orders.service';
 
 @Component({
   selector: 'cei-my-orders',
@@ -39,15 +40,18 @@ export class MyOrdersComponent implements OnInit {
   dataSourceOrders;
   pipeMoneda = new MonedaPipe();
   historicOrdersShow: boolean;
+  rootPath: string;
 
   constructor(
     public generalService: GeneralService,
     public orderService: OrdersService,
+    private authService: AuthenticationService,
     public router: Router,
     private httpErrorResponseHandlerService: HttpErrorResponseHandlerService
   ) {}
 
   ngOnInit() {
+    this.rootPath = this.authService.currentUserValue.rootPath;
     this.generalService.sendMessage({ title: this.TITLE });
     this.fb = new FilterBuilder();
     this.sort = [{ field: 'order.createDate', sort: "DESC" }]
@@ -72,6 +76,7 @@ export class MyOrdersComponent implements OnInit {
     );
     this.getOrdersService(filter, sort, pagination)
         .then(_ => (this.historicOrdersShow = false))
+        .catch(err => this.handleErrors(err));
   }
 
 
@@ -100,7 +105,7 @@ export class MyOrdersComponent implements OnInit {
   }
 
   onClickOrderDetail(order) {
-    this.router.navigate([`${Routes.ORDER_DETAIL}/${order.id}`], { state: { order } });
+    this.router.navigate([`${this.rootPath}${Routes.ORDER_DETAIL}/${order.id}`], { state: { order } });
   }
 
   handleErrors(err: HttpErrorResponse) {

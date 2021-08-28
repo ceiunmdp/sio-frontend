@@ -1,9 +1,8 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Routes } from '../_routes/routes';
 import { AuthenticationService } from './authentication.service';
-import { AngularFireAuth } from '@angular/fire/auth';
 
 @Injectable({
     providedIn: 'root'
@@ -57,12 +56,13 @@ export class HttpErrorResponseHandlerService {
                 case 500: // Internal Server Error
                     // Show a message telling that the server had a problem
                     // TO DO
-
+                    message = 'Error de servidor, intente nuevamente.';
                     // Redirect the user to HOME
                     // this.router.navigate([Routes.LOGIN]);
                     break;
                 default:
                     // Any other possible error status
+                    message = error.message;
                     break;
             }
         }

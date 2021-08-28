@@ -1,19 +1,22 @@
-import { Component, Inject, OnInit, ViewChild, ChangeDetectorRef } from "@angular/core";
+import { HttpErrorResponse } from "@angular/common/http";
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
-import { MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA, PageEvent, MatTableDataSource } from "@angular/material";
+import { MatBottomSheet, MatBottomSheetRef, MatTableDataSource, MAT_BOTTOM_SHEET_DATA, PageEvent } from "@angular/material";
+import { Router } from "@angular/router";
 import { SwalComponent } from "@sweetalert2/ngx-sweetalert2";
 import { from, Observable, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { AND, FilterBuilder, OR, WHERE, OPERATORS } from 'src/app/_helpers/filterBuilder';
+import { AND, FilterBuilder, OPERATORS, OR, WHERE } from 'src/app/_helpers/filterBuilder';
+import { Movement } from 'src/app/_models/movement';
 import { Pagination } from 'src/app/_models/pagination';
 import { LinksAPI, MetadataAPI } from 'src/app/_models/response-api';
+import { Sort } from 'src/app/_models/sort';
 import { Student } from "src/app/_models/users/user";
 import { GeneralService } from "src/app/_services/general.service";
+import { HttpErrorResponseHandlerService } from "src/app/_services/http-error-response-handler.service";
 import { CustomValidators } from "src/app/_validators/custom-validators";
-import { SedeService } from "../sede.service";
-import { Sort } from 'src/app/_models/sort';
-import { Movement } from 'src/app/_models/movement';
 import Swal from 'sweetalert2';
+import { SedeService } from "../sede.service";
 enum STEPS {
    LIST,
    CHARGE_BALANCE
@@ -30,7 +33,7 @@ export class BottomChargeBalance implements OnInit {
    /* Charge Balance Form */
    chargeBalanceForm: FormGroup;
    public readonly MONEY = "money";
-
+   
    constructor(
       private _bottomSheetRef: MatBottomSheetRef<BottomChargeBalance>,
       @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
@@ -128,7 +131,8 @@ export class ChargeBalanceComponent implements OnInit {
       showConfirmButton: true,
       confirmButtonText: "Continuar"
    };
-
+   @ViewChild('alertError', { static: true }) alertError;
+   messageError: string;
    /* Find User Form */
    findUserForm: FormGroup;
    public readonly FULLNAME = "fullname";
@@ -149,7 +153,9 @@ export class ChargeBalanceComponent implements OnInit {
       private generalService: GeneralService,
       private sedeService: SedeService,
       private formBuilder: FormBuilder,
-      private cd: ChangeDetectorRef
+      private cd: ChangeDetectorRef,
+      public router: Router,
+      private httpErrorResponseHandlerService: HttpErrorResponseHandlerService
    ) { }
 
    ngOnInit() {
@@ -276,8 +282,6 @@ export class ChargeBalanceComponent implements OnInit {
       // const data = { evolutions: attention.evolution, date: attention.date };
       const refBS = this._bottomSheet.open(BottomChargeBalance, { data: user });
       refBS.afterDismissed().subscribe((movement: Movement) => {
-         console.log(user, movement);
-
          this.updateUser({ ...user, balance: Number(user.balance) + Number(movement.amount) });
       });
    }
@@ -310,9 +314,16 @@ export class ChargeBalanceComponent implements OnInit {
             })
          ).subscribe(
             (data) => { this.metaDataStudents = data.data.meta; this.linksStudents = data.data.links; this.dataSourceStudents.data = data.data.items; res(data.data.items) },
-            (e) => { rej(e) },
+            (e) => { this.handleErrors(e); rej(e) },
          )
       })
       return from(promise);
    }
+
+   handleErrors(err: HttpErrorResponse) {
+      this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);
+      if (this.messageError) {
+        this.alertError.openError(this.messageError);
+      }
+    }
 }
