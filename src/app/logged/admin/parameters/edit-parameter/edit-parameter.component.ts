@@ -36,7 +36,7 @@ export class EditParameterComponent implements OnInit {
     const names = this.NAMES_FORM_PATCH_PARAMETER;
 
     return this.formBuilder.group({
-      [names.PARAMETER_VALUE]: [!!parameter && !!parameter.value ? parameter.value : '', [CustomValidators.required("Valor del parámetro requerido"), CustomValidators.minLength(0, "El valor debe ser mayor a 0")]]
+      [names.PARAMETER_VALUE]: [!!parameter && !!parameter.value ? parameter.value : '', [CustomValidators.minLength(0, "Valor del parámetro requerido"), CustomValidators.minValue(0, "El valor debe ser mayor a 0")]]
     });
   }
 

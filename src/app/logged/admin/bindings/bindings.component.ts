@@ -130,7 +130,9 @@ export class BindingsComponent implements OnInit {
   }
 
   deleteBinding(bindingId: string): Promise<void | Binding> {
-    return this.adminService.deleteBinding(bindingId).toPromise().then(res => { this.onRefresh(); return res }).catch(err => { this.handleErrors(err) })
+    return this.adminService.deleteBinding(bindingId).toPromise()
+    .then(res => { this.onRefresh(); return res })
+    .catch(err => { throw err })
   }
 
   handleErrors(err: HttpErrorResponse) {

@@ -218,6 +218,7 @@ export class FilesComponent implements OnInit {
     this.step = this.STEPS.LIST_COURSES;
     this.inputFilterValueFiles = '';
     this.inputFilterValueCourses = '';
+    this.filterCourse = this.fb.and();
     this.selectedFile = null;
     this.selectedCourse = null;
     this.selectedCourses = [];

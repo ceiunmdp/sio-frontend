@@ -21,7 +21,7 @@
                 more_vert
             </mat-icon>
         </div>
-        <div filterInputs fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5%">
+        <div filterInputs fxLayout="row" fxFlex="80" fxLayoutAlign="space-between center" fxLayoutGap="5%">
             <cei-text-searching-input fxFlex="100" [placeholder]="'Búsqueda rápida'"
                 [label]="'Buscar por nombre de usuario o email'" [inputFilterValue]="this.inputFilterValue"
                 (onSearch)="this.inputFilterValue = $event;this.onSearch($event)">

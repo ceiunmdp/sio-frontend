@@ -1,6 +1,6 @@
 <mat-card>
     <mat-card-header>
-        <mat-card-title>Editar Artículo</mat-card-title>
+        <mat-card-title>Editar Parametrica</mat-card-title>
         <mat-card-subtitle>{{!!this.parameter ? this.parameter.name : ''}}</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
@@ -8,7 +8,7 @@
             *ngIf="!!this.parameterForm ; else loadingDiv" fxLayoutGap="2%" fxFlex="100"
             class=" mxs-2" [formGroup]="parameterForm" fxLayout="column">
             <cei-number-input [name]="this.NAMES_FORM_PATCH_PARAMETER.PARAMETER_VALUE" [form]="this.parameterForm"
-            [placeholder]="'Precio del artículo'" [minValue] = 0>
+            [placeholder]="'Valor del parametro'" [minValue] = 0>
             </cei-number-input>
             <!-- Actions Buttons -->
             <div fxLayoutAlign="space-around stretch" class="mts-5">

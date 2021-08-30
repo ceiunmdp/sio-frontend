@@ -66,7 +66,7 @@ export class CreateEditBindingsComponent implements OnInit {
   patchBinding(bindingId: string) {
     this.isLoadingPostBinding = true;
     this.adminService.patchBinding(this.bindingForm.value, bindingId).subscribe(response => {
-    }, err => this.handleErrors(err), () => { this.isLoadingPostBinding = false; this.onCreated.emit() });
+    }, err => {this.handleErrors(err); this.isLoadingPostBinding = false;}, () => { this.isLoadingPostBinding = false; this.onCreated.emit() });
   }
 
   handleErrors(err: HttpErrorResponse) {

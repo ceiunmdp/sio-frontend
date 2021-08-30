@@ -54,7 +54,7 @@ export class EditItemComponent implements OnInit {
     console.log('item form', this.itemForm.value)
     this.adminService.patchItem(this.itemForm.value, itemId).subscribe(response => {
       console.log(response);
-    }, e => {this.handleErrors(e); this.isLoadingPatchItem}, () => { this.isLoadingPatchItem = false; this.onCreated.emit() });
+    }, e => {this.handleErrors(e); this.isLoadingPatchItem = false}, () => { this.isLoadingPatchItem = false; this.onCreated.emit() });
   }
 
   handleErrors(err: HttpErrorResponse) {

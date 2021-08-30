@@ -137,7 +137,7 @@ export class UsersComponent implements OnInit {
   }
 
   onSearch(st: string) {
-    const filterqp = this.typeUserFilterSelected == typeUserFilter.ALL ? 'display_name' : 'full_name';
+    const filterqp = this.typeUserFilterSelected == typeUserFilter.ALL ? 'full_name' : 'full_name';
     // TODO: no anda el filtro por email.
     this.filter = this.fb.and(this.fb.where(filterqp, OPERATORS.CONTAINS, st));
     this.getUsers(this.typeUserFilterSelected, this.filter)
@@ -146,7 +146,7 @@ export class UsersComponent implements OnInit {
   onChangeAllUsersCheckbox(allUsers: boolean) {
     this.inputFilterValue = '';
     if (!allUsers) {
-      this.filter = this.fb.and(this.fb.where('disabled', OPERATORS.CONTAINS, 'false'));
+      this.filter = this.fb.and(this.fb.where('disabled', OPERATORS.IS, 'false'));
     }
 
     this.getUsers(this.typeUserFilterSelected, this.filter)
