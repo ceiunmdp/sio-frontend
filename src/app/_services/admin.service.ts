@@ -1,21 +1,22 @@
-import { RestUtilitiesService } from './rest-utilities.service';
-import { Parameter } from './../_models/parameter';
-import { ResponseAPI } from './../_models/response-api';
-import { Pagination } from './../_models/pagination';
-import { Sort } from './../_models/sort';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import FormData from 'form-data';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { typeUserFilter } from '../logged/admin/users/users.component';
+import { API } from '../_api/api';
+import { Campus } from '../_models/campus';
+import { Course } from '../_models/orders/course';
+import { dataUrlToBlob } from '../_utils/utils';
+import { AND, FilterBuilder, OPERATORS, OR } from './../_helpers/filterBuilder';
 import { Binding } from './../_models/binding';
 import { Career } from './../_models/orders/career';
-import { FilterBuilder, OPERATORS, AND, OR } from './../_helpers/filterBuilder';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { HttpHeaders, HttpParams, HttpClient, HttpResponse } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { map } from 'rxjs/operators';
-import { dataUrlToBlob } from '../_utils/utils';
-import FormData from 'form-data';
-import { Course } from '../_models/orders/course';
-import { API } from '../_api/api';
-import { typeUserFilter } from '../logged/admin/users/users.component';
+import { Pagination } from './../_models/pagination';
+import { Parameter } from './../_models/parameter';
+import { ResponseAPI } from './../_models/response-api';
+import { Sort } from './../_models/sort';
+import { RestUtilitiesService } from './rest-utilities.service';
 // import { FileUpload } from 'src/app/modules/logged/admin/files/files.component';
 
 export interface CoursePost {
@@ -24,6 +25,10 @@ export interface CoursePost {
       id: string,
       careers_ids: string[]
    }[]
+}
+
+export interface CampusPost {
+   name: string
 }
 
 export interface CareerPost {
@@ -482,6 +487,80 @@ export class AdminService {
       const apiPath = (type == typeUserFilter.SCHOLARSHIP) ? API.USERS_SCHOLARSHIPS : API.USERS_STUDENTS
       return this.http
          .patch<any>(`${environment.apiUrl}${apiPath}/bulk`, body, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
+
+   getCampuses(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<Campus[]>> {
+      const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort, pagination })
+      return this.http
+         .get(`${environment.apiUrl}/${API.CAMPUSES}`, {
+            headers: queryHeaders,
+            observe: "response",
+            params: params
+         })
+         .pipe(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
+   postCampus(body: CampusPost): Observable<Campus> {
+      const queryHeaders = new HttpHeaders().append(
+         "Content-Type",
+         "application/json"
+      );
+
+      return this.http
+         .post<any>(`${environment.apiUrl}/${API.CAMPUSES}`, body, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
+
+   patchCampus(
+      body: CampusPost,
+      idCampus: string
+   ): Observable<Campus> {
+      const queryHeaders = new HttpHeaders().append(
+         "Content-Type",
+         "application/json"
+      );
+
+      return this.http
+         .patch<any>(`${environment.apiUrl}/${API.CAMPUSES}/${idCampus}`, body, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
+   deleteCampus(campusId: string): Observable<Campus> {
+      const queryHeaders = new HttpHeaders().append(
+         "Content-Type",
+         "application/json"
+      );
+      return this.http
+         .delete<any>(`${environment.apiUrl}/${API.CAMPUSES}/${campusId}`, {
             headers: queryHeaders,
             observe: "response"
          })

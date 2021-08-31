@@ -1,4 +1,4 @@
 export interface Campus {
-   id: number;
+   id: string;
    name: string;
 }

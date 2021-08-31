@@ -20,6 +20,7 @@ enum STEPS {
   LIST,
   CREATE_OR_EDIT
 }
+
 @Component({
   selector: 'cei-careers',
   templateUrl: './careers.component.html',
@@ -140,7 +141,7 @@ export class CareersComponent implements OnInit {
   }
 
   deleteCareer(careerId: string): Promise<void | Career> {
-    return this.adminService.deleteCareer(careerId).toPromise().then(res => { this.onRefresh(); return res }).catch(error => this.handleErrors(error))
+    return this.adminService.deleteCareer(careerId).toPromise().then(res => { this.onRefresh(); return res }).catch(error => {throw error})
   }
 
   handleErrors(err: HttpErrorResponse) {

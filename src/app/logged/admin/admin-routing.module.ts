@@ -1,12 +1,13 @@
-import { ParametersComponent } from './parameters/parameters.component';
-import { ItemsComponent } from './items/items.component';
-import { CareersComponent } from './careers/careers.component';
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { CoursesComponent } from './courses/courses.component';
-import { UsersComponent } from './users/users.component';
+import { RouterModule, Routes } from '@angular/router';
 import { BindingsComponent } from './bindings/bindings.component';
+import { CampusesComponent } from './campuses/campuses.component';
+import { CareersComponent } from './careers/careers.component';
+import { CoursesComponent } from './courses/courses.component';
 import { FilesComponent } from './files/files.component';
+import { ItemsComponent } from './items/items.component';
+import { ParametersComponent } from './parameters/parameters.component';
+import { UsersComponent } from './users/users.component';
 
 
 const routes: Routes = [
@@ -46,6 +47,10 @@ const routes: Routes = [
   {
     path: 'archivos',
     component: FilesComponent,
+  },
+  {
+    path: 'sedes',
+    component: CampusesComponent,
   },
   {
     path: 'usuarios',

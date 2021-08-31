@@ -2,7 +2,7 @@ export enum API {
    AVAILABLE_COPIES_RELOADER = "/available-copies-reloader",
    LOGIN = "login",
    LOGOUT = "logout",
-   CAMPUSES = "/campus",
+   CAMPUSES = "campus",
    ITEMS = "items",
    PARAMETERS = "parameters",
    BINDINGS = "bindings",
