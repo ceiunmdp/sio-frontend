@@ -62,7 +62,7 @@ export class MovementsComponent implements OnInit {
     this.fb = new FilterBuilder();
     this.generalService.sendMessage({title: 'Movimientos'})
     this.movementTypeSelected = this.movementsEnum.ALL;
-    this.sort = [{ field: 'movement.createDate', sort: "DESC" }]
+    this.sort = [{ field: 'movement.createdAt', sort: "DESC" }]
     this.getMyMovements(this.filter, this.sort, this.pagination).toPromise().catch(error => this.handleErrors(error))
     this.dataSourceMovements = new MatTableDataSource();
   }

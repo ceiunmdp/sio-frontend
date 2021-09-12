@@ -54,7 +54,7 @@ export class MyOrdersComponent implements OnInit {
     this.rootPath = this.authService.currentUserValue.rootPath;
     this.generalService.sendMessage({ title: this.TITLE });
     this.fb = new FilterBuilder();
-    this.sort = [{ field: 'order.createDate', sort: "DESC" }]
+    this.sort = [{ field: 'order.createdAt', sort: "DESC" }]
     this.getActiveOrders(this.sort, this.pagination);
     this.dataSourceOrders = new MatTableDataSource();
   }

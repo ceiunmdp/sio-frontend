@@ -46,7 +46,7 @@ export class HistoricOrdersComponent implements OnInit {
     ngOnInit() {
         this.generalService.sendMessage({ title: this.TITLE });
         this.fb = new FilterBuilder();
-        this.sort = [{ field: 'order.createDate', sort: 'DESC' }];
+        this.sort = [{ field: 'order.createdAt', sort: 'DESC' }];
         this.getHistoricOrders(this.sort, this.pagination);
         this.dataSourceOrders = new MatTableDataSource();
     }
