@@ -296,7 +296,7 @@ export class OrdersService {
         const queryHeaders = new HttpHeaders().append('Content-Type', 'application/json');
         const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort, pagination });
         return this.http
-            .get(environment.apiUrl + API.CAMPUSES, {
+            .get(environment.apiUrl + '/' + API.CAMPUSES, {
                 headers: queryHeaders,
                 observe: 'response',
                 params,
