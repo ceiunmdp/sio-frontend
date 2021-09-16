@@ -13,7 +13,7 @@ import { UsersComponent } from './users/users.component';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'archivos'
+    redirectTo: 'usuarios'
   },
   {
     path: 'carreras',

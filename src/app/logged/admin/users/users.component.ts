@@ -47,7 +47,6 @@ export class UsersComponent implements OnInit {
   displayedColumns: string[];
   promoteOrDegrade: any[] = [];
   displayedUsersColumns: string[] = [
-    'id',
     'name',
     'email',
     'role',
@@ -56,7 +55,6 @@ export class UsersComponent implements OnInit {
   ];
   displayedStudentsColumns: string[] = [
     'selection',
-    'id',
     'name',
     'email',
     'dni',
@@ -66,7 +64,6 @@ export class UsersComponent implements OnInit {
   ];
   displayedScholarshipsColumns: string[] = [
     'selection',
-    'id',
     'name',
     'email',
     'dni',
@@ -76,7 +73,6 @@ export class UsersComponent implements OnInit {
     'actions'
   ];
   displayedAdminColumns: string[] = [
-    'id',
     'name',
     'email',
     'verified',
@@ -84,7 +80,6 @@ export class UsersComponent implements OnInit {
     'actions'
   ];
   displayedCampusColumns: string[] = [
-    'id',
     'name',
     'email',
     'verified',
@@ -92,7 +87,6 @@ export class UsersComponent implements OnInit {
     'actions'
   ];
   displayedProfessorshipsColumns: string[] = [
-    'id',
     'name',
     'email',
     'verified',

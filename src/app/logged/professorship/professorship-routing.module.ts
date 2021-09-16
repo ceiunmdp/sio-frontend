@@ -5,6 +5,10 @@ import { FileManagementComponent } from './file-management/file-management.compo
 
 const routes: Routes = [
   {
+    path: '',
+    redirectTo: 'archivos'
+  },
+  {
     path: "archivos",
     component: FileManagementComponent
   }

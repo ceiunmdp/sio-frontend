@@ -6,6 +6,7 @@ import { from, Observable, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { LinksAPI, MetadataAPI } from 'src/app/_models/response-api';
 import { Sort } from 'src/app/_models/sort';
+import { ParameterType } from 'src/app/_parameters/parameter-types';
 import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import { AND, FilterBuilder, OPERATORS, OR } from './../../../_helpers/filterBuilder';
 import { Pagination } from './../../../_models/pagination';
@@ -99,11 +100,28 @@ export class ParametersComponent implements OnInit {
           }, 400)
         })
       ).subscribe(
-        (data) => { this.metaDataParameters = data.data.meta; this.linksItems = data.data.links; this.dataSourceParameters.data = data.data.items; res(data.data.items) },
+        (data) => {
+           this.metaDataParameters = data.data.meta;
+           this.linksItems = data.data.links;
+           this.dataSourceParameters.data = data.data.items;
+           // convert to MB
+           this.dataSourceParameters.data = data.data.items.map(parameter => {
+              if (parameter.code == ParameterType.USERS_PROFESSORSHIPS_INITIAL_AVAILABLE_STORAGE || parameter.code == ParameterType.FILES_MAX_SIZE_ALLOWED)  {
+                parameter.value = this.bytesToMegaBytes(parameter.value)
+                parameter.name += ' (tamaño expresado en MB)'
+              }
+              return parameter
+           })
+           res(this.dataSourceParameters.data) 
+          },
         (e) => { this.handleErrors(e); rej(e) },
       )
     })
     return from(promise);
+  }
+
+  bytesToMegaBytes(bytes) { 
+    return bytes / (1024*1024);
   }
 
   handleErrors(err: HttpErrorResponse) {

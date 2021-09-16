@@ -54,7 +54,7 @@ export class StartPageComponent implements OnInit {
             if (this.authService.redirectUrl) {
                this.router.navigate(/*TODO rootpath*/[this.authService.redirectUrl]);
             } else {
-               this.router.navigate([Routes.HOME]);
+               this.router.navigate([u.rootPath]);
             }
          })
    }

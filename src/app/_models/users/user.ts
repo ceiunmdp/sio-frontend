@@ -9,6 +9,7 @@ export interface User {
    token?: string;
    type?: string;
    rootPath?: string;
+   homePath?: string;
 }
 
 export interface Student extends User {

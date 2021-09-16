@@ -40,13 +40,6 @@
                         <mat-checkbox (change)="onCheckbox($event.checked, user)"></mat-checkbox>
                     </td>
                 </ng-container>
-                <!-- Id Column -->
-                <ng-container matColumnDef="id" sticky>
-                    <th mat-header-cell *matHeaderCellDef>Id</th>
-                    <td mat-cell *matCellDef="let user">
-                        {{ user.id }}
-                    </td>
-                </ng-container>
                 <!-- Name Column -->
                 <ng-container matColumnDef="name" sticky>
                     <th mat-header-cell *matHeaderCellDef>Nombre</th>

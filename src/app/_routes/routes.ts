@@ -5,8 +5,9 @@ export enum Routes {
    CAMPUS_ROOT_PATH= "/cei/sede",
    PROFESSORSHIP_ROOT_PATH= "/cei/catedra",
 
-   LOGIN = "/",
    HOME = "/cei/home",
+
+   LOGIN = "/",
    NEW_ORDER = "/pedidos/nuevo-pedido",
    MY_ORDERS = "/pedidos/mis-pedidos",
    ORDER_DETAIL = "/pedidos/pedido",

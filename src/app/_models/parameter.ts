@@ -3,5 +3,5 @@ export interface Parameter {
    id: string;
    name: string;
    code: ParameterType;
-   value: number;
+   value: number | string;
 }

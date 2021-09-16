@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ParameterType } from 'src/app/_parameters/parameter-types';
 import { AdminService } from 'src/app/_services/admin.service';
 import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import { Parameter } from './../../../../_models/parameter';
@@ -52,8 +53,17 @@ export class EditParameterComponent implements OnInit {
 
   patchParameter(parameterId: string) {
     this.isLoadingPatchParameter = true;
-    this.adminService.patchParameter(this.parameterForm.value, parameterId).subscribe(response => {
+    let value
+    if (this.parameter.code == ParameterType.USERS_PROFESSORSHIPS_INITIAL_AVAILABLE_STORAGE || this.parameter.code == ParameterType.FILES_MAX_SIZE_ALLOWED)  {
+        value = this.megaBytesToBytes(this.parameterForm.value.value)
+    }
+    this.adminService.patchParameter({value : value}, parameterId).subscribe(response => {
     }, e => {this.handleErrors(e); this.isLoadingPatchParameter = false }, () => { this.isLoadingPatchParameter = false; this.onCreated.emit() });
+  }
+
+  
+  megaBytesToBytes(megaBytes) { 
+    return megaBytes * (1024*1024);
   }
 
   handleErrors(err: HttpErrorResponse) {

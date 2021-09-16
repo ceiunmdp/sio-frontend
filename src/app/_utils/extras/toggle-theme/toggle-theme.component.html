@@ -8,8 +8,8 @@
   <div *ngIf="this.authService.currentUserValue?.type == this.userType.BECADO" fxLayoutAlign="center center" matTooltip="Copias disponibles por beca">
     <mat-icon>add_shopping_cart</mat-icon>
     <span class="mat-h4 mb-0 mls-1">{{this.authService.currentUserValue.remaining_copies}}</span>
-  </div>
-  <div fxLayoutAlign="center center" *ngIf="!!this.authService.currentUserValue" matTooltip="Saldo disponible">
+  </div> 
+  <div fxLayoutAlign="center center" *ngIf="this.authService.currentUserValue?.type == this.userType.BECADO || this.authService.currentUserValue?.type == this.userType.ESTUDIANTE" matTooltip="Saldo disponible">
     <mat-icon>attach_money</mat-icon>
     <span class="mat-h4 mb-0">{{this.authService.currentUserValue.balance}}</span>
   </div>

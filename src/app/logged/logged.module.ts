@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatStepperModule, MatTabsModule, MatToolbarModule } from '@angular/material';
 import { MatBadgeModule } from '@angular/material/badge';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
@@ -43,6 +44,7 @@ import { NavbarComponent } from './sections/navbar/navbar.component';
       MatBadgeModule,
       DirectivesModule,
       SectionsModule,
+      MatTooltipModule
       // BreadcrumbModule
    ]
 })

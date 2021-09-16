@@ -1,11 +1,11 @@
 <mat-toolbar *ngIf="user" color="primary"
    [ngClass]="{ 'mat-toolbar-left': !(isDarkTheme$ | async), 'mat-toolbar-left-alt': isDarkTheme$ | async }">
    <div fxFlex="80" fxLayoutAlign="start center">
-      <mat-icon fxFlex="20" fxFlexOffset="10">person_pin</mat-icon>
-      <span class="mat-subheading-1 m-0" fxFlex="80">{{ user.display_name | titlecase }}</span>
+      <mat-icon fxFlex="20" fxFlexOffset="10" >person_pin</mat-icon>
+      <span class="mat-subheading-1 m-0 ellipsis" fxFlex="80">{{ user.display_name | titlecase }}</span>
    </div>
    <div fxFlex="20">
-      <button mat-icon-button [matMenuTriggerFor]="menuUser">
+      <button mat-icon-button  matTooltip="{{ user.display_name }}" [matMenuTriggerFor]="menuUser">
          <mat-icon>keyboard_arrow_down</mat-icon>
       </button>
    </div>
@@ -13,10 +13,6 @@
       <button mat-menu-item>
          <mat-icon>face</mat-icon>
          <span>Ver perfil</span>
-      </button>
-      <button mat-menu-item>
-         <mat-icon>help_outline</mat-icon>
-         <span>Ayuda</span>
       </button>
       <button mat-menu-item (click)="logout()">
          <mat-icon>exit_to_app</mat-icon>
