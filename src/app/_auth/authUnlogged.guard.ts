@@ -39,7 +39,8 @@ export class AuthGuardUnlogged implements CanActivate, CanActivateChild, CanLoad
             // console.log('entrooo');
             return true;
         }
-        this.router.navigate([Routes.HOME]);
+        console.log('entro aca, ', url)
+        this.router.navigate([Routes.MAIN]);
         return false;
     }
 

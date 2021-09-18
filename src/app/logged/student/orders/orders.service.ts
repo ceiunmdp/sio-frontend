@@ -1,17 +1,15 @@
-import {Binding} from './../../_models/binding';
+import {Binding} from '../../../_models/binding';
 import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
 import {API} from "src/app/_api/api";
-import {ResponseMessage} from "src/app/_models/response-message";
-import {environment} from "../../../environments/environment";
-import {File} from "../../_models/orders/file";
-import {Order} from "../../_models/orders/order";
-import {Career} from "./../../_models/orders/career";
-import {Course} from "./../../_models/orders/course";
-import {Year} from "./../../_models/orders/year";
-import {InternalOrder} from "./new-order/new-order.component";
+import {environment} from "../../../../environments/environment";
+import {File} from "../../../_models/orders/file";
+import {Order} from "../../../_models/orders/order";
+import {Career} from "../../../_models/orders/career";
+import {Course} from "../../../_models/orders/course";
+import {Year} from "../../../_models/orders/year";
 import {Campus} from "src/app/_models/campus";
 import {Item} from "src/app/_models/item";
 import {OR, AND} from 'src/app/_helpers/filterBuilder';
@@ -197,8 +195,6 @@ export class OrdersService {
             .pipe(
                 map<HttpResponse<ResponseAPI<Career[]>>, ResponseAPI<Career[]>>((result) => {
                     return result.body;
-                    // return careers.map((careerResponse: CareerResponse) => { const career: any = careerResponse; career.children = []; career.type = TREE_TYPES.CAREER; return career });
-                    // return this.buildTreeFiles(result.body.data);
                 })
             );
     }
@@ -272,24 +268,8 @@ export class OrdersService {
         return this.http.get(environment.apiUrl + '/' + API.CAREERS, { headers: queryHeaders, observe: 'response' }).pipe(
             map<HttpResponse<any>, any>((result) => {
                 return null;
-                // return this.buildTreeFiles(result.body.data);
             })
         );
-    }
-
-    postOrder(internalOrder: InternalOrder): Observable<ResponseMessage> {
-        const queryHeaders = new HttpHeaders().append('Content-Type', 'application/json');
-        const externalOrder = this.translateOrder(internalOrder);
-        return this.http
-            .post<ResponseMessage>(environment.apiUrl + '/user/orders', JSON.stringify(externalOrder), {
-                headers: queryHeaders,
-                observe: 'response',
-            })
-            .pipe(
-                map<HttpResponse<ResponseMessage>, ResponseMessage>((response) => {
-                    return response.body;
-                })
-            );
     }
 
     getCampuses(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<Campus[]>> {
@@ -356,40 +336,6 @@ export class OrdersService {
             );
     }
 
-    translateOrder(internalOrder: InternalOrder): ExternalOrder {
-        let externalOrder: ExternalOrder = {
-            amountPaid: null,
-            campusId: null,
-            files: null,
-            totalPrice: null,
-        };
-        externalOrder.campusId = parseInt(internalOrder.id_sede.toString());
-        externalOrder.totalPrice = internalOrder.importe_total;
-        externalOrder.amountPaid = internalOrder.importe_total;
-
-        externalOrder.files = internalOrder.archivos.map((internalFile) => {
-            const configurations: ExternalConfiguration[] = internalFile.configuraciones.map((internalConf) => {
-                return {
-                    fromUntil: internalConf.desdehastainput,
-                    doubleFace: internalConf.doble_faz,
-                    color: internalConf.color,
-                    slidesPerSheet: internalConf.diap_por_hoja,
-                    price: internalConf.precio_archivo_config,
-                    ringedGroupIdFront: internalConf.id_grupo_anillado,
-                    ringedOrder: internalConf.orden_anillado,
-                };
-            });
-            return {
-                id: internalFile.idArchivo,
-                name: internalFile.name,
-                quantity: internalFile.cantidad,
-                sameConfiguration: internalFile.copiasMismaConfig,
-                configurations: configurations,
-            };
-        });
-        return externalOrder;
-    }
-
     getOwnFiles(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<File[]>> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
       const params: HttpParams = this.restService.formatCreateAndAppendQps({filter, sort, pagination})
@@ -404,97 +350,6 @@ export class OrdersService {
             // return courses.map((courseResponse: CourseResponse) => { const course: any = courseResponse; course.children = []; course.type = TREE_TYPES.COURSE; return course });
           })
         );
-    }
-
-    buildTreeFiles(files: File[]): Career[] {
-        // const tree: Career[] = [];
-        // let career: Career | undefined;
-        // let year: Year | undefined;
-        // let course: Course | undefined;
-        // let file: File;
-
-        // files.forEach(fileDB => {
-        //    file = this.createObject(fileDB, 4) as File;
-
-        //    career = tree.find(career => {
-        //       return career.id === fileDB.career!.id;
-        //    });
-
-        //    if (career) {
-        //       year = career.children.find(year => {
-        //          return year.id === fileDB.year;
-        //       });
-
-        //       if (year) {
-        //          course = year.children.find(course => {
-        //             return course.id === fileDB.course!.id;
-        //          });
-
-        //          if (course) {
-        //             course.children.push(file);
-        //          } else {
-        //             course = this.createObject(fileDB, 3) as Course;
-        //             course.children.push(file);
-        //             year.children.push(course);
-        //          }
-        //       } else {
-        //          year = this.createObject(fileDB, 2) as Year;
-        //          course = this.createObject(fileDB, 3) as Course;
-        //          course.children.push(file);
-        //          year.children.push(course);
-        //          career.children.push(year);
-        //       }
-        //    } else {
-        //       career = this.createObject(fileDB, 1) as Career;
-        //       year = this.createObject(fileDB, 2) as Year;
-        //       course = this.createObject(fileDB, 3) as Course;
-        //       course.children.push(file);
-        //       year.children.push(course);
-        //       career.children.push(year);
-        //       tree.push(career);
-        //    }
-        // });
-        // return tree;
-        return null;
-    }
-
-    createObject(file: File, type: number): Career | Year | Course | File {
-        // switch (type) {
-        //    // Career
-        //    case 1:
-        //       return {
-        //          id: file.career!.id,
-        //          name: file.career!.name,
-        //          children: new Array<Year>()
-        //       };
-        //    // Year
-        //    case 2:
-        //       return {
-        //          id: file.year,
-        //          name: file.year + "° año",
-        //          children: new Array<Course>()
-        //       };
-        //    // Course
-        //    case 3:
-        //       return {
-        //          id: file.course!.id,
-        //          name: file.course!.name,
-        //          children: new Array<File>()
-        //       };
-        //    // File
-        //    default:
-        //       return {
-        //          id: file.id,
-        //          name: file.name,
-        //          format: file.format,
-        //          numberOfSheets: file.numberOfSheets,
-        //          course: {
-        //             id: file.career.id,
-        //             name: file.course.name
-        //          }
-        //       };
-        // }
-        return null;
     }
 
     mapToOrderApi(order: UnproccesedOrder): PostOrder {
@@ -594,12 +449,6 @@ export class OrdersService {
     calculateVeneers(range) {
         return this.splitRange(range).length;
     }
-
-    // calculatePages(range, doubleSided: boolean = true) {
-    //   const veneers = this.calculateVeneers(range)
-    //   const quantityPagesRangedAndSlidedAndSided = doubleSided ? Math.ceil(veneers / 2) : veneers;
-    //   return quantityPagesRangedAndSlidedAndSided;
-    // }
 
     calculatePages(range, doubleSided: boolean = true, slidesPerSheet: number = 1) {
         const veneers = this.calculateVeneers(range);

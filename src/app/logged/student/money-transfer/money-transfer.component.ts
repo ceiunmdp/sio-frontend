@@ -40,7 +40,7 @@ export class MoneyTransferComponent implements OnInit {
     'dni',
     'actions'
   ];
-  
+
   // metadata from api
   metaDataUsers: MetadataAPI;
   linksUsers: LinksAPI;
@@ -58,7 +58,7 @@ export class MoneyTransferComponent implements OnInit {
   constructor(
     public router: Router,
     private httpErrorResponseHandlerService: HttpErrorResponseHandlerService,
-    private authService: AuthenticationService, 
+    private authService: AuthenticationService,
     private generalService: GeneralService,
     private _bottomSheet: MatBottomSheet,
   ) { }
@@ -74,7 +74,9 @@ export class MoneyTransferComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this._users.unsubscribe();
+    if(!!this._users) {
+      this._users.unsubscribe();
+    }
   }
 
   handleErrors(err: HttpErrorResponse) {
@@ -94,7 +96,7 @@ export class MoneyTransferComponent implements OnInit {
           this.getUsers(this.filter, this.sort, this.pagination).toPromise().catch(err => this.handleErrors(err));;
         })
       ).subscribe(
-        (data) => { 
+        (data) => {
           this.currentUser = data
         },
         (e) => { rej(e) },
@@ -111,7 +113,7 @@ export class MoneyTransferComponent implements OnInit {
   onRefresh(): Promise<void | User[]> {
     return this.getUsers(this.filter, this.sort, this.pagination).toPromise().catch(err => this.handleErrors(err));
   }
-  
+
   displayTransferForm(user) {
     this.selectedUser = user;
     this.openBottomSheet(this.selectedUser);
@@ -121,7 +123,7 @@ export class MoneyTransferComponent implements OnInit {
     // const data = { evolutions: attention.evolution, date: attention.date };
     const refBS = this._bottomSheet.open(
       BottomMoneyTransferComponent,
-      { 
+      {
         data: {
           fromUser: this.currentUser,
           toUser: toUser
@@ -246,9 +248,9 @@ export class BottomMoneyTransferComponent implements OnInit {
   createMoneyTransferForm(): FormGroup {
     return this.fb.group({
        [this.MONEY]: ["", [
-          CustomValidators.required("El campo es obligatorio"), 
+          CustomValidators.required("El campo es obligatorio"),
           CustomValidators.minValue(1, "La carga debe ser positiva"),
-          CustomValidators.maxValue(this.currentUser.balance, "No puede transferir mas que su saldo actual"),   
+          CustomValidators.maxValue(this.currentUser.balance, "No puede transferir mas que su saldo actual"),
       ]]
     });
   }

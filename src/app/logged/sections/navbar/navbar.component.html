@@ -26,7 +26,7 @@
       <div class="my-5">
          <a *ngFor="let functionality of mainMenu.sub_functionalities" class="item-menu" mat-list-item
             routerLink="{{ this.rootPath + routes[functionality.code.toUpperCase()] }}" [routerLinkActive]="['is-active']">
-            <div [ngSwitch]="functionality.code" [ngClass]="{
+            <div [ngSwitch]="functionality.code.toUpperCase()" [ngClass]="{
                   'mr-5': true,
                   'text-secondary': true
                }">
@@ -39,11 +39,22 @@
                <mat-icon *ngSwitchCase="menuItems.HISTORICAL_ORDERS">
                   history
                </mat-icon>
+               <mat-icon [svgIcon]="'transferir_saldo_simple'" *ngSwitchCase="menuItems.TRANSFER_MONEY"> </mat-icon>
                <mat-icon [svgIcon]="'transferir_saldo_simple'" *ngSwitchCase="menuItems.TOP_UP"> </mat-icon>
                <mat-icon [svgIcon]="'movimientos'" *ngSwitchCase="menuItems.MOVEMENTS"> </mat-icon>
+               <mat-icon [svgIcon]="'movimientos'" *ngSwitchCase="menuItems.MOVEMENTS_LIST"> </mat-icon>
                <mat-icon *ngSwitchCase="menuItems.STUDENT_LIST">
                   list
                </mat-icon>
+
+               <mat-icon *ngSwitchCase="menuItems.USERS">manage_accounts</mat-icon>
+               <mat-icon *ngSwitchCase="menuItems.COURSES">shuffle</mat-icon>
+               <mat-icon *ngSwitchCase="menuItems.CAMPUSES">location_city</mat-icon>
+               <mat-icon *ngSwitchCase="menuItems.CAREERS">school</mat-icon>
+               <mat-icon *ngSwitchCase="menuItems.FILES">description</mat-icon>
+               <mat-icon *ngSwitchCase="menuItems.PARAMETERS">list</mat-icon>
+               <mat-icon *ngSwitchCase="menuItems.BINDINGS">architecture</mat-icon>
+               <mat-icon *ngSwitchCase="menuItems.ITEMS">category</mat-icon>
 
                <span *ngSwitchDefault> </span>
             </div>

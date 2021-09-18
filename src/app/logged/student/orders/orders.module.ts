@@ -29,14 +29,13 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatTreeModule } from "@angular/material/tree";
 import { FormRulesModule } from "ng-form-rules";
 import { UtilsModule } from "src/app/_utils/utils.module";
-// import { NewOrderComponent } from "./new-order/new-order.component";
 import { OrderRoutingModule } from "./orders-routing.module";
 import { SnackbarComponent } from "./snackbar/snackbar.component";
 import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
 import { MatDividerModule } from "@angular/material/divider";
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { FilesComponent } from './components/files/files.component';
-import { NewOrderComponent as NewOrderComponentNuevo } from './pages/new-order/new-order.component';
+import { NewOrderComponent } from './pages/new-order/new-order.component';
 import { FilesConfigComponent } from './components/files-config/files-config.component';
 import { RingConfigComponent } from './components/ring-config/ring-config.component';
 import { ConfirmOrderComponent } from './components/confirm-order/confirm-order.component';
@@ -45,7 +44,7 @@ import {BottomSheetFiles, OrderDetailComponent} from "./components/order-detail/
 
 @NgModule({
    declarations: [
-      NewOrderComponentNuevo,
+      NewOrderComponent,
       OrderDetailComponent,
       SnackbarComponent,
       FilesConfigComponent,
@@ -90,7 +89,7 @@ import {BottomSheetFiles, OrderDetailComponent} from "./components/order-detail/
       DragDropModule,
       SweetAlert2Module.forRoot()
    ],
-   exports: [NewOrderComponentNuevo, MyOrdersComponent, OrderDetailComponent],
+   exports: [NewOrderComponent, MyOrdersComponent, OrderDetailComponent],
    entryComponents: [SnackbarComponent, BottomSheetFiles]
 })
 export class OrdersModule { }

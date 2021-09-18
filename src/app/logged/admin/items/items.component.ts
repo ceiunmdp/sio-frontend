@@ -11,7 +11,7 @@ import { Sort } from 'src/app/_models/sort';
 import { AdminService } from 'src/app/_services/admin.service';
 import { GeneralService } from 'src/app/_services/general.service';
 import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
-import { OrdersService } from '../../orders/orders.service';
+import { OrdersService } from '../../student/orders/orders.service';
 import { Item } from './../../../_models/item';
 
 enum STEPS {
@@ -29,7 +29,7 @@ export class ItemsComponent implements OnInit {
   public STEPS = STEPS;
   step: STEPS;
   items: Item[]; isLoadingGetItems = false; _items: Subscription;
-  selectedItem: Item; // .. !null when edit button is clicked 
+  selectedItem: Item; // .. !null when edit button is clicked
   dataSourceItems: MatTableDataSource<Item>; /*isLoadingGetItems = false;*/
   displayedColumns: string[] = [
     'itemName',

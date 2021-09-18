@@ -12,7 +12,7 @@ import { AdminService } from 'src/app/_services/admin.service';
 import { GeneralService } from 'src/app/_services/general.service';
 import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import Swal from 'sweetalert2';
-import { OrdersService } from '../../orders/orders.service';
+import { OrdersService } from '../../student/orders/orders.service';
 import { Binding } from './../../../_models/binding';
 
 enum STEPS {
@@ -32,7 +32,7 @@ export class BindingsComponent implements OnInit {
   public STEPS = STEPS;
   step: STEPS;
   bindings: Binding[]; isLoadingGetBindings = false; _bindings: Subscription;
-  selectedBinding: Binding; // .. !null when edit button is clicked 
+  selectedBinding: Binding; // .. !null when edit button is clicked
   dataSourceBindings: MatTableDataSource<Binding>; isLoadingGetItems = false;
   displayedColumns: string[] = [
     'bindingName',
@@ -141,5 +141,5 @@ export class BindingsComponent implements OnInit {
       this.alertError.openError(this.messageError);
     }
   }
-  
+
 }

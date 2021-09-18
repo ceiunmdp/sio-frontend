@@ -18,7 +18,7 @@ import { GeneralService } from 'src/app/_services/general.service';
 import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import { CustomValidators } from 'src/app/_validators/custom-validators';
 import Swal from 'sweetalert2';
-import { OrdersService } from '../../orders/orders.service';
+import { OrdersService } from '../../student/orders/orders.service';
 
 export interface FileUpload {
   name: string;
@@ -47,7 +47,7 @@ export class FileManagementComponent implements OnInit {
   public STEPS = STEPS;
   step: STEPS;
   isLoadingGetFiles = false; _files: Subscription;
-  selectedFile: File; // .. !null when edit button is clicked 
+  selectedFile: File; // .. !null when edit button is clicked
   dataSourceFiles: MatTableDataSource<File>;
   displayedColumnsFiles: string[] = [
     'fileName',

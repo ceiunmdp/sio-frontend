@@ -12,6 +12,7 @@ import {
   MAT_BOTTOM_SHEET_DATA
 } from "@angular/material";
 import {Router} from "@angular/router";
+import {AnimationOptions} from "ngx-lottie";
 import {FILE_STATES} from "src/app/_fileStates/states";
 import {OrderCampus} from "src/app/_models/orders/orderCampus";
 import {Printer} from "src/app/_models/printer";
@@ -20,7 +21,7 @@ import {RING_STATES} from "src/app/_ringStates/states";
 import {GeneralService} from "src/app/_services/general.service";
 import {HttpErrorResponseHandlerService} from "src/app/_services/http-error-response-handler.service";
 import {CustomValidators} from "src/app/_validators/custom-validators";
-import {OrdersService} from "../../orders/orders.service";
+import {OrdersService} from "../../student/orders/orders.service";
 import {SedeService} from "../sede.service";
 import {WsOrdersService} from "./ws-orders.service";
 
@@ -234,6 +235,10 @@ export class OrdersComponent implements OnInit {
    orders: OrderCampus[] = [];
    isLoadingPendingOrders: boolean;
    isLoadingPatchOrder = {};
+   noOrdersLottie: AnimationOptions = {
+      path: 'assets/animations/empty-orders.json',
+      loop: false
+   };
    displayedColumns: string[] = [
       "id",
       "dateOrdered",
@@ -260,10 +265,20 @@ export class OrdersComponent implements OnInit {
       this.generalService.sendMessage({ title: this.TITLE });
       this.dataOrders = this.initializeDataTable();
       this.isLoadingPendingOrders = true;
+      this.wsOrdersService.connect(this.onConnectedWs, this.onDisconnectWs)
+
+    };
+
+    onConnectedWs = () => {
+      this.isLoadingPendingOrders = false;
       this.wsOrdersService.getPendingOrders(this.onGetPendingOrder);
       this.wsOrdersService.subscribeToNewPendingOrder(this.onGetPendingOrder);
       this.wsOrdersService.subscribeToUpdatedOrder(this.onUpdatedOrder);
-    };
+    }
+
+    onDisconnectWs = () => {
+      console.log('WS DISCONNECTED');
+    }
 
     initializeDataTable() {
       const dataOrders = new MatTableDataSource([]);
@@ -275,7 +290,6 @@ export class OrdersComponent implements OnInit {
     onGetPendingOrder = (order) => {
       this.orders.push(order);
       this.dataOrders.data = this.orders;
-      this.isLoadingPendingOrders = false;
     }
 
     onUpdatedOrder = (order) => {

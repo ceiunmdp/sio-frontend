@@ -2,6 +2,7 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { RoleGuard } from "../_auth/role.guard";
 import { Roles } from "../_roles/roles";
+import {AuthenticationService} from "../_services/authentication.service";
 import { LoggedComponent } from "./logged.component";
 
 const loggedRoutes: Routes = [
@@ -12,10 +13,12 @@ const loggedRoutes: Routes = [
       // canActivateChild: [AuthGuard],
       children: [
          {
-            path: ":role/pedidos",
-            loadChildren: () => import("./orders/orders.module").then(mod => mod.OrdersModule),
-            canLoad: [RoleGuard],
-            data: { expectedRoles: [Roles.Admin, Roles.Estudiante, Roles.Becado, Roles.Sede] }
+            path: "",
+            redirectTo: "main",
+         },
+         {
+            path: "main",
+            loadChildren: () => import("./main/main.module").then(mod => mod.MainModule),
          },
          {
             path: "sede",
@@ -40,10 +43,6 @@ const loggedRoutes: Routes = [
             loadChildren: () => import("./student/student.module").then(mod => mod.StudentModule),
             canActivate: [RoleGuard],
             data: { expectedRoles: [Roles.Estudiante, Roles.Becado], breadcumb: 'Estudiante' }
-         },
-         {
-            path: "home",
-            loadChildren: () => import("./home/home.module").then(mod => mod.HomeModule),
          }
       ]
    }
@@ -53,4 +52,4 @@ const loggedRoutes: Routes = [
    imports: [RouterModule.forChild(loggedRoutes)],
    exports: [RouterModule]
 })
-export class LoggedRoutingModule { }
+export class LoggedRoutingModule {}

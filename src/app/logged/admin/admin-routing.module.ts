@@ -20,8 +20,7 @@ const routes: Routes = [
     data: {
       breadcrumb: 'Carreras'
     },
-    component: CareersComponent,
-
+    component: CareersComponent
   },
   {
     path: 'materias',

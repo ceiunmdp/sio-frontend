@@ -10,7 +10,7 @@ import { LinksAPI, MetadataAPI } from 'src/app/_models/response-api';
 import { Sort } from 'src/app/_models/sort';
 import { GeneralService } from 'src/app/_services/general.service';
 import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
-import { OrdersService } from '../../orders/orders.service';
+import { OrdersService } from '../../student/orders/orders.service';
 import { BottomSheetFiles } from '../orders/orders.component';
 
 @Component({

@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from "@angula
 import { MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from "@angular/material";
 import { ActivatedRoute, Router } from "@angular/router";
 import { finalize } from "rxjs/operators";
-import { OrdersService } from "src/app/logged/orders/orders.service";
+import { OrdersService } from "src/app/logged/student/orders/orders.service";
 import { Order } from "src/app/_models/orders/order";
 import { ORDER_STATES } from "src/app/_orderStates/states";
 import { Routes } from "src/app/_routes/routes";
@@ -90,7 +90,7 @@ export class BottomSheetFiles implements OnInit {
         }
         // Si ya existe, inserto el archivo en el order correspondiente.
         else {
-          ringed.files.push(order.file.name); 
+          ringed.files.push(order.file.name);
           ringed.files[order.position - 1] = order.file.name;
         }
       }
@@ -165,7 +165,7 @@ export class OrderDetailComponent implements OnInit {
       state: {
         code: this.ORDER_STATES.CANCELADO
       }
-    }; 
+    };
     this.orderService.patchOrder(body,this.order.id).subscribe(message => {
         this.orderCancelSwal.fire();
     }, err => this.handleErrors(err));
