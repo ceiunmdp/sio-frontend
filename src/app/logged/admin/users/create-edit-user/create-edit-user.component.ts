@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { OrdersService } from 'src/app/logged/orders/orders.service';
+import { OrdersService } from 'src/app/logged/student/orders/orders.service';
 import { FilterBuilder, OPERATORS } from 'src/app/_helpers/filterBuilder';
 import { Course } from 'src/app/_models/orders/course';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
@@ -154,7 +154,7 @@ export class CreateEditUserComponent implements OnInit {
     resourceUrl$.subscribe(res => console.log(res), e => { this.handleErrors(e); this.isLoadingPostUser = false; }, () => { this.isLoadingPostUser = false; this.onCreated.emit() });
   }
 
-  // Services 
+  // Services
 
   getCampuses() {
     return this.orderService.getCampuses();

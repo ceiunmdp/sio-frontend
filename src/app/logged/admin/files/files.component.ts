@@ -17,7 +17,7 @@ import { CustomValidators } from 'src/app/_validators/custom-validators';
 import Swal from 'sweetalert2';
 import { AdminService } from '../../../_services/admin.service';
 import { GeneralService } from '../../../_services/general.service';
-import { OrdersService } from '../../orders/orders.service';
+import { OrdersService } from '../../student/orders/orders.service';
 
 export interface FileUpload {
   name: string;
@@ -51,8 +51,8 @@ export class FilesComponent implements OnInit {
   step: STEPS;
   isLoadingGetCourses = false; _courses: Subscription;
   isLoadingGetFiles = false; _files: Subscription;
-  selectedCourse: Course; // .. !null when edit button is clicked 
-  selectedFile: File; // .. !null when edit button is clicked 
+  selectedCourse: Course; // .. !null when edit button is clicked
+  selectedFile: File; // .. !null when edit button is clicked
   dataSourceCourses: MatTableDataSource<Course>;
   dataSourceFiles: MatTableDataSource<File>;
   displayedColumnsCourses: string[] = [
@@ -126,7 +126,7 @@ export class FilesComponent implements OnInit {
   }
 
   onRefreshFiles(): Promise<File[]> {
-    let filter = (!!this.selectedCourse) ? this.filterFile : this.fb.and() 
+    let filter = (!!this.selectedCourse) ? this.filterFile : this.fb.and()
     return this.getFiles(filter, this.sortFile, this.paginationFile).toPromise();
   }
 

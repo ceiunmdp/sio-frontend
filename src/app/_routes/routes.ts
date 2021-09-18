@@ -4,8 +4,9 @@ export enum Routes {
    STUDENT_ROOT_PATH= "/cei/estudiante",
    CAMPUS_ROOT_PATH= "/cei/sede",
    PROFESSORSHIP_ROOT_PATH= "/cei/catedra",
+   MAIN = "/cei/main",
 
-   HOME = "/cei/home",
+   HOME = "/home",
 
    LOGIN = "/",
    NEW_ORDER = "/pedidos/nuevo-pedido",
@@ -16,6 +17,9 @@ export enum Routes {
 
    // Sede routes
    TOP_UP = "/estudiantes",
+   MOVEMENTS_LIST = "/movimientos",
+   ACTIVE_ORDERS = "/pedidos",
+   HISTORICAL_ORDERS = "/pedidos-historicos",
 
    // Admin routes
    COURSES = "/materias",
@@ -24,5 +28,6 @@ export enum Routes {
    PARAMETERS = "/parametricas",
    ITEMS = "/articulos",
    BINDINGS = "/anillados",
-   USERS = "/usuarios"
+   USERS = "/usuarios",
+   CAMPUSES = "/sedes"
 }

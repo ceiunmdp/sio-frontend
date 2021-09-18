@@ -51,8 +51,6 @@ export class SedeService {
          }).pipe(
             map<HttpResponse<ResponseAPI<Student[]>>, ResponseAPI<Student[]>>(result => {
                return result.body;
-               // return careers.map((careerResponse: CareerResponse) => { const career: any = careerResponse; career.children = []; career.type = TREE_TYPES.CAREER; return career });
-               // return this.buildTreeFiles(result.body.data);
             })
          );
    }

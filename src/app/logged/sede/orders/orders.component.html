@@ -1,7 +1,7 @@
 <div class="pb-4">
    <mat-card [ngClass.lt-sm]="'mt-6'" [ngClass]="['card-shadow', 'mt-5']">
       <mat-card-header class="pl-0 ml-0">
-         <div fxFlex="100" fxLayout="column wrap" class="pl-0 ml-0">
+         <div *ngIf="!this.isLoadingPendingOrders && this.dataOrders.data.length > 0" fxFlex="100" fxLayout="column wrap" class="pl-0 ml-0">
             <mat-form-field>
               <mat-label>Ingrese el id, fecha, estado, dni o nombre del cliente</mat-label>
                <input matInput (keyup)="applyFilter($event.target.value)"/>
@@ -10,7 +10,7 @@
       </mat-card-header>
       <mat-card-content>
          <div fxLayout="column wrap">
-            <table *ngIf="!this.isLoadingPendingOrders; else loadingDiv" matSort fxFlex="100%" mat-table [dataSource]="dataOrders" class="mat-elevation-z0 mt-0">
+            <table *ngIf="!this.isLoadingPendingOrders && this.dataOrders.data.length > 0" matSort fxFlex="100%" mat-table [dataSource]="dataOrders" class="mat-elevation-z0 mt-0">
                <!-- id Column -->
                <ng-container matColumnDef="id">
                   <th mat-sort-header mat-header-cell *matHeaderCellDef>Id</th>
@@ -124,9 +124,19 @@
                <!-- <tr mat-footer-row *matFooterRowDef="['disclaimer1']" class="example-second-footer-row"></tr> -->
             </table>
 
-            <mat-paginator fxFlex="100" pageSize="10" [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons
+            <mat-paginator *ngIf="!this.isLoadingPendingOrders && this.dataOrders.data.length > 0" fxFlex="100" pageSize="10" [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons
                firstPageLabel="Primera página" lastPageLabel="Última página" nextPageLabel="Página siguiente"
                previousPageLabel="Página anterior"></mat-paginator>
+
+            <div *ngIf="!this.isLoadingPendingOrders && this.dataOrders.data.length === 0" fxLayout="column" fxLayoutAlign="center center" class="pys-5">
+              <h3>
+                No se encontraron pedidos activos
+              </h3>
+              <ng-lottie width="300px" [options]="noOrdersLottie"></ng-lottie>
+              <span class="text-secondary">
+                El listado se actualizará de manera automática cuando ingrese un nuevo pedido
+              </span>
+            </div>
          </div>
       </mat-card-content>
    </mat-card>
@@ -151,6 +161,6 @@
 </mat-menu>
 <cei-alert-error #alertError></cei-alert-error>
 
-<ng-template #loadingDiv>
+<ng-template #loadingDiv *ngIf="this.isLoadingPendingOrders">
     <app-spinner fxFlex="100" fxLayoutAlign="center start"></app-spinner>
 </ng-template>

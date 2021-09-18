@@ -11,12 +11,6 @@ const routes: Routes = [
       path: "",
       redirectTo: "nuevo-pedido"
    },
-   // {
-   //    path: "nuevo-pedido",
-   //    component: NewOrderComponent,
-   //    canLoad: [RoleGuard],
-   //    data: { expectedRoles: [Roles.Estudiante, Roles.Becado] }
-   // },
    {
       path: "nuevo-pedido",
       component: NewOrderComponent,
@@ -35,10 +29,6 @@ const routes: Routes = [
       canLoad: [RoleGuard],
       data: { expectedRoles: [Roles.Estudiante, Roles.Becado] }
    }
-   // {
-   //     path: 'ver-pedido',
-   //     component:
-   // }
 ];
 
 @NgModule({

@@ -22,7 +22,6 @@ export class NavbarComponent implements OnInit {
    menuItems = MenuItems;
    isDarkTheme$: Observable<boolean>;
    rootPath: string;
-   homePath: string;
 
    constructor(
       private generalService: GeneralService,
@@ -37,7 +36,6 @@ export class NavbarComponent implements OnInit {
 
       this.user = this.authService.currentUserValue;
       this.rootPath = this.user.rootPath;
-      this.homePath = this.user.homePath;
       this.getMenu();
    }
 

@@ -11,20 +11,15 @@ const appRoutes: Routes = [
       redirectTo: "login",
       pathMatch: "full"
    },
-   // {
-   //    path: "admin",
-   //    loadChildren: () => import("./unlogged/unlogged.module").then(mod => mod.UnloggedModule),
-   //    canActivate: [AuthGuardUnlogged] // Avoids loading the module if the user is already authenticated
-   // },
    {
       path: "login",
+      canLoad: [AuthGuardUnlogged], // Avoids loading the module if the user is already authenticated
       loadChildren: () => import("./unlogged/unlogged.module").then(mod => mod.UnloggedModule),
-      canActivate: [AuthGuardUnlogged], // Avoids loading the module if the user is already authenticated
    },
    {
       path: "cei",
-      loadChildren: () => import("./logged/logged.module").then(mod => mod.LoggedModule),
       canActivateChild: [AuthGuard], // Avoids loading the module before the user is authenticated
+      loadChildren: () => import("./logged/logged.module").then(mod => mod.LoggedModule),
    },
    {
       path: "**",

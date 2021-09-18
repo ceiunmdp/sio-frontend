@@ -14,6 +14,19 @@ import {AuthenticationService} from 'src/app/_services/authentication.service';
 export class WsOrdersService {
   socket;
   constructor(private authService: AuthenticationService){
+    // const token = this.authService.currentUserValue.token;
+    // const api = `${environment.wsUrl}${API.ORDERS}`;
+    // this.socket = io(api, {
+    //   rememberUpgrade: true,
+    //   auth: {
+    //     token
+    //   }
+    // });
+    // this.socket.on('connect', (ws) => console.log('Connected ws ', ws));
+    // this.socket.on('disconnect', (reason) => console.log('Disconnected: ', reason));
+  }
+
+  connect(onConnect, onDisconnect) {
     const token = this.authService.currentUserValue.token;
     const api = `${environment.wsUrl}${API.ORDERS}`;
     this.socket = io(api, {
@@ -22,8 +35,14 @@ export class WsOrdersService {
         token
       }
     });
-    this.socket.on('connect', (ws) => console.log('Connected ws ', ws));
-    this.socket.on('disconnect', (reason) => console.log('Disconnected: ', reason));
+    this.socket.on('connect', (ws) => {
+      console.log('Connected ws ', ws);
+      onConnect()
+    });
+    this.socket.on('disconnect', (reason) => {
+      console.log('Disconnected: ', reason);
+      onDisconnect()
+    });
   }
 
   getPendingOrders(callback) {
@@ -58,11 +77,11 @@ export class WsOrdersService {
     this.socket.off(orderId)
   }
 
-  getUpdatedOrderFile(callback) { 
+  getUpdatedOrderFile(callback) {
     this.socket.on('updated_order_file', callback);
   }
 
-  getUpdatedBindingGroup(callback) { 
+  getUpdatedBindingGroup(callback) {
     this.socket.on('updated_binding_group', callback);
   }
 
