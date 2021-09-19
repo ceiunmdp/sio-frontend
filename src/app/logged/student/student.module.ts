@@ -26,7 +26,6 @@ import { StudentRoutingModule } from './student-routing.module';
     FormsModule,
     UtilsModule,
     MatIconModule,
-    OrdersModule,
     SweetAlert2Module.forRoot(),
     StudentRoutingModule
   ],

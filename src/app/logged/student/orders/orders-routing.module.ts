@@ -9,25 +9,30 @@ import { NewOrderComponent } from './pages/new-order/new-order.component';
 const routes: Routes = [
    {
       path: "",
-      redirectTo: "nuevo-pedido"
-   },
-   {
-      path: "nuevo-pedido",
-      component: NewOrderComponent,
-      canLoad: [RoleGuard],
-      data: { expectedRoles: [Roles.Estudiante, Roles.Becado] }
-   },
-   {
-      path: "mis-pedidos",
-      component: MyOrdersComponent,
-      canLoad: [RoleGuard],
-      data: { expectedRoles: [Roles.Estudiante, Roles.Becado] }
-   },
-   {
-      path: "pedido/:order-id",
-      component: OrderDetailComponent,
-      canLoad: [RoleGuard],
-      data: { expectedRoles: [Roles.Estudiante, Roles.Becado] }
+      children: [
+        {
+            path: "",
+            redirectTo: "nuevo-pedido"
+        },
+        {
+            path: "nuevo-pedido",
+            component: NewOrderComponent,
+            canLoad: [RoleGuard],
+            data: { expectedRoles: [Roles.Estudiante, Roles.Becado] }
+        },
+        {
+            path: "mis-pedidos",
+            component: MyOrdersComponent,
+            canLoad: [RoleGuard],
+            data: { expectedRoles: [Roles.Estudiante, Roles.Becado] }
+        },
+        {
+            path: "pedido/:order-id",
+            component: OrderDetailComponent,
+            canLoad: [RoleGuard],
+            data: { expectedRoles: [Roles.Estudiante, Roles.Becado] }
+        }
+      ]
    }
 ];
 

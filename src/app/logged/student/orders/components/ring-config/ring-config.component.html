@@ -1,4 +1,4 @@
-<div *ngIf="!!this.configFiles">
+<div *ngIf="!!this.configFiles" fxLayoutAlign="space-between">
     <mat-card fxFlex="45" class="card-shadow">
         <mat-card-content fxLayout="column">
             <!-- Title -->
@@ -13,7 +13,7 @@
                     <mat-list-item *ngFor="let configuration of _file.configurations; let indexConfigFile = index">
                         <span fxFlex="60">
                             {{
-                      "- " + _file.file.name 
+                      "- " + _file.file.name
                    }}
                             (<span *ngFor="let course of _file.file.courses">{{course.name}}</span>)
                             <span *ngIf="_file.copies > 1">

@@ -83,14 +83,14 @@
                   fxShow.gt-md
                   mat-raised-button
                   fxFlex="20"
-                  [routerLink]="['/cei/pedidos/pedido', order.id]"
+                  [routerLink]="[this.rootPath + routes.ORDER_DETAIL, order.id]"
                   routerLinkActive="active"
                   color="primary"
                >
                   Ver más
                </button>
                <button
-                  [routerLink]="['/cei/pedidos/pedido', order.id]"
+                  [routerLink]="[this.rootPath + routes.ORDER_DETAIL, order.id]"
                   routerLinkActive="active"
                   fxLayoutAlign="center"
                   fxHide="true"

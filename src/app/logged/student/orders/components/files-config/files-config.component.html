@@ -2,12 +2,12 @@
   <mat-accordion class="card-shadow my-1" fxFlex="100%">
 
     <mat-expansion-panel [formArrayName]="this.FILES"
-      *ngFor="let fileFormGroup of this.filesItemFormArray['controls']; let fileItemIndex = index;">
+      *ngFor="let fileFormGroup of this.filesItemFormArray['controls']; let fileItemIndex = index;" [expanded]="fileItemIndex === 0">
 
       <mat-expansion-panel-header [formGroupName]="fileItemIndex">
-        <mat-panel-title> 
+        <mat-panel-title>
           <b>
-            {{fileFormGroup.value.file.name | titlecase }}    
+            {{fileFormGroup.value.file.name | titlecase }}
           </b>
         </mat-panel-title>
         <mat-panel-description></mat-panel-description>
@@ -32,9 +32,9 @@
             <div class="separator separator-center-left my-3">
               <span class="mx-2 text-secondary">
                 {{
-                                    fileFormGroup.get(this.IS_SAME_CONFIG).value ? 
+                                    fileFormGroup.get(this.IS_SAME_CONFIG).value ?
                                     'Configuración de las copias' :
-                                    'Configuración de la copia #' + (configIndex + 1) 
+                                    'Configuración de la copia #' + (configIndex + 1)
                                 }}
               </span>
             </div>

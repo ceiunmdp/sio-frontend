@@ -8,10 +8,15 @@
   <div *ngIf="this.authService.currentUserValue?.type == this.userType.BECADO" fxLayoutAlign="center center" matTooltip="Copias disponibles por beca">
     <mat-icon>add_shopping_cart</mat-icon>
     <span class="mat-h4 mb-0 mls-1">{{this.authService.currentUserValue.remaining_copies}}</span>
-  </div> 
+  </div>
   <div fxLayoutAlign="center center" *ngIf="this.authService.currentUserValue?.type == this.userType.BECADO || this.authService.currentUserValue?.type == this.userType.ESTUDIANTE" matTooltip="Saldo disponible">
     <mat-icon>attach_money</mat-icon>
     <span class="mat-h4 mb-0">{{this.authService.currentUserValue.balance}}</span>
+  </div>
+  <div fxLayoutAlign="center center" *ngIf="this.authService.currentUserValue?.type == this.userType.CATEDRA" matTooltip="Espacio disponible">
+    <mat-icon class="mrs-2" *ngIf="this.authService.currentUserValue.available_storage - this.authService.currentUserValue.storage_used < 31457280">disc_full</mat-icon>
+    <mat-icon class="mrs-2" *ngIf="this.authService.currentUserValue.available_storage - this.authService.currentUserValue.storage_used >= 31457280">cloud_upload</mat-icon>
+    <span class="mat-h4 mb-0">{{this.generalService.formatBytes(this.authService.currentUserValue.available_storage - this.authService.currentUserValue.storage_used)}}</span>
   </div>
 </div>
 

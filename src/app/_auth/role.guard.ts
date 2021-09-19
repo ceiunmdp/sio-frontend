@@ -42,13 +42,14 @@ export class RoleGuard implements CanActivate, CanActivateChild, CanLoad {
 
    checkRole(expectedRoles: string[], url: string): boolean {
       // Get the user to find its token and decode it
-      const role = this.authService.currentUserValue.type;
-      console.log(role, expectedRoles);
-
-      // Here we don't need to verify if the user is authenticated
+      let role;
+      if (!!this.authService.currentUserValue && this.authService.currentUserValue.type) {
+        role = this.authService.currentUserValue.type;
+      }
+      // Here we don't console.log(role, expectedRoles);need to verify if the user is authenticated
       // It's not part of the responsibility of this guard
       if (expectedRoles.includes(role)) {
-         return true;
+        return true;
       } else {
          // If the user's role is not allowed on this route, redirect to HOME
          this.router.navigate([Routes.HOME]);
