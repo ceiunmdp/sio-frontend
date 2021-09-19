@@ -26,7 +26,9 @@ export class TextSearchingInputComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this._input.unsubscribe();
+    if (!!this._input) {
+      this._input.unsubscribe();
+    }
   }
 
   listenInput() {

@@ -153,10 +153,11 @@ export class OrderDetailComponent implements OnInit {
 
    sortTracking(order:Order): Order {
      order.tracking.sort((previousTrack, actualTrack) => {
-      const previousTrackMs = new Date(previousTrack.timestamp.toString()).getMilliseconds();
-      const actualTrackMs = new Date(actualTrack.timestamp.toString()).getMilliseconds();
+      const previousTrackMs = new Date(previousTrack.timestamp.toString()).getTime();
+      const actualTrackMs = new Date(actualTrack.timestamp.toString()).getTime();
       return previousTrackMs - actualTrackMs;
      })
+     console.log(order);
      return order
    }
 

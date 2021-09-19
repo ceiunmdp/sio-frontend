@@ -129,23 +129,21 @@
       <ng-container *ngIf="this.discount > 0">
         <tr mat-footer-row *matFooterRowDef="['disclaimerDiscount']"></tr>
       </ng-container>
-      
+
       <tr mat-footer-row *matFooterRowDef="['disclaimer']" class="example-second-footer-row"></tr>
     </table>
   </div>
 </div>
-
-<button mat-button matStepperPrevious [disabled]="this.isPosting">Atrás</button>
-<button mat-raised-button [color]="'primary'" (click)="this.onSubmit()" [disabled]="this.isPosting">
-  <span *ngIf="!this.isPosting; else loadingIcon">
-    Finalizar
-  </span>
-  <ng-template #loadingIcon>
-    <mat-icon>
+<div fxLayoutAlign="space-between">
+  <button mat-button matStepperPrevious [disabled]="this.isPosting">Anterior</button>
+  <button mat-raised-button [color]="'primary'" (click)="this.onSubmit()" [disabled]="this.isPosting">
+    <span>
+      Finalizar
+    </span>
+    <mat-icon *ngIf="this.isPosting" class="mls-1">
         <mat-spinner color="accent" diameter="20">
         </mat-spinner>
     </mat-icon>
-  </ng-template>
-  
-</button>
+  </button>
+</div>
 <cei-alert-error #alertError></cei-alert-error>

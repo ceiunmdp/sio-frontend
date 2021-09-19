@@ -48,11 +48,13 @@ export class NewOrderComponent implements OnInit {
   confirmOrderData;
   isPosting = false;
   messageError: string;
+  rootPath: string;
   @ViewChild('alertError', { static: true }) alertError;
 
   constructor(private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private cd: ChangeDetectorRef, private orderService: OrdersService, private router: Router, private authService: AuthenticationService) {}
 
   ngOnInit() {
+    this.rootPath = this.authService.currentUserValue.rootPath;
     this.getBindings().then(data => this.bindings = data.data.items).catch(error => this.handleErrors(error));
     this.getItems().then(data => this.items = data.data.items).catch(error => this.handleErrors(error));
     this.getCampuses().then(campuses => this.campuses = campuses).catch(error => this.handleErrors(error));
@@ -92,15 +94,15 @@ export class NewOrderComponent implements OnInit {
         })
       })
       .then(() => {
-        this.router.navigate([Routes.HOME]);
+        this.router.navigate([this.rootPath + Routes.HOME]);
       })
       .catch((error:HttpErrorResponse) => {
         let text = 'Inténtelo nuevamente más tarde';
         console.log(error, error.status);
-        
+
         if(error.status == 400){
           console.log('entro', error.status);
-          
+
           text = error.error.message;
         }
         Swal.fire({

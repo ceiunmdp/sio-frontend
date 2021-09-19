@@ -1,15 +1,26 @@
-<mat-horizontal-stepper [linear]="true" (selectionChange)="this.onStepChange($event)" labelPosition="top">
-  <mat-step label="Selección de archivos" [completed]="this.dataFiles?.completed">
+<mat-horizontal-stepper [linear]="true" (selectionChange)="this.onStepChange($event)" labelPosition="top" class="mat-elevation-z2">
+  <mat-step label="Selección de archivos" fxLayout="column" [completed]="this.dataFiles?.completed">
     <cei-files (onDataChange)="onChangeDataFiles($event)"></cei-files>
+    <div fxLayoutAlign="end">
+        <button mat-button color="primary" matStepperNext>Siguiente</button>
+    </div>
   </mat-step>
-  <mat-step label="Configuración de archivos" [completed]="this.dataConfigFiles?.completed">
+  <mat-step label="Configuración de archivos" fxLayout="column" [completed]="this.dataConfigFiles?.completed">
     <cei-files-config [files]="this.dataFiles?.data" (onDataChange)="this.dataConfigFiles = $event">
     </cei-files-config>
+    <div fxLayoutAlign="space-between" class="mts-5">
+        <button mat-button matStepperPrevious>Anterior</button>
+        <button mat-button color="primary" matStepperNext>Siguiente</button>
+    </div>
   </mat-step>
-  <mat-step label="Configuración de anillados">
+  <mat-step label="Configuración de anillados" fxLayout="column">
     <cei-ring-config #ringOrderComponent *ngIf="!!this.bindings" [bindings]="bindings"
       [configFiles]="this.dataConfigFiles?.data?.files">
     </cei-ring-config>
+    <div class="mts-3" fxLayoutAlign="space-between">
+        <button mat-button matStepperPrevious>Anterior</button>
+        <button mat-button color="primary" matStepperNext>Siguiente</button>
+    </div>
   </mat-step>
   <mat-step label="Confirmar pedido">
     <cei-confirm-order *ngIf="!!this.campuses && this.items" (submit)="this.onSubmitOrder($event)" [campuses]="this.campuses"
