@@ -60,7 +60,8 @@ export class UsersComponent implements OnInit {
     'dni',
     'verified',
     'disabled',
-    'scholarship'
+    'scholarship',
+    'actions'
   ];
   displayedScholarshipsColumns: string[] = [
     'selection',

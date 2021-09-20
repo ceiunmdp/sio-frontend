@@ -19,7 +19,7 @@ import { API } from './../../../../_api/api';
   styleUrls: ['./create-edit-user.component.scss']
 })
 export class CreateEditUserComponent implements OnInit {
-  @Input() typeUserSelected: typeUserFilter.CAMPUS_USER | typeUserFilter.PROFESSOR_SHIP | typeUserFilter.ADMIN | typeUserFilter.SCHOLARSHIP;
+  @Input() typeUserSelected: typeUserFilter.CAMPUS_USER | typeUserFilter.PROFESSOR_SHIP | typeUserFilter.STUDENT | typeUserFilter.ADMIN | typeUserFilter.SCHOLARSHIP;
   @Input() user;
   @Output('created') onCreated = new EventEmitter();
   @Output('cancelled') onCancelled = new EventEmitter();
@@ -75,6 +75,10 @@ export class CreateEditUserComponent implements OnInit {
         break;
       case typeUserFilter.SCHOLARSHIP:
         this.userForm = this.createForm(this.user)(this.typeUserSelected);
+        break;
+      case typeUserFilter.STUDENT:
+        this.userForm = this.createForm(this.user)(this.typeUserSelected);
+        break;
       default:
         break;
     }
@@ -84,7 +88,7 @@ export class CreateEditUserComponent implements OnInit {
     const genericForm = this.formBuilder.group({
       [this.NAMES_FORM_POST_USER.NAME]: [{ value: !!user && !!user.display_name ? user.display_name : '', disabled: false }, [CustomValidators.required("Nombre de usuario requerido")]],
       [this.NAMES_FORM_POST_USER.EMAIL]: [{ value: !!user && !!user.email ? user.email : '', disabled: !!user }, [CustomValidators.required("Email requerido"), CustomValidators.email('Formato de email inválido')]],
-      [this.NAMES_FORM_POST_USER.PASSWORD]: [{ value: '', disabled: !!user }, [CustomValidators.required("Contraseña requerida"), CustomValidators.minLength(8, 'Contraseña muy corta')]],
+      [this.NAMES_FORM_POST_USER.PASSWORD]: [{ value: '', disabled: !!user }, [CustomValidators.required("Contraseña requerida"), CustomValidators.password('La contraseña debe cumplir con lo siguiente: un mínimo de 8 caracteres, una mayúscula, un número y un caracter especial')]],
     });
     return (typeUserSelected) => {
       const handleAdmin = () => {
@@ -97,11 +101,17 @@ export class CreateEditUserComponent implements OnInit {
         })
         return specificForm;
       }
+      const handleStudent = () => {
+        const specificForm = this.formBuilder.group({
+          ...genericForm.controls
+        })
+        return specificForm;
+      }
       const handleScholarShip = () => {
         const specificForm = this.formBuilder.group({
           ...genericForm.controls,
-          [this.NAMES_FORM_POST_USER.AVAILABLE_COPIES]: [!!user ? user.available_copies: '', [CustomValidators.required("Sede requerida")]],
-          [this.NAMES_FORM_POST_USER.REMAINING_COPIES]: [!!user ? user.remaining_copies : '', [CustomValidators.required("Sede requerida")]],
+          [this.NAMES_FORM_POST_USER.AVAILABLE_COPIES]: [!!user ? user.available_copies: '', [CustomValidators.minValue(1, 'Debe ser un valor mayor a 0'), CustomValidators.minLength(1, "Valor del parámetro requerido"), CustomValidators.required("El valor es obligatorio, debe ser un valor mayor a 0")]],
+          [this.NAMES_FORM_POST_USER.REMAINING_COPIES]: [!!user ? user.remaining_copies : '', [CustomValidators.minValue(0, 'Debe ser un valor igual o mayor a 0'), CustomValidators.minLength(1, "Valor del parámetro requerido")]],
         })
         return specificForm;
       }
@@ -122,6 +132,8 @@ export class CreateEditUserComponent implements OnInit {
           return handleProfessorShip();
         case this.typeUsers.SCHOLARSHIP:
           return handleScholarShip();
+        case this.typeUsers.STUDENT:
+          return handleStudent();
         default:
           break;
       }
@@ -132,7 +144,7 @@ export class CreateEditUserComponent implements OnInit {
     this.onCancelled.emit();
   }
 
-  onSubmitForm(typeUser: typeUserFilter.ADMIN | typeUserFilter.CAMPUS_USER | typeUserFilter.PROFESSOR_SHIP | typeUserFilter.SCHOLARSHIP) {
+  onSubmitForm(typeUser: typeUserFilter.ADMIN | typeUserFilter.CAMPUS_USER | typeUserFilter.PROFESSOR_SHIP | typeUserFilter.SCHOLARSHIP | typeUserFilter.STUDENT) {
     this.isLoadingPostUser = true;
     let resourceUrl$: Observable<any>;
     const body = JSON.parse(JSON.stringify(this.userForm.value));
@@ -142,10 +154,13 @@ export class CreateEditUserComponent implements OnInit {
         resourceUrl$ = !this.user ? this.authService.postAdmin(body) : this.authService.patchAdmin(body, this.user.id);
         break;
       case typeUserFilter.CAMPUS_USER:
-        resourceUrl$ = this.authService.postCampusUser(body);
+        resourceUrl$ = !this.user ? this.authService.postCampusUser(body) : this.authService.patchCampusUser({display_name: body.display_name, password: body.password}, this.user.id);
         break;
       case typeUserFilter.PROFESSOR_SHIP:
-        resourceUrl$ = this.authService.postProfessorShip(body);
+        resourceUrl$ = !this.user ? this.authService.postProfessorShip(body): this.authService.patchProfessorShip({display_name: body.display_name, password: body.password}, this.user.id);
+        break;
+      case typeUserFilter.STUDENT:
+        resourceUrl$ = this.authService.patchUserStudentScholarship(API.USERS_STUDENTS, body, this.user.id);
         break;
       case typeUserFilter.SCHOLARSHIP:
         resourceUrl$ = this.authService.patchUserStudentScholarship(API.USERS_SCHOLARSHIPS, body, this.user.id);

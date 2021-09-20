@@ -1,4 +1,4 @@
-import { AbstractControl, ValidatorFn, FormControl, FormGroup } from "@angular/forms";
+import { AbstractControl, ValidatorFn } from "@angular/forms";
 
 export class CustomValidators {
    static required(message: string): ValidatorFn {
@@ -23,6 +23,9 @@ export class CustomValidators {
 
    static minLength(minLength: number, message: string): ValidatorFn {
       return (control: AbstractControl): { [key: string]: any } | null => {
+         if (control.value === null) {
+            return null;
+         }
          if (typeof control.value !== "number") {
             return control && control.value.trim().length < minLength
                ? {
@@ -64,6 +67,9 @@ export class CustomValidators {
                minValue: message,
             }
          } else {
+            console.log('min value', minValue);
+            console.log('control value', control.value);
+            console.log('condition', (control && control.value && control.value < minValue));
             return control && control.value && control.value < minValue
                ? {
                   minValue: message,
@@ -106,7 +112,7 @@ export class CustomValidators {
    static password(message: string): ValidatorFn {
       return (control: AbstractControl): { [key: string]: any } | null => {
          return control &&
-            new RegExp(/^^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=*().,_]).*$/, "i").test(control.value.trim())
+            new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&+-])[A-Za-z\d@$!%*?&+-]{8,}$/, "i").test(control.value.trim())
             ? null
             : {
                password: message

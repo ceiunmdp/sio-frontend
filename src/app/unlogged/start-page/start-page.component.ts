@@ -5,7 +5,6 @@ import { Router } from "@angular/router";
 import { Subscription } from 'rxjs';
 import { CODE_FIREBASE_AUTH } from 'src/app/_api/codeFirebaseAuth';
 import { User } from "src/app/_models/users/user";
-import { Routes } from 'src/app/_routes/routes';
 import { AuthenticationService } from "src/app/_services/authentication.service";
 import { HttpErrorResponseHandlerService } from "src/app/_services/http-error-response-handler.service";
 
@@ -61,7 +60,6 @@ export class StartPageComponent implements OnInit {
 
    onError(e) {
       let message: string;
-      console.log('entro en error');
 
       switch (e.code) {
          case CODE_FIREBASE_AUTH.EMAIL_NOT_FOUND:
@@ -72,6 +70,9 @@ export class StartPageComponent implements OnInit {
             break;
          case CODE_FIREBASE_AUTH.EMAIL_EXISTS:
             message = 'El e-mail ya existe'
+            break;
+         case CODE_FIREBASE_AUTH.USER_DISABLED:
+            message = 'Su cuenta ha sido deshabilitada por el administrador'
             break;
          default:
             message = 'Ha ocurrido un error'

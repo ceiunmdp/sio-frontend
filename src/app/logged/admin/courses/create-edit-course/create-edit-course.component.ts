@@ -91,6 +91,11 @@ export class CreateEditCourseComponent implements OnInit {
     return !!this.years ? this.years.filter(year => !yearsAlreadySelected.includes(year.id)) : this.years
   }
 
+  getCareersElements(relationFormIndex: number) {
+    const careersAlreadySelected: string[] = this.relationsFormArray.value.filter((_, index) => index != relationFormIndex).flatMap(relationControl => relationControl.careers_ids);
+    return (!!this.careers && !!careersAlreadySelected )? this.careers.filter(career => !careersAlreadySelected.includes(career.id)) : this.careers
+  }
+
   // Services
 
   postCourse() {

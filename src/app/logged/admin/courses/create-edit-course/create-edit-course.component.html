@@ -31,7 +31,7 @@
                         <cei-multi-select-input fxFlex="1 1 auto"
                             [name]="this.NAMES_FORM_POST_COURSE.relations.CAREERS_IDS"
                             [form]="this.relationsFormArray['controls'][i]" [placeholder]="'Carreras'"
-                            [elements]="this.careers">
+                            [elements]="this.getCareersElements(i)">
                         </cei-multi-select-input>
 
 

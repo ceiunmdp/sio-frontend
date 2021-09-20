@@ -119,9 +119,10 @@ export class CoursesComponent implements OnInit {
 
   getCareers() {
     this.isLoadingGetCareers = true;
+    const filter = this.fb.and()
     const sort: Sort[] = [{ field: 'career.name', sort: 'ASC' }]
     this._careers = this.orderService.getCareers(null, sort).subscribe(response => {
-      this.careers = response.data.items; console.log(this.careers);
+      this.careers = response.data.items;
     }, e => {this.handleErrors(e); this.isLoadingGetCareers = false}, () => this.isLoadingGetCareers = false);
   }
 
@@ -151,7 +152,7 @@ export class CoursesComponent implements OnInit {
   }
 
   deleteCourse(courseId: string): Promise<void | Course> {
-    return this.adminService.deleteCourse(courseId).toPromise().then(res => { this.onRefresh(); return res }).catch(err => this.handleErrors(err))
+    return this.adminService.deleteCourse(courseId).toPromise().then(res => { this.onRefresh(); return res }).catch(err => {throw err})
   }
 
   handleErrors(err: HttpErrorResponse) {

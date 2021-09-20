@@ -238,6 +238,57 @@ export class AuthenticationService {
             );
     }
 
+    patchCampusUser(body: Partial<CampusUserPost>, campusId: string): Observable<any> {
+        const queryHeaders = new HttpHeaders().append(
+            "Content-Type",
+            "application/json"
+        );
+        return this.http
+            .patch<any>(`${environment.apiUrl}${API.USERS_CAMPUS}/${campusId}`, body, {
+                headers: queryHeaders,
+                observe: "response"
+            })
+            .pipe<any>(
+                map<HttpResponse<any>, any>(response => {
+                    return response.body;
+                })
+            );
+    }
+
+    patchProfessorShip(body: Partial<ProfessorShipPost>, professorShipId: string): Observable<any> {
+        const queryHeaders = new HttpHeaders().append(
+            "Content-Type",
+            "application/json"
+        );
+        return this.http
+            .patch<any>(`${environment.apiUrl}${API.USERS_PROFESSORSHIPS}/${professorShipId}`, body, {
+                headers: queryHeaders,
+                observe: "response"
+            })
+            .pipe<any>(
+                map<HttpResponse<any>, any>(response => {
+                    return response.body;
+                })
+            );
+    }
+
+    setDarkTheme(isDarkTheme: boolean): Observable<any> {
+        const queryHeaders = new HttpHeaders().append(
+            "Content-Type",
+            "application/json"
+        );
+        return this.http
+            .patch<any>(`${environment.apiUrl}${API.USER}`, {darkTheme: isDarkTheme}, {
+                headers: queryHeaders,
+                observe: "response"
+            })
+            .pipe<any>(
+                map<HttpResponse<any>, any>(response => {
+                    return response.body;
+                })
+            );
+    }
+
     get currentUserValue(): User {
         return this.currentUserSubject.value;
     }

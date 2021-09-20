@@ -52,7 +52,6 @@ export class ParametersComponent implements OnInit {
 
   ngOnInit() {
     this.fb = new FilterBuilder();
-    this.filter = this.fb.and();
     this.step = STEPS.LIST;
     this.sort = [{ field: 'name', sort: "ASC" }]
     this.getParameters(this.filter, this.sort, this.pagination);
