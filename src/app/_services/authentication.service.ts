@@ -31,7 +31,8 @@ export interface ProfessorShipPost {
     display_name: string,
     email: string,
     password: string,
-    course_id: string
+    course_id: string,
+    available_storage: number
 }
 
 @Injectable({

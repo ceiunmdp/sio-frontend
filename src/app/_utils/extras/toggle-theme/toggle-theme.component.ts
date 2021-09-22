@@ -29,10 +29,11 @@ export class ToggleThemeComponent implements OnInit {
    }
 
    toggleDarkTheme(checked: boolean) {
+      this.generalService.setDarkTheme(checked);
       this.authService.setDarkTheme(checked).subscribe(response => {
-         this.generalService.setDarkTheme(checked);
       }, e => {this.handleErrors(e)}
       )
+
    }
 
    handleErrors(err: HttpErrorResponse) {

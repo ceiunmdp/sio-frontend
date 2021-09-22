@@ -38,7 +38,9 @@ export class CreateEditUserComponent implements OnInit {
     COURSE: 'course_id', // For ProfessorShip
     AVAILABLE_COPIES: 'available_copies', // For ScholarShip
     REMAINING_COPIES: 'remaining_copies', // For ScholarShip
-    COURSE_SEARCHING: 'course_searching'
+    COURSE_SEARCHING: 'course_searching',
+    AVAILABLE_STORAGE: 'available_storage',
+    STORAGE_USED: 'storage_used'
   };
   @ViewChild('alertError', { static: true }) alertError;
   messageError: string;
@@ -116,13 +118,27 @@ export class CreateEditUserComponent implements OnInit {
         return specificForm;
       }
       const handleProfessorShip = () => {
+        let storageUsed = !!user && !!user.storage_used ? this.bytesToMegaBytes(user.storage_used) : 0;
+        let availableStorage = !!user && !!user.available_storage ? this.bytesToMegaBytes(user.available_storage) : 0;
+        let professorshipGroup;
+        if (!!user) {
+          professorshipGroup= this.formBuilder.group({
+            [this.NAMES_FORM_POST_USER.AVAILABLE_STORAGE]: [!!user && !!user.available_storage && !!user.storage_used ? availableStorage : '', [CustomValidators.minValue(storageUsed, "El valor de almacenamiento no puede ser menor al utilizado")], [CustomValidators.required("Valor requerido")]],
+            [this.NAMES_FORM_POST_USER.STORAGE_USED]: [{ value: !!user && !!user.storage_used ? storageUsed : '', disabled: true}, [CustomValidators.required("Valor requerido")]]
+          });
+        } else {
+          professorshipGroup= this.formBuilder.group({
+            [this.NAMES_FORM_POST_USER.COURSE]: [!!user && !!user.course && !!user.course.id ? user.course.id : '', [CustomValidators.required("Materia requerida")]],
+            [this.NAMES_FORM_POST_USER.COURSE_SEARCHING]: ['']
+          })
+        }
         const specificForm = this.formBuilder.group({
           ...genericForm.controls,
-          [this.NAMES_FORM_POST_USER.COURSE]: [!!user && !!user.course && !!user.course.id ? user.course.id : '', [CustomValidators.required("Materia requerida")]],
-          [this.NAMES_FORM_POST_USER.COURSE_SEARCHING]: [''],
+          ...professorshipGroup.controls
         })
         return specificForm;
       }
+      
       switch (typeUserSelected) {
         case this.typeUsers.ADMIN:
           return handleAdmin();
@@ -157,7 +173,7 @@ export class CreateEditUserComponent implements OnInit {
         resourceUrl$ = !this.user ? this.authService.postCampusUser(body) : this.authService.patchCampusUser({display_name: body.display_name, password: body.password}, this.user.id);
         break;
       case typeUserFilter.PROFESSOR_SHIP:
-        resourceUrl$ = !this.user ? this.authService.postProfessorShip(body): this.authService.patchProfessorShip({display_name: body.display_name, password: body.password}, this.user.id);
+        resourceUrl$ = !this.user ? this.authService.postProfessorShip(body): this.authService.patchProfessorShip({display_name: body.display_name, password: body.password, available_storage: this.megaBytesToBytes(body.available_storage)}, this.user.id);
         break;
       case typeUserFilter.STUDENT:
         resourceUrl$ = this.authService.patchUserStudentScholarship(API.USERS_STUDENTS, body, this.user.id);
@@ -190,5 +206,13 @@ export class CreateEditUserComponent implements OnInit {
     if (this.messageError) {
       this.alertError.openError(this.messageError);
     }
+  }
+
+  bytesToMegaBytes(bytes): number { 
+    return bytes / (1024*1024);
+  }
+
+  megaBytesToBytes(megaBytes): number { 
+    return megaBytes * (1024*1024);
   }
 }

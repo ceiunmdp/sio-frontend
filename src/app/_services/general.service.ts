@@ -6,8 +6,8 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { API } from '../_api/api';
-import { Message } from '../_models/message';
 import { Functionality } from '../_models/menu/functionality';
+import { Message } from '../_models/message';
 
 @Injectable({
    providedIn: 'root'
@@ -71,17 +71,5 @@ export class GeneralService {
       e.cancelBubble = true;
       if (e.stopPropagation) e.stopPropagation();
       e.stopPropagation();
-   }
-
-   formatBytes(bytes, decimals = 2) {
-      if (bytes === 0) return '0 Bytes';
-
-      const k = 1024;
-      const dm = decimals < 0 ? 0 : decimals;
-      const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
    }
 }
