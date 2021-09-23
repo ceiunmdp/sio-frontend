@@ -12,8 +12,8 @@
             </div>
             <ng-content select="[table]"></ng-content>
             <mat-paginator *ngIf="showPaginator" [pageIndex]="this.metaData?.current_page - 1"
-                [pageSize]="this.metaData?.items_per_page" [length]="this.metaData?.total_items" fxFlex="100"
-                pageSize="10" [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons
+                [pageSize]="25" [length]="this.metaData?.total_items" fxFlex="100"
+                pageSize="25" [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons
                 (page)="onPaginatorEvent($event)"></mat-paginator>
         </div>
     </mat-card-content>

@@ -53,6 +53,7 @@ export class CoursesComponent implements OnInit {
   constructor(private adminService: AdminService, public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private orderService: OrdersService, public generalService: GeneralService) { }
 
   ngOnInit() {
+    this.generalService.sendMessage({ title: 'Materias'})
     this.fb = new FilterBuilder();
     this.step = STEPS.LIST;
     this.sort = [{ field: 'course.name', sort: "ASC" }];

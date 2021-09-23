@@ -11,6 +11,7 @@ import { Sort } from 'src/app/_models/sort';
 import { User } from 'src/app/_models/users/user';
 import { AdminService } from 'src/app/_services/admin.service';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { GeneralService } from 'src/app/_services/general.service';
 import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import { USER_TYPES } from 'src/app/_users/types';
 import Swal from 'sweetalert2';
@@ -109,9 +110,10 @@ export class UsersComponent implements OnInit {
   @ViewChild('alertError', { static: true }) alertError;
   messageError: string;
 
-  constructor(public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private authService: AuthenticationService, private adminService: AdminService) { }
+  constructor(public generalService: GeneralService, public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private authService: AuthenticationService, private adminService: AdminService) { }
 
   ngOnInit() {
+    this.generalService.sendMessage({ title: 'Usuarios' })
     this.step = STEPS.LIST;
     this.fb = new FilterBuilder();
     this.typeUserFilterSelected = typeUserFilter.ALL;

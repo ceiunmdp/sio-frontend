@@ -51,6 +51,7 @@ export class ItemsComponent implements OnInit {
 
   ngOnInit() {
     this.fb = new FilterBuilder();
+    this.generalService.sendMessage({ title: 'Items'})
     this.filter = this.fb.and(this.fb.where('item.type', OPERATORS.IS, 'Item'))
     this.step = STEPS.LIST;
     this.sort = [{ field: 'name', sort: "ASC" }]

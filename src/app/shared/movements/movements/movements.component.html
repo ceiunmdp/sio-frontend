@@ -8,7 +8,7 @@
                 more_vert
             </mat-icon>
         </div>
-        <table table fxFlex="100" mat-table *ngIf="!this.isLoadingGetItems; else loadingDiv"
+        <table table fxFlex="100" mat-table *ngIf="!this.isLoadingGetMovements; else loadingDiv"
             [dataSource]="dataSourceMovements">
             <!-- movementDate Column -->
             <ng-container matColumnDef="movementDate" sticky>

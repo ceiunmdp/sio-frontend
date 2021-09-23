@@ -124,7 +124,7 @@
                <!-- <tr mat-footer-row *matFooterRowDef="['disclaimer1']" class="example-second-footer-row"></tr> -->
             </table>
 
-            <mat-paginator *ngIf="!this.isLoadingPendingOrders && this.dataOrders.data.length > 0" fxFlex="100" pageSize="10" [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons
+            <mat-paginator *ngIf="!this.isLoadingPendingOrders && this.dataOrders.data.length > 0" fxFlex="100" pageSize="25" [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons
                firstPageLabel="Primera página" lastPageLabel="Última página" nextPageLabel="Página siguiente"
                previousPageLabel="Página anterior"></mat-paginator>
 

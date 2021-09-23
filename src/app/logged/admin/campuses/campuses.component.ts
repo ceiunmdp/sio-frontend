@@ -51,6 +51,7 @@ export class CampusesComponent implements OnInit {
   constructor(private adminService: AdminService, public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, public generalService: GeneralService) { }
 
   ngOnInit() {
+    this.generalService.sendMessage({ title: 'Sedes'})
     this.fb = new FilterBuilder();
     this.step = STEPS.LIST;
     this.sort = [{ field: 'campus.name', sort: "ASC" }]

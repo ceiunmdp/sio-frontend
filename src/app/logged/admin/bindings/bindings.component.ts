@@ -52,6 +52,7 @@ export class BindingsComponent implements OnInit {
   constructor(private adminService: AdminService, public router: Router, private orderService: OrdersService, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, public generalService: GeneralService) { }
 
   ngOnInit() {
+    this.generalService.sendMessage({title: 'Anillados'})
     this.fb = new FilterBuilder();
     this.step = STEPS.LIST;
     this.sort = [{ field: 'binding.sheets_limit', sort: "ASC" }]

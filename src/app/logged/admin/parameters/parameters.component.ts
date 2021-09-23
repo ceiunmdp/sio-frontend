@@ -53,6 +53,7 @@ export class ParametersComponent implements OnInit {
   ngOnInit() {
     this.fb = new FilterBuilder();
     this.step = STEPS.LIST;
+    this.generalService.sendMessage({ title: 'Paramétricas' })
     this.sort = [{ field: 'name', sort: "ASC" }]
     this.getParameters(this.filter, this.sort, this.pagination);
     this.dataSourceParameters = new MatTableDataSource();
