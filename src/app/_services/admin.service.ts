@@ -8,6 +8,7 @@ import { typeUserFilter } from '../logged/admin/users/users.component';
 import { API } from '../_api/api';
 import { Campus } from '../_models/campus';
 import { Course } from '../_models/orders/course';
+import { Student } from '../_models/users/user';
 import { dataUrlToBlob } from '../_utils/utils';
 import { AND, FilterBuilder, OPERATORS, OR } from './../_helpers/filterBuilder';
 import { Binding } from './../_models/binding';
@@ -37,6 +38,10 @@ export interface CareerPost {
 
 export interface ItemPost {
    price: number;
+}
+
+export interface StudentPatch {
+   dni: string;
 }
 
 export interface ParameterPatch {
@@ -143,6 +148,23 @@ export class AdminService {
       console.log('Body del post de materias: ', body);
       return this.http
          .post<any>(`${environment.apiUrl}${API.COURSES}`, body, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
+   patchStudent(body: StudentPatch): Observable<Student> {
+      const queryHeaders = new HttpHeaders().append(
+         "Content-Type",
+         "application/json"
+      );
+      return this.http
+         .patch<any>(`${environment.apiUrl}${API.USER_STUDENT}`, {...body, dni: String(body.dni)}, {
             headers: queryHeaders,
             observe: "response"
          })
@@ -478,7 +500,7 @@ export class AdminService {
          );
    }
 
-   patchStudentsOrSholarships(body, type: string): Observable<any> {
+   patchStudentsOrScholarships(body, type: string): Observable<any> {
       console.log(body, type)
       const queryHeaders = new HttpHeaders().append(
          "Content-Type",

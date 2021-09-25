@@ -358,7 +358,7 @@ export class UsersComponent implements OnInit {
       showLoaderOnConfirm: true,
       allowOutsideClick: false,
       preConfirm: () => {
-        return this.adminService.patchStudentsOrSholarships(this.promoteOrDegrade.map(user => { return {id: user.id, type: (type == typeUserFilter.STUDENT) ? USER_TYPES.BECADO : USER_TYPES.ESTUDIANTE} }), type).toPromise().then(newUser => {
+        return this.adminService.patchStudentsOrScholarships(this.promoteOrDegrade.map(user => { return {id: user.id, type: (type == typeUserFilter.STUDENT) ? USER_TYPES.BECADO : USER_TYPES.ESTUDIANTE} }), type).toPromise().then(newUser => {
           Swal.fire({
             title: `Usuarios ${type === typeUserFilter.STUDENT ? 'promovidos' : 'degradados'} correctamente`,
             icon: 'success'

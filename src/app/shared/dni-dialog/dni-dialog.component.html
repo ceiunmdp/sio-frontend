@@ -1,0 +1,35 @@
+<h1 mat-dialog-title>Hola {{data.name}}</h1>
+<form [formGroup]="this.dniForm" *ngIf="!!this.dniForm">
+    <div mat-dialog-content>
+        <p>Para poder hacer un uso completo de la plataforma, deberas ingresar tu DNI sin puntos ni espacios</p>
+    
+        <div>
+            <cei-number-input placeholder="Ingrese su numero de DNI" [form]="this.dniForm" [name]="this.DNI" [label]="'DNI'">
+            </cei-number-input>
+        </div>
+    </div>
+    <div mat-dialog-actions>  
+        <button type="button" (click)="this.onSubmit()" [disabled]="!dniForm.valid"
+            mat-raised-button [color]="!isSent? 'primary' : 'accent'">
+            <mat-icon *ngIf="!dniForm.valid; else saveIcon">lock</mat-icon>
+        <ng-template #saveIcon>
+            <mat-icon *ngIf="dniForm.valid && !isLoadingPatchStudent; else loadingIcon">save</mat-icon>
+        </ng-template>
+        <span *ngIf="!isLoadingPatchStudent && !isSent">
+            Enviar
+        </span>
+        <span *ngIf="dniForm.valid && isLoadingPatchStudent && !isSent">
+            Enviando
+        </span>
+        <span *ngIf="isSent">
+            Enviado!
+        </span>
+        <ng-template #loadingIcon>
+            <mat-icon>
+                <mat-spinner color="accent" diameter="20">
+                </mat-spinner>
+            </mat-icon>
+        </ng-template>
+        </button>
+    </div>
+</form>

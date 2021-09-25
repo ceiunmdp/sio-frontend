@@ -17,10 +17,11 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { NotFoundComponent } from "./not-found/not-found.component";
+import { DniDialogModule } from "./shared/dni-dialog/dni-dialog.module";
 import { JwtInterceptor } from "./_helpers/jwt.interceptor";
-import {AlertErrorChildComponent} from "./_utils/forms/alert-error/alert-error-child/alert-error-child.component";
-import {AlertErrorComponent} from "./_utils/forms/alert-error/alert-error.component";
-import {UtilsModule} from "./_utils/utils.module";
+import { AlertErrorChildComponent } from "./_utils/forms/alert-error/alert-error-child/alert-error-child.component";
+import { AlertErrorComponent } from "./_utils/forms/alert-error/alert-error.component";
+import { UtilsModule } from "./_utils/utils.module";
 
 // import * as firebase from 'firebase/app';
 // import * as firebaseui from 'firebaseui';
@@ -50,6 +51,7 @@ export function fbfunction() { return 'my_factory' };
       MatInputModule,
       MatButtonModule,
       UtilsModule,
+      DniDialogModule,
       ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
       // NgxAuthFirebaseUIModule.forRoot(firebaseConfig),
       NgxAuthFirebaseUIModule.forRoot(firebaseConfig, fbfunction,

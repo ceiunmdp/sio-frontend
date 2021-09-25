@@ -1,22 +1,36 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material';
 import { Observable, throwError } from 'rxjs';
-import { AuthenticationService } from '../_services/authentication.service';
-import { tap, catchError } from 'rxjs/operators';
-import { HttpErrorResponseHandlerService } from '../_services/http-error-response-handler.service';
+import { catchError } from 'rxjs/operators';
+import { DniDialogComponent } from '../shared/dni-dialog/dni-dialog.component';
+import { Student } from '../_models/users/user';
 import { AlertService } from '../_services/alert.service';
+import { AuthenticationService } from '../_services/authentication.service';
+import { HttpErrorResponseHandlerService } from '../_services/http-error-response-handler.service';
+import { USER_TYPES } from '../_users/types';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
+
+   dniDialog: MatDialogRef<DniDialogComponent>;
+
    constructor(
+      private dialogRef: MatDialog,
       private authService: AuthenticationService,
       private handlerErrorService: HttpErrorResponseHandlerService,
       private alertService: AlertService,
-   ) { }
+   ) {}
 
    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
       // Add authorization header with jwt token if available
+      this.dniDialog = this.dialogRef.getDialogById('DNI_DIALOG')
       const currentUser = this.authService.currentUserValue;
+      if (currentUser && (currentUser.type === USER_TYPES.ESTUDIANTE || currentUser.type === USER_TYPES.BECADO)) {
+         let student = currentUser as Student;  
+         console.log('DIALOG', this.dniDialog)
+         if (!student.dni && (!this.dniDialog || this.dniDialog.getState() !== MatDialogState.OPEN)) this.dialogRef.open(DniDialogComponent, {id: 'DNI_DIALOG', data: {name: student.display_name}})
+      }
       if (currentUser && currentUser.token) {
          request = request.clone({
             setHeaders: {

@@ -28,8 +28,10 @@ export class StartPageComponent implements OnInit, OnDestroy {
    ) { }
 
    ngOnInit() {
+      console.log('inicio auth')
       this._authState = this.afAuth.authState.subscribe(user => {
          if (!!user.email && !!user.emailVerified) {
+            console.log('entro y llama a onsucess')
             this.onSuccess(user);
          }
       })
@@ -42,6 +44,7 @@ export class StartPageComponent implements OnInit, OnDestroy {
    }
 
    onSuccess(e) {
+      console.log('entro al on success')
       const u: User = {
          token: e.xa,
       }
