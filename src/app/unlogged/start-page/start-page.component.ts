@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from "@angular/router";
 import { Subscription } from 'rxjs';
@@ -13,7 +13,7 @@ import { HttpErrorResponseHandlerService } from "src/app/_services/http-error-re
    templateUrl: "./start-page.component.html",
    styleUrls: ["./start-page.component.scss"]
 })
-export class StartPageComponent implements OnInit {
+export class StartPageComponent implements OnInit, OnDestroy {
    @ViewChild("alertError", { static: true }) alertError;
    messageError: string;
    typeAlert: string;
@@ -28,21 +28,20 @@ export class StartPageComponent implements OnInit {
    ) { }
 
    ngOnInit() {
-      // this._authState = this.afAuth.authState.subscribe(user => {
-      //    if (!!user.email && !!user.emailVerified) {
-      //       this.onSuccess(user);
-      //    }
-      // })
+      this._authState = this.afAuth.authState.subscribe(user => {
+         if (!!user.email && !!user.emailVerified) {
+            this.onSuccess(user);
+         }
+      })
    }
 
    ngOnDestroy(): void {
-     //Called once, before the instance is destroyed.
-     //Add 'implements OnDestroy' to the class.
-    //  this._authState.unsubscribe();
+   //   Called once, before the instance is destroyed.
+   //   Add 'implements OnDestroy' to the class.
+     this._authState.unsubscribe();
    }
 
    onSuccess(e) {
-     console.log(e);
       const u: User = {
          token: e.xa,
       }
@@ -60,7 +59,6 @@ export class StartPageComponent implements OnInit {
 
    onError(e) {
       let message: string;
-
       switch (e.code) {
          case CODE_FIREBASE_AUTH.EMAIL_NOT_FOUND:
             message = 'Usuario no encontrado'
