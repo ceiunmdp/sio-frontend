@@ -14,6 +14,7 @@ import { GeneralService } from 'src/app/_services/general.service';
 import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import { MonedaPipe } from 'src/app/_utils/moneda.pipe';
 import { OrdersService } from '../../orders.service';
+import {AnimationOptions} from 'ngx-lottie';
 
 @Component({
   selector: 'cei-my-orders',
@@ -41,21 +42,26 @@ export class MyOrdersComponent implements OnInit {
   pipeMoneda = new MonedaPipe();
   historicOrdersShow: boolean;
   rootPath: string;
-
+  noOrdersLottie: AnimationOptions = {
+    path: 'assets/animations/empty-orders.json',
+    loop: false
+  };
   constructor(
     public generalService: GeneralService,
     public orderService: OrdersService,
     private authService: AuthenticationService,
     public router: Router,
     private httpErrorResponseHandlerService: HttpErrorResponseHandlerService
-  ) {}
+  ) {
+    this.historicOrdersShow = this.router.getCurrentNavigation().extras.state ? this.router.getCurrentNavigation().extras.state.historicOrdersShow : null;
+  }
 
   ngOnInit() {
     this.rootPath = this.authService.currentUserValue.rootPath;
     this.generalService.sendMessage({ title: this.TITLE });
     this.fb = new FilterBuilder();
-    this.sort = [{ field: 'order.createdAt', sort: "DESC" }]
-    this.getActiveOrders(this.sort, this.pagination);
+    this.sort = [{ field: 'order.createdAt', sort: "DESC" }];
+    this.historicOrdersShow ? this.getHistoricOrders(this.sort, this.pagination) : this.getActiveOrders(this.sort, this.pagination);
     this.dataSourceOrders = new MatTableDataSource();
   }
 
@@ -105,7 +111,7 @@ export class MyOrdersComponent implements OnInit {
   }
 
   onClickOrderDetail(order) {
-    this.router.navigate([`${this.rootPath}${Routes.ORDER_DETAIL}/${order.id}`], { state: { order } });
+    this.router.navigate([`${this.rootPath}${Routes.ORDER_DETAIL}/${order.id}`], { state: { order, historicOrdersShow: this.historicOrdersShow } });
   }
 
   handleErrors(err: HttpErrorResponse) {

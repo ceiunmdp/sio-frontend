@@ -1,4 +1,4 @@
-<button mat-raised-button color="primary" routerLink="{{ this.rootPath + '/pedidos/mis-pedidos' }}">
+<button mat-raised-button color="primary" (click)="this.onClickReturn()">
    <mat-icon>keyboard_backspace</mat-icon>
    Volver
 </button>
@@ -72,7 +72,7 @@
                matTooltip="Puede cancelar el pedido mientras el estado del mismo sea 'Solicitado' (el saldo será reincorporado)">
                lock_open</mat-icon>
             <button mat-button color="warn" [disabled]="this.order.state.code !== this.ORDER_STATES.SOLICITADO"
-               [swal]="confirmCancelSwal">
+                (click)="this.onCancel()">
                Cancelar pedido
             </button>
          </div>
@@ -81,12 +81,11 @@
    <!-- Fin card -->
 </div>
 
-<swal #orderCancelSwal title="Pedido cancelado correctamente" icon="success" [confirmButtonText]="'Ok'"
-   (confirm)="this.router.navigate(this.rootPath + [routes.MY_ORDERS])">
+<swal #orderCancelSwal title="Pedido cancelado correctamente" icon="success" [confirmButtonText]="'Ok'">
 </swal>
-<swal #confirmCancelSwal title="¿Seguro desea cancelar el pedido?" type="question" (confirm)="doCancel()"
+<!-- <swal #confirmCancelSwal title="¿Seguro desea cancelar el pedido?" type="question" (confirm)="doCancel()"
    [showCancelButton]="true" [confirmButtonText]="'Sí'" [cancelButtonText]="'No'">
-</swal>
+</swal> -->
 <ng-template #loadingDiv>
     <app-spinner fxFlex="100" fxLayoutAlign="center start"></app-spinner>
 </ng-template>

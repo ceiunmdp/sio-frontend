@@ -265,23 +265,37 @@ export class FilesComponent implements OnInit {
     );
   }
 
-  deleteFile(file: any) {
-    this.adminService.deleteFile(file.id).subscribe(
-      (message) => {
-        const swalOptions = {
-          title: 'Borrado con éxito',
-          text: message.message,
-          type: 'success',
-          showConfirmButton: true,
-          confirmButtonText: 'Continuar'
-        };
-        Swal.fire(swalOptions)
-        this.backToListCourses();
+  onClickDelete(file: any) {
+    Swal.fire({
+      title: 'Eliminar archivo',
+      text: `¿Seguro que desea eliminar el archivo: ${file.name}?`,
+      icon: 'question',
+      showConfirmButton: true,
+      showCancelButton: true,
+      reverseButtons: true,
+      confirmButtonText: 'Continuar',
+      cancelButtonText: 'Cancelar',
+      showLoaderOnConfirm: true,
+      preConfirm: () => {
+        return this.deleteFile(file).then((response) => {
+          console.log(response);
+          const swalOptions = {
+            title: 'Borrado con éxito',
+            type: 'success',
+            showConfirmButton: true,
+            confirmButtonText: 'Continuar'
+          };
+          Swal.fire(swalOptions);
+          this.getFiles(this.filterFile, this.sortFile, this.paginationFile);
+        }).catch(err => this.handleErrors(err))
       },
-      err => {
-        this.handleErrors(err)
-      }
-    );
+      allowOutsideClick: () => !Swal.isLoading()
+    })
+  }
+
+  deleteFile(file: any) {
+    return this.adminService.deleteFile(file.id).toPromise()
+      .catch(err => this.handleErrors(err));
   }
 
   onSearchCoursesForFiles(event: any) {
