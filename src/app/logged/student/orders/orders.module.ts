@@ -41,7 +41,8 @@ import { RingConfigComponent } from './components/ring-config/ring-config.compon
 import { ConfirmOrderComponent } from './components/confirm-order/confirm-order.component';
 import {MyOrdersComponent} from "./pages/my-orders/my-orders.component";
 import {BottomSheetFiles, OrderDetailComponent} from "./components/order-detail/order-detail.component";
-
+import {LottieModule} from 'ngx-lottie';
+import player from 'lottie-web';
 @NgModule({
    declarations: [
       NewOrderComponent,
@@ -87,7 +88,8 @@ import {BottomSheetFiles, OrderDetailComponent} from "./components/order-detail/
       MatPaginatorModule,
       MatMenuModule,
       DragDropModule,
-      SweetAlert2Module.forRoot()
+      SweetAlert2Module.forRoot(),
+      LottieModule.forRoot({ player: () => player })
    ],
    exports: [NewOrderComponent, MyOrdersComponent, OrderDetailComponent],
    entryComponents: [SnackbarComponent, BottomSheetFiles]

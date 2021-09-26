@@ -109,17 +109,17 @@
                                edit
                            </mat-icon>
                        </button>
-                       <button [swal]="confirmDeleteSwal" mat-icon-button>
+                       <button (click)="this.onClickDelete(file)" mat-icon-button>
                        <mat-icon class="text-secondary m-0 mat-icon-medium" matTooltip="Eliminar archivo">
                            delete
                        </mat-icon>
                    </button>
                    </div>
-                   <swal #confirmDeleteSwal title="Eliminar archivo" text="¿Seguro que desea eliminar el archivo: {{
+                   <!-- <swal #confirmDeleteSwal title="Eliminar archivo" text="¿Seguro que desea eliminar el archivo: {{
                         file.name
                         }}?" type="question" (confirm)="this.deleteFile(file)" [showCancelButton]="true"
                     [confirmButtonText]="'Si'" [cancelButtonText]="'No'">
-                  </swal>
+                  </swal> -->
                </td>
            </ng-container>
            <tr mat-header-row *matHeaderRowDef="displayedColumnsFiles; sticky: true"></tr>

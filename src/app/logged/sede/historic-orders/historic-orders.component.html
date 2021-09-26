@@ -77,6 +77,12 @@
                         </mat-icon>
                     </ng-template>
                 </button>
+                <button
+                  *ngIf="element.state.code === ORDER_STATES.NO_ENTREGADO"
+                  mat-icon-button [matMenuTriggerFor]="menuActions" [matMenuTriggerData]="{ order: element }"
+                  [disabled]="this.isLoadingPatchOrder[element.id]">
+                  <mat-icon [color]="'primary'">menu</mat-icon>
+                </button>
             </td>
         </ng-container>
 
@@ -84,6 +90,14 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns" class="bg-on-hover"></tr>
     </table>
 </cei-card-table>
+<mat-menu #menuActions="matMenu">
+   <ng-template matMenuContent let-order="order">
+     <button mat-menu-item fxLayoutAlign="center stretch"
+     (click)="onClickChangeStateOrder(order, this.ORDER_STATES.ENTREGADO)">
+      Entregar
+    </button>
+   </ng-template>
+</mat-menu>
 <ng-template #loadingDiv>
     <app-spinner fxFlex="100" fxLayoutAlign="center start"></app-spinner>
 </ng-template>

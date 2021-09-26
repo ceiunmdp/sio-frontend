@@ -24,6 +24,7 @@ import {CustomValidators} from "src/app/_validators/custom-validators";
 import {OrdersService} from "../../student/orders/orders.service";
 import {SedeService} from "../sede.service";
 import {WsOrdersService} from "./ws-orders.service";
+import Swal from 'sweetalert2';
 
 // Bottom sheet component
 @Component({
@@ -294,7 +295,7 @@ export class OrdersComponent implements OnInit {
 
     onUpdatedOrder = (order) => {
       const orderIndex = this.orders.findIndex(_order => _order.id == order.id);
-      if(order.state === ORDER_STATES.CANCELADO || order.state === ORDER_STATES.ENTREGADO || order.state === ORDER_STATES.NO_ENTREGADO){
+      if(order.state.code === ORDER_STATES.CANCELADO || order.state.code === ORDER_STATES.ENTREGADO || order.state.code === ORDER_STATES.NO_ENTREGADO){
         if(orderIndex != -1){
           this.orders.splice(orderIndex, 1);
         }
@@ -349,8 +350,36 @@ export class OrdersComponent implements OnInit {
   }
 
   onClickChangeStateOrder(orderId: string, stateCode: string) {
-    this.patchOrder(orderId, stateCode)
-      .catch(err => this.handleErrors(err));
+    let stateName;
+    switch (stateCode) {
+      case this.ORDER_STATES.CANCELADO:
+        stateName = 'cancelar'
+        break;
+      case this.ORDER_STATES.ENTREGADO:
+        stateName = 'entregar'
+        break;
+      case this.ORDER_STATES.NO_ENTREGADO:
+        stateName = 'no entregar'
+        break;
+      default:
+        break;
+    }
+    Swal.fire({
+      title: 'Confirme el cambio de estado',
+      html: `¿Seguro desea <b>${stateName}</b> el pedido?`,
+      icon: 'question',
+      showConfirmButton: true,
+      showCancelButton: true,
+      reverseButtons: true,
+      confirmButtonText: 'Continuar',
+      cancelButtonText: 'Cancelar',
+      showLoaderOnConfirm: true,
+      preConfirm: () => {
+        this.patchOrder(orderId, stateCode)
+          .catch(err => this.handleErrors(err));
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    });
   }
 
    private filterPredicate = (data, filter) => {

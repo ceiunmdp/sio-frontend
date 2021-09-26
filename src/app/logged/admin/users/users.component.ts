@@ -69,6 +69,7 @@ export class UsersComponent implements OnInit {
     'name',
     'email',
     'dni',
+    'copies',
     'verified',
     'disabled',
     'scholarship',
@@ -133,19 +134,36 @@ export class UsersComponent implements OnInit {
     return this.getUsers(this.typeUserFilterSelected, this.filter, this.sort, this.pagination).toPromise();
   }
 
-  onSearch(st: string) {
-    const filterqp = this.typeUserFilterSelected == typeUserFilter.ALL ? 'full_name' : 'full_name';
-    // TODO: no anda el filtro por email.
-    this.filter = this.fb.and(this.fb.where(filterqp, OPERATORS.CONTAINS, st));
-    this.getUsers(this.typeUserFilterSelected, this.filter)
+  getSearchFilterByRol(typeUserFilter: typeUserFilter, st: string) {
+    let filter;
+    const fullNameFilter = this.fb.where('full_name', OPERATORS.CONTAINS, st);
+    const emailFilter = this.fb.where('email', OPERATORS.CONTAINS, st);
+    const dniFilter = this.fb.where('dni', OPERATORS.CONTAINS, st);
+    switch (typeUserFilter) {
+      case this.typeUserFilter.ALL:
+      case this.typeUserFilter.ADMIN:
+      case this.typeUserFilter.CAMPUS_USER:
+      case this.typeUserFilter.PROFESSOR_SHIP:
+        filter = this.fb.or(fullNameFilter, emailFilter);
+        break;
+      case this.typeUserFilter.STUDENT:
+      case this.typeUserFilter.SCHOLARSHIP:
+        filter = this.fb.or(fullNameFilter, emailFilter, dniFilter);
+        break;
+      default:
+        break;
+    }
+    return filter;
   }
 
-  onChangeAllUsersCheckbox(allUsers: boolean) {
-    this.inputFilterValue = '';
-    if (!allUsers) {
-      this.filter = this.fb.and(this.fb.where('disabled', OPERATORS.IS, 'false'));
-    }
+  onGetUser() {
+    const searchFilter = !!this.inputFilterValue ? this.getSearchFilterByRol(this.typeUserFilterSelected, this.inputFilterValue) : null;
 
+    if (this.allUsersCheckbox) {
+      this.filter = searchFilter ? this.fb.and(searchFilter) : null;
+    } else {
+      this.filter = searchFilter ? this.fb.and(searchFilter, this.fb.where('disabled', OPERATORS.IS, 'false')) : this.fb.and(this.fb.where('disabled', OPERATORS.IS, 'false'));
+    }
     this.getUsers(this.typeUserFilterSelected, this.filter)
   }
 

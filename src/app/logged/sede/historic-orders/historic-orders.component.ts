@@ -12,6 +12,9 @@ import { GeneralService } from 'src/app/_services/general.service';
 import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import { OrdersService } from '../../student/orders/orders.service';
 import { BottomSheetFiles } from '../orders/orders.component';
+import {ORDER_STATES} from 'src/app/_orderStates/states';
+import Swal from 'sweetalert2';
+import {SedeService} from '../sede.service';
 
 @Component({
     selector: 'cei-historic-orders',
@@ -20,6 +23,8 @@ import { BottomSheetFiles } from '../orders/orders.component';
 })
 export class HistoricOrdersComponent implements OnInit {
     public readonly TITLE = 'Historial de pedidos';
+    isLoadingPatchOrder = {};
+    ORDER_STATES = ORDER_STATES;
     inputFilterValue = '';
     // metadata from api
     metaDataOrders: MetadataAPI;
@@ -37,6 +42,7 @@ export class HistoricOrdersComponent implements OnInit {
 
     constructor(
         private generalService: GeneralService,
+        private sedeService: SedeService,
         private orderService: OrdersService,
         private httpErrorResponseHandlerService: HttpErrorResponseHandlerService,
         public router: Router,
@@ -74,6 +80,55 @@ export class HistoricOrdersComponent implements OnInit {
         this.filter = this.fb.or(this.fb.where('state.code', OPERATORS.IN, ['cancelled', 'undelivered', 'delivered']));
         this.getOrdersService(this.filter, sort, pagination).catch((err) => this.handleErrors(err));
     }
+
+    onClickChangeStateOrder(order, stateCode: string) {
+      let stateName;
+      switch (stateCode) {
+        case this.ORDER_STATES.CANCELADO:
+          stateName = 'cancelar'
+          break;
+        case this.ORDER_STATES.ENTREGADO:
+          stateName = 'entregar'
+          break;
+        case this.ORDER_STATES.NO_ENTREGADO:
+          stateName = 'no entregar'
+          break;
+        default:
+          break;
+      }
+      Swal.fire({
+        title: 'Confirme el cambio de estado',
+        html: `¿Seguro desea <b>${stateName}</b> el pedido?`,
+        icon: 'question',
+        showConfirmButton: true,
+        showCancelButton: true,
+        reverseButtons: true,
+        confirmButtonText: 'Continuar',
+        cancelButtonText: 'Cancelar',
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+          this.patchOrder(order.id, stateCode)
+            .then(orderUpdated => {
+              order.state = orderUpdated.state;
+            })
+            .catch(err => this.handleErrors(err));
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+      });
+    }
+
+    patchOrder(orderId: string, stateCode: string): Promise<any> {
+      this.isLoadingPatchOrder[orderId] = true;
+      return new Promise((resolve, reject) => {
+         this.sedeService.patchOrder(orderId, stateCode).subscribe(
+            (order) => resolve(order),
+            (error) => {
+               reject(error)
+            },
+         );
+      })
+        .finally(() => this.isLoadingPatchOrder[orderId] = false);
+   }
 
     openBottomSheet(order): void {
         order.isLoading = true;

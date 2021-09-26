@@ -93,7 +93,7 @@
                         </ng-template>
                      </button>
                      <button
-                        *ngIf="element.state.id !== ORDER_STATES.CANCELADO && element.state.id !== ORDER_STATES.ENTREGADO"
+                        *ngIf="element.state.code !== ORDER_STATES.CANCELADO && element.state.code !== ORDER_STATES.ENTREGADO"
                         mat-icon-button [matMenuTriggerFor]="menuActions" [matMenuTriggerData]="{ order: element }"
                         [disabled]="this.isLoadingPatchOrder[element.id]">
                         <mat-icon [color]="'primary'">menu</mat-icon>

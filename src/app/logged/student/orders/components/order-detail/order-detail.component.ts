@@ -10,6 +10,7 @@ import { Routes } from "src/app/_routes/routes";
 import { AuthenticationService } from "src/app/_services/authentication.service";
 import { GeneralService } from "src/app/_services/general.service";
 import { HttpErrorResponseHandlerService } from "src/app/_services/http-error-response-handler.service";
+import Swal from 'sweetalert2';
 
 // Bottom sheet component
 @Component({
@@ -113,6 +114,7 @@ export class BottomSheetFiles implements OnInit {
 })
 export class OrderDetailComponent implements OnInit {
    order: Order;
+   historicOrdersShow: boolean;
    orderId: any;
    routes = Routes;
    rootPath: string;
@@ -132,12 +134,17 @@ export class OrderDetailComponent implements OnInit {
       private _bottomSheet: MatBottomSheet
    ) {
       this.order = router.getCurrentNavigation().extras.state ? router.getCurrentNavigation().extras.state.order : null;
+      this.historicOrdersShow = this.router.getCurrentNavigation().extras.state ? this.router.getCurrentNavigation().extras.state.historicOrdersShow : null;
    }
 
    ngOnInit() {
       this.rootPath = this.authService.currentUserValue.rootPath;
       this.orderId = this.route.snapshot.paramMap.get("order-id");
-      if(!this.order){
+      this.getOrder();
+   }
+
+   getOrder(forceGet = false) {
+      if (forceGet || !this.order) {
         this.isLoadingGetOrders = true;
         this.orderService.getOrderById(this.orderId).pipe(
           finalize(() => this.isLoadingGetOrders = false)
@@ -146,9 +153,14 @@ export class OrderDetailComponent implements OnInit {
             this.order = this.sortTracking(order);
             this.generalService.sendMessage({ title: `Detalles del pedido` });
           }, err => { this.handleErrors(err); this.isLoadingGetOrders = false });
-      } else{
+      } else {
         this.order = this.sortTracking(this.order);
       }
+   }
+
+   onClickReturn() {
+     this.router.navigate([`${this.rootPath}/pedidos/mis-pedidos`],
+     { state: { historicOrdersShow: this.historicOrdersShow  } });
    }
 
    sortTracking(order:Order): Order {
@@ -161,15 +173,36 @@ export class OrderDetailComponent implements OnInit {
      return order
    }
 
+   onCancel() {
+      Swal.fire({
+        title: 'Cancelar pedido',
+        text: `¿Seguro desea cancelar el pedido?`,
+        icon: 'question',
+        showConfirmButton: true,
+        showCancelButton: true,
+        reverseButtons: true,
+        confirmButtonText: 'Continuar',
+        cancelButtonText: 'Cancelar',
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+          return this.doCancel()
+            .then(() => this.getOrder(true));
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+      })
+   }
+
    doCancel() {
     const body = {
       state: {
         code: this.ORDER_STATES.CANCELADO
       }
     };
-    this.orderService.patchOrder(body,this.order.id).subscribe(message => {
+    return this.orderService.patchOrder(body, this.order.id).toPromise()
+      .then(message => {
         this.orderCancelSwal.fire();
-    }, err => this.handleErrors(err));
+      })
+      .catch(err => this.handleErrors(err));
    }
 
    openBottomSheet(): void {
