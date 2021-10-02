@@ -17,7 +17,7 @@ import { CustomValidators } from 'src/app/_validators/custom-validators';
 import Swal from 'sweetalert2';
 import { AdminService } from '../../../_services/admin.service';
 import { GeneralService } from '../../../_services/general.service';
-import { OrdersService } from '../../student/orders/orders.service';
+import { OrdersService } from '../../../logged/student/orders/orders.service';
 
 export interface FileUpload {
   name: string;
