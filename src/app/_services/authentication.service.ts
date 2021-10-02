@@ -15,6 +15,7 @@ import { Routes } from '../_routes/routes';
 import { USER_TYPES } from '../_users/types';
 import { GeneralService } from './general.service';
 import { RestUtilitiesService } from './rest-utilities.service';
+import * as jwt_decode from 'jwt-decode';
 
 export interface AdminPost {
     display_name: string,
@@ -303,46 +304,26 @@ export class AuthenticationService {
     }
 
     getAndUpdateUserData(): Observable<User> {
-        const queryHeaders = new HttpHeaders().append('Content-Type', 'application/json');
-        let basicUser: Partial<User>;
-        return this.http
-            .get(environment.apiUrl + APIS.USER, { headers: queryHeaders, observe: 'response' })
-            .pipe(
-                map<HttpResponse<any>, any>(response => {
-                    basicUser = { ...response.body.data };
-                    return response.body.data;
-                }),
-                // Acá pedir al usuario particular
-                mergeMap(basicUser => { console.log(basicUser); return this.getSpecificUserData(basicUser) }),
-                map(user => { return { ...basicUser, ...user } }),
-                tap(user => this.updateCurrentUser(user))
-            );
+        const token = this.currentUserValue.token;
+        const decodedToken = jwt_decode(token);
+        return this.getSpecificUserData(decodedToken.role).pipe(
+          tap(user => this.updateCurrentUser(user))
+        );
     }
 
     getUserData(): Observable<User> {
-        const queryHeaders = new HttpHeaders().append('Content-Type', 'application/json');
-        let basicUser: Partial<User>;
-        return this.http
-            .get(environment.apiUrl + APIS.USER, { headers: queryHeaders, observe: 'response' })
-            .pipe(
-                map<HttpResponse<any>, any>(response => {
-                    basicUser = { ...response.body.data };
-                    return response.body.data;
-                }),
-                // Acá pedir al usuario particular
-                mergeMap(basicUser => this.getSpecificUserData(basicUser)),
-                map(user => { console.log('basico', basicUser);return { ...basicUser, ...user } }),
-                tap(user => console.log('usuario final:', user))
-            );
+        const token = this.currentUserValue.token;
+        const decodedToken = jwt_decode(token);
+        return this.getSpecificUserData(decodedToken.role);
     }
 
     // TODO: Validarlo
-    private getSpecificUserData(basicUser: Partial<User>): Observable<User> {
+    private getSpecificUserData(role: string): Observable<User> {
+      console.log('entro en SPECIFIC');
         const queryHeaders = new HttpHeaders().append('Content-Type', 'application/json');
-        const type = basicUser.type;
         let rootPath;
         var url;
-        switch (type) {
+        switch (role) {
             case USER_TYPES.ADMIN:
                 rootPath = Routes.ADMIN_ROOT_PATH;
                 url = `${APIS.USER_ADMIN}`

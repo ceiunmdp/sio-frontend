@@ -4,7 +4,7 @@ import { BindingsComponent } from './bindings/bindings.component';
 import { CampusesComponent } from './campuses/campuses.component';
 import { CareersComponent } from './careers/careers.component';
 import { CoursesComponent } from './courses/courses.component';
-import { FilesComponent } from './files/files.component';
+import { FilesComponent } from '../../shared/files/files/files.component';
 import { ItemsComponent } from './items/items.component';
 import { ParametersComponent } from './parameters/parameters.component';
 import { UsersComponent } from './users/users.component';

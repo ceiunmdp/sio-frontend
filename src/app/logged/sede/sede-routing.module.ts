@@ -5,6 +5,7 @@ import { ChargeBalanceComponent } from "./charge-balance/charge-balance.componen
 import {HistoricOrdersComponent} from "./historic-orders/historic-orders.component";
 import { HomeSedeComponent } from "./home-sede/home-sede.component";
 import { OrdersComponent } from "./orders/orders.component";
+import {FilesComponent} from 'src/app/shared/files/files/files.component';
 
 const routes: Routes = [
    {
@@ -26,6 +27,10 @@ const routes: Routes = [
    {
       path: "estudiantes",
       component: ChargeBalanceComponent
+   },
+   {
+    path: 'archivos',
+    component: FilesComponent,
    },
    {
       path: "movimientos",

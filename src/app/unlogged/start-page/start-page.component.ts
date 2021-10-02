@@ -30,7 +30,7 @@ export class StartPageComponent implements OnInit, OnDestroy {
    ngOnInit() {
       console.log('inicio auth')
       this._authState = this.afAuth.authState.subscribe(user => {
-         if (!!user.email && !!user.emailVerified) {
+         if (!!user && !!user.email && !!user.emailVerified) {
             console.log('entro y llama a onsucess')
             this.onSuccess(user);
          }

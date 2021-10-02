@@ -19,6 +19,7 @@ import {BottomSheetFiles, OrdersComponent} from "./orders/orders.component";
 import {SedeRoutingModule} from "./sede-routing.module";
 import player from 'lottie-web';
 import {HomeSedeComponent} from "./home-sede/home-sede.component";
+import {FilesModule} from 'src/app/shared/files/files.module';
 @NgModule({
    declarations: [
       OrdersComponent,
@@ -46,6 +47,7 @@ import {HomeSedeComponent} from "./home-sede/home-sede.component";
       MatInputModule,
       MatSortModule,
       MatMenuModule,
+      FilesModule,
       MatProgressSpinnerModule,
       SweetAlert2Module.forRoot(),
       LottieModule.forRoot({ player: () => player })
