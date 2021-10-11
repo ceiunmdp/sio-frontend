@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/comm
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { BehaviorSubject, from, Observable } from 'rxjs';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { map, mergeMap, tap, switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { API, API as APIS } from '../_api/api';
@@ -355,6 +355,7 @@ export class AuthenticationService {
                       return response.body.data;
                   }),
                   switchMap(data => {
+                    console.log('REFRESCANDO TOKEJ')
                     return from(this.refreshToken())
                       .pipe(
                         map(_ => data)
@@ -402,10 +403,17 @@ export class AuthenticationService {
     }
 
     logout(): Observable<any> {
-        return from(this.afAuth.auth.signOut().then(a => {
-            console.log('cerro sesion', a);
-
-        }, err => console.log(err)));
+      // console.log('USUARIO',this.afAuth.auth.currentUser );
+      // console.log('USUARIO COND', !!this.afAuth.auth.currentUser );
+      //   if (!!this.afAuth.auth.currentUser) {
+      //     console.log('cerrando sesion!!');
+          return from(this.afAuth.auth.signOut().then(a => {
+              console.log('cerro sesion', a);
+          }, err => console.log(err)));
+        // } else {
+        //   console.log('no cerro sesion');
+        //   return of(true);
+        // }
     }
 
     refreshToken(): Promise<any> {
