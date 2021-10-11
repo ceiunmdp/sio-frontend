@@ -60,7 +60,7 @@ export class MyOrdersComponent implements OnInit {
     this.rootPath = this.authService.currentUserValue.rootPath;
     this.generalService.sendMessage({ title: this.TITLE });
     this.fb = new FilterBuilder();
-    this.sort = [{ field: 'order.createdAt', sort: "DESC" }];
+    this.sort = [{ field: 'order.idNumber', sort: "DESC" }];
     this.historicOrdersShow ? this.getHistoricOrders(this.sort, this.pagination) : this.getActiveOrders(this.sort, this.pagination);
     this.dataSourceOrders = new MatTableDataSource();
   }
@@ -90,7 +90,7 @@ export class MyOrdersComponent implements OnInit {
     const filter = this.fb.or(
       this.fb.where('state.code', OPERATORS.IN, ['cancelled', 'undelivered', 'delivered'])
     );
-    this.getOrdersService(filter, sort, pagination)
+    this.getOrdersService(filter, sort || this.sort, pagination)
         .then(_ => (this.historicOrdersShow = true))
         .catch(err => this.handleErrors(err));
   }

@@ -48,7 +48,11 @@ export class StartPageComponent implements OnInit, OnDestroy {
       const u: User = {
          token: e.xa,
       }
+      // TODO: Buscar en que property está el emailVerified del objeto "e", si está verificado -> seguir con el flujo
+      // del getUserData,  sino se debería quedar bloqueado en esa pantalla (verificar API del componente
+      // para obtener el evento cuando se presiona "Volver" y llamar a onSuccess nuevamente para que continúe el flujo)
       this.authService.updateCurrentUser(u);
+
       this.authService.getUserData().toPromise()
          .then((u: Partial<User>) => {
             this.authService.updateCurrentUser(u);
@@ -61,6 +65,7 @@ export class StartPageComponent implements OnInit, OnDestroy {
    }
 
    onError(e) {
+     console.log('entro en error', e);
       let message: string;
       switch (e.code) {
          case CODE_FIREBASE_AUTH.EMAIL_NOT_FOUND:

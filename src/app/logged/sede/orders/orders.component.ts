@@ -55,6 +55,7 @@ export class BottomSheetFiles implements OnInit {
       private wsOrdersService: WsOrdersService,
       private sedeService: SedeService,
       private formBuilder: FormBuilder,
+      private ordersService: OrdersService,
       private _bottomSheetRef: MatBottomSheetRef<BottomSheetFiles>,
       private cd: ChangeDetectorRef,
       @Inject(MAT_BOTTOM_SHEET_DATA) public data
@@ -83,6 +84,23 @@ export class BottomSheetFiles implements OnInit {
       this._bottomSheetRef.dismiss(this.order);
       this.wsOrdersService.leaveOrderRoom(this.order.id);
    }
+
+   openFile(file) {
+    file.isLoading = true;
+    console.log(file);
+    this.ordersService.getFile(file.id).subscribe(
+      (blob: any) => {
+        var fileURL: any = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = fileURL;
+        a.target = '_blank';
+        a.click();
+        console.log(blob);
+      },
+      error => { this.handleErrors(error) },
+      () => file.isLoading = false
+    );
+  }
 
    onUpdateBindingGroup = (bindingGroup) => {
     console.log(bindingGroup);

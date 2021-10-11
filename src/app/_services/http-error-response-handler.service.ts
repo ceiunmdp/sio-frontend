@@ -25,6 +25,7 @@ export class HttpErrorResponseHandlerService {
                 case 401: // Unauthorized
                     // Try to refresh token. Otherwise logout
                     this.authService.refreshToken().catch(e => {
+                      console.log(e);
                         this.authService.logout().subscribe(
                             () => {
                                 this.authService.removeCurrentUser();
