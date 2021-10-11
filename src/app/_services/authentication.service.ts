@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { BehaviorSubject, from, Observable } from 'rxjs';
-import { map, mergeMap, tap } from 'rxjs/operators';
+import { map, mergeMap, tap, switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { API, API as APIS } from '../_api/api';
 import { AND, OR } from '../_helpers/filterBuilder';
@@ -314,12 +314,13 @@ export class AuthenticationService {
     getUserData(): Observable<User> {
         const token = this.currentUserValue.token;
         const decodedToken = jwt_decode(token);
+        console.log(decodedToken);
         return this.getSpecificUserData(decodedToken.role);
     }
 
     // TODO: Validarlo
     private getSpecificUserData(role: string): Observable<User> {
-      console.log('entro en SPECIFIC');
+      console.log('entro en SPECIFIC', role);
         const queryHeaders = new HttpHeaders().append('Content-Type', 'application/json');
         let rootPath;
         var url;
@@ -327,10 +328,6 @@ export class AuthenticationService {
             case USER_TYPES.ADMIN:
                 rootPath = Routes.ADMIN_ROOT_PATH;
                 url = `${APIS.USER_ADMIN}`
-                break;
-            case USER_TYPES.ESTUDIANTE:
-                rootPath = Routes.STUDENT_ROOT_PATH;
-                url = `${APIS.USER_STUDENT}`
                 break;
             case USER_TYPES.BECADO:
                 rootPath = Routes.STUDENT_ROOT_PATH;
@@ -345,16 +342,35 @@ export class AuthenticationService {
                 url = `${APIS.USER_CAMPUS}`
                 break;
             default:
+                rootPath = Routes.STUDENT_ROOT_PATH;
+                url = `${APIS.USER_STUDENT}`
                 break;
         }
-        return this.http
-            .get(environment.apiUrl + url, { headers: queryHeaders, observe: 'response' })
-            .pipe(
-                map<HttpResponse<any>, any>(response => {
-                    response.body.data.rootPath = rootPath;
-                    return response.body.data;
-                })
-            );
+        if (!role) {
+          return this.http
+              .get(environment.apiUrl + url, { headers: queryHeaders, observe: 'response' })
+              .pipe(
+                  map<HttpResponse<any>, any>(response => {
+                      response.body.data.rootPath = rootPath;
+                      return response.body.data;
+                  }),
+                  switchMap(data => {
+                    return from(this.refreshToken())
+                      .pipe(
+                        map(_ => data)
+                      )
+                  })
+              );
+        } else {
+          return this.http
+              .get(environment.apiUrl + url, { headers: queryHeaders, observe: 'response' })
+              .pipe(
+                  map<HttpResponse<any>, any>(response => {
+                      response.body.data.rootPath = rootPath;
+                      return response.body.data;
+                  })
+              );
+        }
     }
 
     updateCurrentUser(user: User) {
@@ -395,13 +411,16 @@ export class AuthenticationService {
     refreshToken(): Promise<any> {
         console.log('tratando de refrescar token', this.afAuth);
         if (!!this.afAuth.auth && !!this.afAuth.auth.currentUser) {
+          console.log('tratando de refrescar token dentro del if', this.afAuth);
             return this.afAuth.auth.currentUser.getIdToken(true)
                 .then((idToken) => {
+                  console.log(idToken);
                     const u: User = {
                         token: idToken,
                     }
                     this.updateCurrentUser(u);
-                });
+                })
+                .catch(e => console.log('error', e))
 
         } else {
             return new Promise((res, rej) => rej())

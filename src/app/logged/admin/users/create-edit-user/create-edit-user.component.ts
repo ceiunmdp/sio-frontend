@@ -99,7 +99,7 @@ export class CreateEditUserComponent implements OnInit {
       const handleCampusUser = () => {
         const specificForm = this.formBuilder.group({
           ...genericForm.controls,
-          [this.NAMES_FORM_POST_USER.CAMPUS]: [!!user && !!user.campus && !!user.campus.id ? user.campus.id : '', [CustomValidators.required("Sede requerida")]],
+          [this.NAMES_FORM_POST_USER.CAMPUS]: [{value: !!user && !!user.campus && !!user.campus.id ? user.campus.id : '', disabled: true}, [CustomValidators.required("Sede requerida")]],
         })
         return specificForm;
       }
@@ -122,12 +122,15 @@ export class CreateEditUserComponent implements OnInit {
         let availableStorage = !!user && !!user.available_storage ? this.bytesToMegaBytes(user.available_storage) : 0;
         let professorshipGroup;
         if (!!user) {
-          professorshipGroup= this.formBuilder.group({
-            [this.NAMES_FORM_POST_USER.AVAILABLE_STORAGE]: [!!user && !!user.available_storage && !!user.storage_used ? availableStorage : '', [CustomValidators.minValue(storageUsed, "El valor de almacenamiento no puede ser menor al utilizado")], [CustomValidators.required("Valor requerido")]],
-            [this.NAMES_FORM_POST_USER.STORAGE_USED]: [{ value: !!user && !!user.storage_used ? storageUsed : '', disabled: true}, [CustomValidators.required("Valor requerido")]]
+          professorshipGroup = this.formBuilder.group({
+            [this.NAMES_FORM_POST_USER.AVAILABLE_STORAGE]: [!!user && !!user.available_storage && !!user.storage_used ? availableStorage : '', [CustomValidators.minValue(storageUsed, "El valor de almacenamiento no puede ser menor al utilizado"), CustomValidators.required("Valor requerido")]],
+            [this.NAMES_FORM_POST_USER.STORAGE_USED]: [{ value: !!user && !!user.storage_used ? storageUsed : '', disabled: true}, [CustomValidators.required("Valor requerido")]],
+            [this.NAMES_FORM_POST_USER.COURSE]: [!!user && !!user.course && !!user.course.id ? user.course.id : '', [CustomValidators.required("Materia requerida")]],
+            [this.NAMES_FORM_POST_USER.COURSE]: [!!user && !!user.course && !!user.course.id ? user.course.id : '', [CustomValidators.required("Materia requerida")]],
+            [this.NAMES_FORM_POST_USER.COURSE_SEARCHING]: ['']
           });
         } else {
-          professorshipGroup= this.formBuilder.group({
+          professorshipGroup = this.formBuilder.group({
             [this.NAMES_FORM_POST_USER.COURSE]: [!!user && !!user.course && !!user.course.id ? user.course.id : '', [CustomValidators.required("Materia requerida")]],
             [this.NAMES_FORM_POST_USER.COURSE_SEARCHING]: ['']
           })
@@ -138,7 +141,7 @@ export class CreateEditUserComponent implements OnInit {
         })
         return specificForm;
       }
-      
+
       switch (typeUserSelected) {
         case this.typeUsers.ADMIN:
           return handleAdmin();
@@ -208,11 +211,11 @@ export class CreateEditUserComponent implements OnInit {
     }
   }
 
-  bytesToMegaBytes(bytes): number { 
+  bytesToMegaBytes(bytes): number {
     return bytes / (1024*1024);
   }
 
-  megaBytesToBytes(megaBytes): number { 
+  megaBytesToBytes(megaBytes): number {
     return megaBytes * (1024*1024);
   }
 }

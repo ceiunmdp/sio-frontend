@@ -58,11 +58,11 @@
                     <cei-password-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.PASSWORD"
                         [form]="this.userForm" [placeholder]="'Contraseña'">
                     </cei-password-input>
-                    <cei-select-searching-dynamic-input *ngIf="!this.user" fxFlex.lt-md="1 1 auto" fxFlex.gt-xs="50"
+                    <cei-select-searching-dynamic-input [disabled]="!!this.user" fxFlex.lt-md="1 1 auto" fxFlex.gt-xs="50"
                         [elements]="this.elementsCourses" [name]="this.NAMES_FORM_POST_USER.COURSE"
                         [defaultValue]="this?.elementsCourses?.length > 0 ? this.elementsCourses[0].id:null"
                         [nameSearching]="this.NAMES_FORM_POST_USER.COURSE_SEARCHING" [form]="this.userForm"
-                        [placeholder]="'Seleccione la materia asociada'" [placeholderNoValue]="'Sin resultados'"
+                        [placeholder]="!!this.user ? 'Materia asociada' : 'Seleccione la materia asociada'" [placeholderNoValue]="'Sin resultados'"
                         [placeholderSearching]="'Buscar materia...'" [httpGet]="this.getCoursesByNameAndSurname">
                     </cei-select-searching-dynamic-input>
                     <cei-number-input *ngIf="!!this.user" [name]="this.NAMES_FORM_POST_USER.AVAILABLE_STORAGE" [form]="this.userForm"
@@ -71,7 +71,7 @@
                     <cei-number-input *ngIf="!!this.user" [name]="this.NAMES_FORM_POST_USER.STORAGE_USED" [form]="this.userForm"
                     [placeholder]="'Almacenamiento en uso expresado en MB'">
                     </cei-number-input>
-                    
+
                     <!-- Actions Buttons -->
                     <div fxLayoutAlign="space-around stretch" class="mts-5">
                         <button mat-raised-button [color]="'warn'" [disabled]="isLoadingPostUser"
@@ -113,7 +113,7 @@
                     <cei-password-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.PASSWORD"
                         [form]="this.userForm" [placeholder]="'Contraseña'">
                     </cei-password-input>
-                    <cei-select-input fxFlex="1 1 auto" [name]="this.NAMES_FORM_POST_USER.CAMPUS" [form]="this.userForm"
+                    <cei-select-input fxFlex="1 1 auto" [disabled]="true" [name]="this.NAMES_FORM_POST_USER.CAMPUS" [form]="this.userForm"
                         [placeholder]="'Sede'" [elements]="this.campuses">
                     </cei-select-input>
                     <!-- Actions Buttons -->
