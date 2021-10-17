@@ -1,7 +1,10 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
+import { MatDialog, MatDialogRef } from "@angular/material";
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
+import { ChangePasswordDialogComponent } from "src/app/shared/change-password-dialog/change-password-dialog.component";
+import { ProfileDialogComponent } from "src/app/shared/profile-dialog/profile-dialog.component";
 import { MenuItems } from "src/app/_menu-items/menuItems";
 import { Functionality } from 'src/app/_models/menu/functionality';
 import { User } from "src/app/_models/users/user";
@@ -22,9 +25,12 @@ export class NavbarComponent implements OnInit {
    menuItems = MenuItems;
    isDarkTheme$: Observable<boolean>;
    rootPath: string;
+   profileDialog: MatDialogRef<ProfileDialogComponent>;
+   changePasswordDialog: MatDialogRef<ChangePasswordDialogComponent>;
 
    constructor(
       private generalService: GeneralService,
+      private dialogRef: MatDialog,
       public authService: AuthenticationService,
       private httpErrorResponseHandlerService: HttpErrorResponseHandlerService,
       private router: Router
@@ -50,6 +56,14 @@ export class NavbarComponent implements OnInit {
             this.httpErrorResponseHandlerService.handleError(this.router, error);
          }
       );
+   }
+
+   showProfile() {
+      this.dialogRef.open(ProfileDialogComponent)
+   }
+
+   changePassword() {
+      this.dialogRef.open(ChangePasswordDialogComponent)
    }
 
    logout() {

@@ -40,8 +40,15 @@ export interface ItemPost {
    price: number;
 }
 
+export interface UserPatch {
+   password: string;
+   display_name: string;
+}
+
 export interface StudentPatch {
    dni: string;
+   password: string;
+   display_name: string;
 }
 
 export interface ParameterPatch {
@@ -163,8 +170,29 @@ export class AdminService {
          "Content-Type",
          "application/json"
       );
+      if (body.dni !== undefined)
+         body = {...body, dni: String(body.dni)}
       return this.http
-         .patch<any>(`${environment.apiUrl}${API.USER_STUDENT}`, {...body, dni: String(body.dni)}, {
+         .patch<any>(`${environment.apiUrl}${API.USER_STUDENT}`, body, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
+   patchUser(body: StudentPatch): Observable<Student> {
+      const queryHeaders = new HttpHeaders().append(
+         "Content-Type",
+         "application/json"
+      );
+      if (body.dni !== undefined)
+         body = {...body, dni: String(body.dni)}
+      return this.http
+         .patch<any>(`${environment.apiUrl}${API.USER_STUDENT}`, body, {
             headers: queryHeaders,
             observe: "response"
          })

@@ -28,7 +28,6 @@ export class JwtInterceptor implements HttpInterceptor {
       const currentUser = this.authService.currentUserValue;
       if (currentUser && (currentUser.type === USER_TYPES.ESTUDIANTE || currentUser.type === USER_TYPES.BECADO)) {
          let student = currentUser as Student;  
-         console.log('DIALOG', this.dniDialog)
          if (!student.dni && (!this.dniDialog || this.dniDialog.getState() !== MatDialogState.OPEN)) this.dialogRef.open(DniDialogComponent, {id: 'DNI_DIALOG', data: {name: student.display_name}})
       }
       if (currentUser && currentUser.token) {

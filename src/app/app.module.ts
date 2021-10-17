@@ -17,7 +17,9 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { NotFoundComponent } from "./not-found/not-found.component";
+import { ChangePasswordDialogModule } from "./shared/change-password-dialog/change-password-dialog.module";
 import { DniDialogModule } from "./shared/dni-dialog/dni-dialog.module";
+import { ProfileDialogModule } from "./shared/profile-dialog/profile-dialog.module";
 import { JwtInterceptor } from "./_helpers/jwt.interceptor";
 import { AlertErrorChildComponent } from "./_utils/forms/alert-error/alert-error-child/alert-error-child.component";
 import { AlertErrorComponent } from "./_utils/forms/alert-error/alert-error.component";
@@ -52,6 +54,8 @@ export function fbfunction() { return 'my_factory' };
       MatButtonModule,
       UtilsModule,
       DniDialogModule,
+      ProfileDialogModule,
+      ChangePasswordDialogModule,
       ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
       // NgxAuthFirebaseUIModule.forRoot(firebaseConfig),
       NgxAuthFirebaseUIModule.forRoot(firebaseConfig, fbfunction,

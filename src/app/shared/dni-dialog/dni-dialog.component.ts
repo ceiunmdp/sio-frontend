@@ -51,15 +51,15 @@ export class DniDialogComponent implements OnInit {
 
   onSubmit() {
     this.isLoadingPatchStudent = true;
-    this.adminService.patchStudent(this.dniForm.value).subscribe(response => {
+    this.adminService.patchUser(this.dniForm.value).subscribe(response => {
       this.isLoadingPatchStudent = false;
       this.isSent = true;
       this.authService.getAndUpdateUserData().toPromise()
       .then(() => {
         this.dialogRef.close();
       })
-      .catch(err => this.handleErrors(err))
-      } , e => { this.handleErrors(e) }) 
+      .catch(err => {this.handleErrors(err); this.dialogRef.close(); this.isLoadingPatchStudent = false})
+      } , e => {this.handleErrors(e); this.dialogRef.close(); this.isLoadingPatchStudent = false})
   }
 
   handleErrors(err: HttpErrorResponse) {
