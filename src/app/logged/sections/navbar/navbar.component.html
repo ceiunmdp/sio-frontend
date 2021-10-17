@@ -2,7 +2,7 @@
    [ngClass]="{ 'mat-toolbar-left': !(isDarkTheme$ | async), 'mat-toolbar-left-alt': isDarkTheme$ | async }">
    <div fxFlex="80" fxLayoutAlign="start center">
       <mat-icon fxFlex="20" fxFlexOffset="10" >person_pin</mat-icon>
-      <span class="mat-subheading-1 m-0 ellipsis" fxFlex="80">{{ user.display_name | titlecase }}</span>
+      <span class="m-0 ellipsis" style="font-size: 13px;" fxFlex="80">{{ user.display_name | titlecase }}</span>
    </div>
    <div fxFlex="20">
       <button mat-icon-button  matTooltip="{{ user.display_name }}" [matMenuTriggerFor]="menuUser">

@@ -21,6 +21,7 @@ export class ToggleThemeComponent implements OnInit {
    ngOnInit() {
       // this.isDarkTheme = this.authService.currentUserValue ? !!this.authService.currentUserValue.darkTheme : false;
       this.generalService.getDarkTheme().subscribe(darkTheme => {
+        console.log('se seteo', darkTheme);
          this.isDarkTheme = darkTheme;
       });
    }
@@ -29,6 +30,7 @@ export class ToggleThemeComponent implements OnInit {
    }
 
    toggleDarkTheme(checked: boolean) {
+      console.log('se seteo', checked);
       this.generalService.setDarkTheme(checked);
       this.authService.setDarkTheme(checked).subscribe(response => {
       }, e => {this.handleErrors(e)}
