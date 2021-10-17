@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild, SimpleChanges, ChangeDetectorRef } from "@angular/core";
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from "@angular/router";
 import { Subscription } from 'rxjs';
@@ -24,8 +24,13 @@ export class StartPageComponent implements OnInit, OnDestroy {
       private authService: AuthenticationService,
       private router: Router,
       private httpErrorResponseHandlerService: HttpErrorResponseHandlerService,
+      private cd: ChangeDetectorRef,
       private afAuth: AngularFireAuth
-   ) { }
+   ) {
+      setTimeout(() => {
+        this.cd.detectChanges();
+      }, 0);
+   }
 
    ngOnInit() {
       console.log('inicio auth')
@@ -44,11 +49,14 @@ export class StartPageComponent implements OnInit, OnDestroy {
    }
 
    onSuccess(e) {
-      console.log('entro al on success')
       const u: User = {
          token: e.xa,
       }
+      // TODO: Buscar en que property está el emailVerified del objeto "e", si está verificado -> seguir con el flujo
+      // del getUserData,  sino se debería quedar bloqueado en esa pantalla (verificar API del componente
+      // para obtener el evento cuando se presiona "Volver" y llamar a onSuccess nuevamente para que continúe el flujo)
       this.authService.updateCurrentUser(u);
+
       this.authService.getUserData().toPromise()
          .then((u: Partial<User>) => {
             this.authService.updateCurrentUser(u);
@@ -61,6 +69,7 @@ export class StartPageComponent implements OnInit, OnDestroy {
    }
 
    onError(e) {
+     console.log('entro en error', e);
       let message: string;
       switch (e.code) {
          case CODE_FIREBASE_AUTH.EMAIL_NOT_FOUND:

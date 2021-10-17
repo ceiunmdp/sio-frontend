@@ -1,8 +1,9 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, mergeMap, tap } from 'rxjs/operators';
 import { DniDialogComponent } from '../shared/dni-dialog/dni-dialog.component';
 import { Student } from '../_models/users/user';
 import { AlertService } from '../_services/alert.service';
@@ -20,64 +21,63 @@ export class JwtInterceptor implements HttpInterceptor {
       private authService: AuthenticationService,
       private handlerErrorService: HttpErrorResponseHandlerService,
       private alertService: AlertService,
+      private afAuth: AngularFireAuth
    ) {}
 
    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
       // Add authorization header with jwt token if available
-      this.dniDialog = this.dialogRef.getDialogById('DNI_DIALOG')
-      const currentUser = this.authService.currentUserValue;
-      if (currentUser && (currentUser.type === USER_TYPES.ESTUDIANTE || currentUser.type === USER_TYPES.BECADO)) {
-         let student = currentUser as Student;  
-         if (!student.dni && (!this.dniDialog || this.dniDialog.getState() !== MatDialogState.OPEN)) this.dialogRef.open(DniDialogComponent, {id: 'DNI_DIALOG', data: {name: student.display_name}})
-      }
-      if (currentUser && currentUser.token) {
-         request = request.clone({
-            setHeaders: {
-               Authorization: `Bearer ${currentUser.token}`
+      console.log('CONSOLA', this.afAuth.auth);
+      return of(null).pipe(
+        mergeMap(() => {
+          if (this.afAuth.auth && this.afAuth.auth.currentUser) {
+            console.log('entro en refrescar token');
+            return this.authService.verifyAndUpdateToken();
+          }
+          return of(null);
+        }),
+        tap((res) => {
+            console.log('RESPUESTA', res);
+            this.dniDialog = this.dialogRef.getDialogById('DNI_DIALOG');
+            const currentUser = this.authService.currentUserValue;
+            if (currentUser && (currentUser.type === USER_TYPES.ESTUDIANTE || currentUser.type === USER_TYPES.BECADO)) {
+              const student = currentUser as Student;
+              console.log('DIALOG', this.dniDialog)
+              if (!student.dni && (!this.dniDialog || this.dniDialog.getState() !== MatDialogState.OPEN)) {
+                this.dialogRef.open(DniDialogComponent, {id: 'DNI_DIALOG', data: {name: student.display_name}});
+              }
             }
-         });
-      } else {
-         // console.log('No entró en el interceptor');
-      }
-      return next.handle(request).pipe(
-         // tap((evt) => {
-         //    if (evt instanceof HttpResponse) {
+            if (currentUser && currentUser.token) {
+              request = request.clone({
+                  setHeaders: {
+                    Authorization: `Bearer ${currentUser.token}`
+                  }
+              //    if (evt instanceof HttpResponse) {
 
-         //       const accessToken = evt.headers.get(environment.accessTokenHeaderName)
-         //          ? evt.headers.get(environment.accessTokenHeaderName)
-         //          : null;
-
-         //       const refreshToken = evt.headers.get('RefreshToken')
-         //          ? evt.headers.get('RefreshToken')
-         //          : null;
-         //       const token: Token = {
-         //          accessToken: accessToken,
-         //          refreshToken: refreshToken,
-         //       };
-         //       if (accessToken && refreshToken) {
-         //          this.authService.updateCurrentUser({ token: token });
-         //       }
-         //    }
-         // }),
-         // HTTP Errors:
-         catchError((err: any) => {
-
-            if (err instanceof HttpErrorResponse) {
-               try {
-                  // Llamar al handle error service
-                  const messageError = this.handlerErrorService.handleError(null, err);
-                  // if (messageError) {
-                  //    console.log(messageError);
-                  //    this.alertService.openError(messageError);
-                  // } else {
-                  //    this.alertService.openError('Ha ocurrido un error');
-                  // }
-               } catch (e) {
-                  this.alertService.openError('Ha ocurrido un error');
-               }
+              //       const accessToken = evt.headers.get(environment.accessTokenHeaderName)
+              //          ? evt.headers.get(environment.acces
+              });
+            } else {
+              // console.log('No entró en el interceptor');
             }
-            return throwError(err);
-         }),
+        }),
+        mergeMap(() => next.handle(request)),
+        catchError((err: any) => {
+          if (err instanceof HttpErrorResponse) {
+              try {
+                // Llamar al handle error service
+                const messageError = this.handlerErrorService.handleError(null, err);
+                // if (messageError) {
+                //    console.log(messageError);
+                //    this.alertService.openError(messageError);
+                // } else {
+                //    this.alertService.openError('Ha ocurrido un error');
+                // }
+              } catch (e) {
+                this.alertService.openError('Ha ocurrido un error');
+              }
+          }
+          return throwError(err);
+        })
       );
    }
 }

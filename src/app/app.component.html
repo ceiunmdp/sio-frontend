@@ -1,8 +1,15 @@
 <div fxLayout="column" [ngClass]="{'cei-dark-theme': isDarkTheme$ | async}">
    <!-- mat-typography: aplica la tipografía de Material de manera global -->
    <!-- mat-app-background: aplica el tema seleccionado en theme.scss de manera global -->
-   <div fxLayoutFill style="min-height: 100vh;" class="mat-app-background mat-typography">
-      <router-outlet></router-outlet>
+   <div *ngIf="!(isSetFB$| async)" fxLayoutFill fxLayoutAlign="center center" style="min-height: 100vh;" class="mat-app-background mat-typography">
+      <div fxLayoutAlign="center center" fxLayout="column">
+        <ng-lottie style="max-height: 80vh;" width="45vw" [options]="mainLoadingLottie"></ng-lottie>
+        <b>CARGANDO</b>
+      </div>
+      <!-- <cei-footer></cei-footer> -->
+   </div>
+   <div *ngIf="(isSetFB$| async)" fxLayoutFill style="min-height: 100vh;" class="mat-app-background mat-typography">
+      <router-outlet *ngIf="(isSetFB$| async)"></router-outlet>
       <!-- <cei-footer></cei-footer> -->
    </div>
 </div>

@@ -24,19 +24,27 @@ export class HttpErrorResponseHandlerService {
                     break;
                 case 401: // Unauthorized
                     // Try to refresh token. Otherwise logout
-                    this.authService.refreshToken().catch(e => {
-                        this.authService.logout().subscribe(
-                            () => {
-                                this.authService.removeCurrentUser();
-                                this.router.navigate([Routes.LOGIN]);
-                            },
-                            (err) => {
-                                this.authService.removeCurrentUser();
-                                this.router.navigate([Routes.LOGIN]);
-                            }
-                        );
+                    // this.authService.refreshToken().catch(e => {
+                        if (!!this.authService.currentUserValue) {
+                          this.authService.logout().subscribe(
+                              () => {
+                                  if (this.authService.currentUserValue) {
+                                    this.authService.removeCurrentUser();
+                                    this.router.navigate([Routes.LOGIN]);
+                                  }
+                              },
+                              (err) => {
+                                  if (this.authService.currentUserValue) {
+                                    this.authService.removeCurrentUser();
+                                    this.router.navigate([Routes.LOGIN]);
+                                  }
+                                }
+                                );
+                        } else {
+                          this.router.navigate([Routes.LOGIN]);
+                        }
                         message = 'Su sesión ha expirado';
-                    })
+                    // })
                     break;
                 case 403: // Forbidden
                     this.router.navigate([Routes.LOGIN]);

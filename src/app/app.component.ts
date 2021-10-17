@@ -4,6 +4,8 @@ import { GeneralService } from "./_services/general.service";
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { isNullOrUndefined } from 'util';
+import {AuthenticationService} from './_services/authentication.service';
+import {AnimationOptions} from 'ngx-lottie';
 // import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
@@ -13,12 +15,19 @@ import { isNullOrUndefined } from 'util';
 })
 export class AppComponent implements OnInit {
    isDarkTheme$: Observable<boolean>;
-
+   isSetFB$: Observable<boolean>;
 
    deferredPrompt: any;
    showButton = false;
 
-   constructor(private generalService: GeneralService) { }
+   mainLoadingLottie: AnimationOptions = {
+     path: 'assets/animations/main-loading.json',
+     loop: true
+   };
+
+   constructor(private generalService: GeneralService, private authService: AuthenticationService) {
+     this.isSetFB$ = this.authService.isSetFB$;
+   }
 
    ngOnInit() {
       this.isDarkTheme$ = this.generalService.getDarkTheme();

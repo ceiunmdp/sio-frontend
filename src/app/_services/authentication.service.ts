@@ -2,8 +2,8 @@ import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/comm
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { BehaviorSubject, from, Observable } from 'rxjs';
-import { map, mergeMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
+import { map, mergeMap, tap, switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { API, API as APIS } from '../_api/api';
 import { AND, OR } from '../_helpers/filterBuilder';
@@ -45,9 +45,17 @@ export class AuthenticationService {
     // tslint:disable-next-line: variable-name
     private _redirectUrl: string;
 
+    private _isSetFB: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public readonly isSetFB$: Observable<boolean> = this._isSetFB.asObservable();
+
     constructor(private http: HttpClient, private restService: RestUtilitiesService, private router: Router, private afAuth: AngularFireAuth, private generalService: GeneralService) {
         this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
         this.currentUser$ = this.currentUserSubject.asObservable();
+        this._isSetFB.next(false);
+        this.afAuth.authState.subscribe(user => {
+          console.log('Se finalizó de setear FB', user);
+          this._isSetFB.next(true);
+        });
     }
 
     getUsers(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<User[]>> {
@@ -275,20 +283,21 @@ export class AuthenticationService {
     }
 
     setDarkTheme(isDarkTheme: boolean): Observable<any> {
-        const queryHeaders = new HttpHeaders().append(
-            "Content-Type",
-            "application/json"
-        );
-        return this.http
-            .patch<any>(`${environment.apiUrl}${API.USER}`, {darkTheme: isDarkTheme}, {
-                headers: queryHeaders,
-                observe: "response"
-            })
-            .pipe<any>(
-                map<HttpResponse<any>, any>(response => {
-                    return response.body;
-                })
-            );
+      this.updateCurrentUser({dark_theme: isDarkTheme});
+      const queryHeaders = new HttpHeaders().append(
+          "Content-Type",
+          "application/json"
+      );
+      return this.http
+          .patch<any>(`${environment.apiUrl}${API.USER}`, {darkTheme: isDarkTheme}, {
+              headers: queryHeaders,
+              observe: "response"
+          })
+          .pipe<any>(
+              map<HttpResponse<any>, any>(response => {
+                  return response.body;
+              })
+          );
     }
 
     get currentUserValue(): User {
@@ -314,12 +323,13 @@ export class AuthenticationService {
     getUserData(): Observable<User> {
         const token = this.currentUserValue.token;
         const decodedToken = jwt_decode(token);
+        console.log(decodedToken);
         return this.getSpecificUserData(decodedToken.role);
     }
 
     // TODO: Validarlo
     private getSpecificUserData(role: string): Observable<User> {
-      console.log('entro en SPECIFIC');
+      console.log('entro en SPECIFIC', role);
         const queryHeaders = new HttpHeaders().append('Content-Type', 'application/json');
         let rootPath;
         var url;
@@ -327,10 +337,6 @@ export class AuthenticationService {
             case USER_TYPES.ADMIN:
                 rootPath = Routes.ADMIN_ROOT_PATH;
                 url = `${APIS.USER_ADMIN}`
-                break;
-            case USER_TYPES.ESTUDIANTE:
-                rootPath = Routes.STUDENT_ROOT_PATH;
-                url = `${APIS.USER_STUDENT}`
                 break;
             case USER_TYPES.BECADO:
                 rootPath = Routes.STUDENT_ROOT_PATH;
@@ -345,16 +351,36 @@ export class AuthenticationService {
                 url = `${APIS.USER_CAMPUS}`
                 break;
             default:
+                rootPath = Routes.STUDENT_ROOT_PATH;
+                url = `${APIS.USER_STUDENT}`
                 break;
         }
-        return this.http
-            .get(environment.apiUrl + url, { headers: queryHeaders, observe: 'response' })
-            .pipe(
-                map<HttpResponse<any>, any>(response => {
-                    response.body.data.rootPath = rootPath;
-                    return response.body.data;
-                })
-            );
+        if (!role) {
+          return this.http
+              .get(environment.apiUrl + url, { headers: queryHeaders, observe: 'response' })
+              .pipe(
+                  map<HttpResponse<any>, any>(response => {
+                      response.body.data.rootPath = rootPath;
+                      return response.body.data;
+                  }),
+                  switchMap(data => {
+                    console.log('REFRESCANDO TOKEJ')
+                    return from(this.refreshToken())
+                      .pipe(
+                        map(_ => data)
+                      )
+                  })
+              );
+        } else {
+          return this.http
+              .get(environment.apiUrl + url, { headers: queryHeaders, observe: 'response' })
+              .pipe(
+                  map<HttpResponse<any>, any>(response => {
+                      response.body.data.rootPath = rootPath;
+                      return response.body.data;
+                  })
+              );
+        }
     }
 
     updateCurrentUser(user: User) {
@@ -386,22 +412,44 @@ export class AuthenticationService {
     }
 
     logout(): Observable<any> {
-        return from(this.afAuth.auth.signOut().then(a => {
-            console.log('cerro sesion', a);
+      // console.log('USUARIO',this.afAuth.auth.currentUser );
+      // console.log('USUARIO COND', !!this.afAuth.auth.currentUser );
+      //   if (!!this.afAuth.auth.currentUser) {
+      //     console.log('cerrando sesion!!');
+          return from(this.afAuth.auth.signOut().then(a => {
+              console.log('cerro sesion', a);
+          }, err => console.log(err)));
+        // } else {
+        //   console.log('no cerro sesion');
+        //   return of(true);
+        // }
+    }
 
-        }, err => console.log(err)));
+    verifyAndUpdateToken() {
+      console.log('tratando de refrescar token', this.afAuth.auth.currentUser.displayName);
+      return from(this.afAuth.auth.currentUser.getIdToken()
+        .then((idToken) => {
+            const u: User = {
+                token: idToken,
+            }
+            this.updateCurrentUser(u);
+        })
+        .catch(e => console.log('ERRRPRPPPPPPOOOOR', e)));
     }
 
     refreshToken(): Promise<any> {
         console.log('tratando de refrescar token', this.afAuth);
         if (!!this.afAuth.auth && !!this.afAuth.auth.currentUser) {
+          console.log('tratando de refrescar token dentro del if', this.afAuth);
             return this.afAuth.auth.currentUser.getIdToken(true)
                 .then((idToken) => {
+                  console.log(idToken);
                     const u: User = {
                         token: idToken,
                     }
                     this.updateCurrentUser(u);
-                });
+                })
+                .catch(e => console.log('error', e))
 
         } else {
             return new Promise((res, rej) => rej())
