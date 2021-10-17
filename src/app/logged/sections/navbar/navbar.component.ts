@@ -59,11 +59,11 @@ export class NavbarComponent implements OnInit {
    }
 
    showProfile() {
-      this.dialogRef.open(ProfileDialogComponent)
+      this.dialogRef.open(ProfileDialogComponent).updateSize('40vw')
    }
 
    changePassword() {
-      this.dialogRef.open(ChangePasswordDialogComponent)
+      this.dialogRef.open(ChangePasswordDialogComponent).updateSize('40vw')
    }
 
    logout() {

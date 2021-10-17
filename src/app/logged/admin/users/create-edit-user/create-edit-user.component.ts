@@ -40,7 +40,9 @@ export class CreateEditUserComponent implements OnInit {
     REMAINING_COPIES: 'remaining_copies', // For ScholarShip
     COURSE_SEARCHING: 'course_searching',
     AVAILABLE_STORAGE: 'available_storage',
-    STORAGE_USED: 'storage_used'
+    STORAGE_USED: 'storage_used',
+    DNI: 'dni',
+    BALANCE: 'balance'
   };
   @ViewChild('alertError', { static: true }) alertError;
   messageError: string;
@@ -90,7 +92,7 @@ export class CreateEditUserComponent implements OnInit {
     const genericForm = this.formBuilder.group({
       [this.NAMES_FORM_POST_USER.NAME]: [{ value: !!user && !!user.display_name ? user.display_name : '', disabled: false }, [CustomValidators.required("Nombre de usuario requerido")]],
       [this.NAMES_FORM_POST_USER.EMAIL]: [{ value: !!user && !!user.email ? user.email : '', disabled: !!user }, [CustomValidators.required("Email requerido"), CustomValidators.email('Formato de email inválido')]],
-      [this.NAMES_FORM_POST_USER.PASSWORD]: [{ value: '', disabled: !!user }, [CustomValidators.required("Contraseña requerida"), CustomValidators.password('La contraseña debe cumplir con lo siguiente: un mínimo de 8 caracteres, una mayúscula, un número y un caracter especial')]],
+      [this.NAMES_FORM_POST_USER.PASSWORD]: [{ value: '', disabled: true }, [CustomValidators.required("Contraseña requerida"), CustomValidators.password('La contraseña debe cumplir con lo siguiente: un mínimo de 8 caracteres, una mayúscula, un número y un caracter especial')]],
     });
     return (typeUserSelected) => {
       const handleAdmin = () => {
@@ -105,13 +107,17 @@ export class CreateEditUserComponent implements OnInit {
       }
       const handleStudent = () => {
         const specificForm = this.formBuilder.group({
-          ...genericForm.controls
+          ...genericForm.controls,
+          [this.NAMES_FORM_POST_USER.DNI]: [!!user && !!user.dni ? Number(user.dni): '', [CustomValidators.minValue(1, 'Debe ser un valor mayor a 0'), CustomValidators.minLength(1, "Valor del parámetro requerido")]],
+          [this.NAMES_FORM_POST_USER.BALANCE]: [!!user && !!user.balance ? Number(user.balance): '', [CustomValidators.minValue(1, 'Debe ser un valor mayor a 0'), CustomValidators.minLength(1, "Valor del parámetro requerido")]]
         })
         return specificForm;
       }
       const handleScholarShip = () => {
         const specificForm = this.formBuilder.group({
           ...genericForm.controls,
+          [this.NAMES_FORM_POST_USER.DNI]: [!!user && !!user.dni ? Number(user.dni): '', [CustomValidators.minValue(1, 'Debe ser un valor mayor a 0'), CustomValidators.minLength(1, "Valor del parámetro requerido"), CustomValidators.required("El valor es obligatorio, debe ser un valor mayor a 0")]],
+          [this.NAMES_FORM_POST_USER.BALANCE]: [!!user && !!user.balance ? Number(user.balance): '', [CustomValidators.minValue(1, 'Debe ser un valor mayor a 0'), CustomValidators.minLength(1, "Valor del parámetro requerido")]],
           [this.NAMES_FORM_POST_USER.AVAILABLE_COPIES]: [!!user ? user.available_copies: '', [CustomValidators.minValue(1, 'Debe ser un valor mayor a 0'), CustomValidators.minLength(1, "Valor del parámetro requerido"), CustomValidators.required("El valor es obligatorio, debe ser un valor mayor a 0")]],
           [this.NAMES_FORM_POST_USER.REMAINING_COPIES]: [!!user ? user.remaining_copies : '', [CustomValidators.minValue(0, 'Debe ser un valor igual o mayor a 0'), CustomValidators.minLength(1, "Valor del parámetro requerido")]],
         })

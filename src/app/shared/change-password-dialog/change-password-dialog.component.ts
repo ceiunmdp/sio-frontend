@@ -51,7 +51,7 @@ export class ChangePasswordDialogComponent implements OnInit {
       this.isSent = true;
       this.authService.getAndUpdateUserData().toPromise()
       .then(() => {
-        this.dialogRef.close();
+        
       })
       .catch(err => {this.handleErrors(err); this.dialogRef.close(); this.isLoadingPatchUser = false})
       } , e => { this.handleErrors(e); this.dialogRef.close(); this.isLoadingPatchUser = false }) 

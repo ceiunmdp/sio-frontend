@@ -58,8 +58,8 @@ export class DniDialogComponent implements OnInit {
       .then(() => {
         this.dialogRef.close();
       })
-      .catch(err => {this.handleErrors(err); this.dialogRef.close(); this.isLoadingPatchStudent = false})
-      } , e => {this.handleErrors(e); this.dialogRef.close(); this.isLoadingPatchStudent = false})
+      .catch(err => {this.handleErrors(err); this.isLoadingPatchStudent = false})
+      } , e => {this.handleErrors(e); this.isLoadingPatchStudent = false})
   }
 
   handleErrors(err: HttpErrorResponse) {
