@@ -10,6 +10,7 @@ import {
 } from '@angular/router';
 import { Routes } from '../_routes/routes';
 import { AuthenticationService } from '../_services/authentication.service';
+import {takeWhile} from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -17,12 +18,15 @@ import { AuthenticationService } from '../_services/authentication.service';
 export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
     constructor(private authService: AuthenticationService, private router: Router) { }
 
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
         const url: string = state.url;
-        return this.checkLogin(url);
+        return this.authService.isSetFB$.pipe(
+          takeWhile(isSet => !isSet),
+        ).toPromise().then(() => this.checkLogin(url));
     }
 
-    canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+
+    canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
         return this.canActivate(route, state);
     }
 

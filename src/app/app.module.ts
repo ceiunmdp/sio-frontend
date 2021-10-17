@@ -22,7 +22,8 @@ import { JwtInterceptor } from "./_helpers/jwt.interceptor";
 import { AlertErrorChildComponent } from "./_utils/forms/alert-error/alert-error-child/alert-error-child.component";
 import { AlertErrorComponent } from "./_utils/forms/alert-error/alert-error.component";
 import { UtilsModule } from "./_utils/utils.module";
-
+import {LottieModule} from 'ngx-lottie';
+import player from 'lottie-web';
 // import * as firebase from 'firebase/app';
 // import * as firebaseui from 'firebaseui';
 registerLocaleData(localeEsAr, "es-Ar");
@@ -53,6 +54,7 @@ export function fbfunction() { return 'my_factory' };
       UtilsModule,
       DniDialogModule,
       ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+      LottieModule.forRoot({ player: () => player }),
       // NgxAuthFirebaseUIModule.forRoot(firebaseConfig),
       NgxAuthFirebaseUIModule.forRoot(firebaseConfig, fbfunction,
          {

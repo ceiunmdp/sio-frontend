@@ -76,11 +76,12 @@
 </div>
 
 <div *ngIf="this.step == STEPS.LIST_FILES" fxFlex="100">
-   <cei-card-table [metaData]="this.metaDataFiles" [title]="'Gestión de archivos'" (page)="onPaginatorFileEvent($event)">
+  <button mat-raised-button color="primary" matTooltip="Volver" (click)="this.backToListCourses()" fxLayoutAlign="center center">
+    <mat-icon>keyboard_arrow_left</mat-icon>
+    Volver
+  </button>
+   <cei-card-table class="mt-3" [metaData]="this.metaDataFiles" [title]="'Gestión de archivos'" (page)="onPaginatorFileEvent($event)">
        <div controlButtons fxLayout="row" fxLayoutGap="15px">
-            <button mat-icon-button matTooltip="Volver" (click)="this.backToListCourses()">
-                <mat-icon>keyboard_arrow_left</mat-icon>
-            </button>   
             <button mat-icon-button matTooltip="Refrescar la búsqueda" (click)="this.onRefreshFiles()">
                <mat-icon>refresh</mat-icon>
            </button>

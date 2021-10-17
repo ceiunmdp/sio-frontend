@@ -45,9 +45,17 @@ export class AuthenticationService {
     // tslint:disable-next-line: variable-name
     private _redirectUrl: string;
 
+    private _isSetFB: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public readonly isSetFB$: Observable<boolean> = this._isSetFB.asObservable();
+
     constructor(private http: HttpClient, private restService: RestUtilitiesService, private router: Router, private afAuth: AngularFireAuth, private generalService: GeneralService) {
         this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
         this.currentUser$ = this.currentUserSubject.asObservable();
+        this._isSetFB.next(false);
+        this.afAuth.authState.subscribe(user => {
+          console.log('Se finalizó de setear FB', user);
+          this._isSetFB.next(true);
+        });
     }
 
     getUsers(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<User[]>> {
@@ -275,20 +283,21 @@ export class AuthenticationService {
     }
 
     setDarkTheme(isDarkTheme: boolean): Observable<any> {
-        const queryHeaders = new HttpHeaders().append(
-            "Content-Type",
-            "application/json"
-        );
-        return this.http
-            .patch<any>(`${environment.apiUrl}${API.USER}`, {darkTheme: isDarkTheme}, {
-                headers: queryHeaders,
-                observe: "response"
-            })
-            .pipe<any>(
-                map<HttpResponse<any>, any>(response => {
-                    return response.body;
-                })
-            );
+      this.updateCurrentUser({dark_theme: isDarkTheme});
+      const queryHeaders = new HttpHeaders().append(
+          "Content-Type",
+          "application/json"
+      );
+      return this.http
+          .patch<any>(`${environment.apiUrl}${API.USER}`, {darkTheme: isDarkTheme}, {
+              headers: queryHeaders,
+              observe: "response"
+          })
+          .pipe<any>(
+              map<HttpResponse<any>, any>(response => {
+                  return response.body;
+              })
+          );
     }
 
     get currentUserValue(): User {
@@ -414,6 +423,18 @@ export class AuthenticationService {
         //   console.log('no cerro sesion');
         //   return of(true);
         // }
+    }
+
+    verifyAndUpdateToken() {
+      console.log('tratando de refrescar token', this.afAuth.auth.currentUser.displayName);
+      return from(this.afAuth.auth.currentUser.getIdToken()
+        .then((idToken) => {
+            const u: User = {
+                token: idToken,
+            }
+            this.updateCurrentUser(u);
+        })
+        .catch(e => console.log('ERRRPRPPPPPPOOOOR', e)));
     }
 
     refreshToken(): Promise<any> {
