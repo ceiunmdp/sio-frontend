@@ -191,6 +191,7 @@ export class BottomMoneyTransferComponent implements OnInit {
      private _bottomSheetRef: MatBottomSheetRef<BottomMoneyTransferComponent>,
      @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
      private fb: FormBuilder,
+     private authService: AuthenticationService,
      private movementsService: MovementService
   ) {
      this.transferMoneyUser = data.toUser;
@@ -227,7 +228,7 @@ export class BottomMoneyTransferComponent implements OnInit {
                  icon: "success",
                  showConfirmButton: true,
                  confirmButtonText: "Continuar",
-              }).then(res => this.onConfirmSwal())
+              }).then(res => {this.onConfirmSwal(); this.authService.getAndUpdateUserData().toPromise()})
            }).catch(e => {
               Swal.fire({
                  title: "Carga de saldo",

@@ -172,8 +172,12 @@ export class FileManagementComponent implements OnInit {
           showConfirmButton: true,
           confirmButtonText: 'Continuar'
         };
-        Swal.fire(swalOptions);
-        this.onRefreshFiles();
+        Swal.fire(swalOptions)
+        .then(() => {
+          this.authService.getAndUpdateUserData().toPromise()
+          this.onRefreshFiles();
+        });
+        
       },
       err => {
         this.handleErrors(err)
@@ -192,7 +196,10 @@ export class FileManagementComponent implements OnInit {
           confirmButtonText: 'Continuar'
         };
         Swal.fire(swalOptions)
-        this.onRefreshFiles();
+        .then(() => {
+          this.authService.getAndUpdateUserData().toPromise()
+          this.onRefreshFiles();
+        });
       },
       err => {
         this.handleErrors(err)

@@ -1,7 +1,7 @@
-import {DatePipe} from "@angular/common";
-import {HttpErrorResponse} from "@angular/common/http";
-import {ChangeDetectorRef, Component, Inject, OnInit, ViewChild} from "@angular/core";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import { DatePipe } from "@angular/common";
+import { HttpErrorResponse } from "@angular/common/http";
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from "@angular/core";
+import { FormBuilder, FormGroup } from "@angular/forms";
 import {
   MatBottomSheet, MatBottomSheetRef,
 
@@ -11,20 +11,20 @@ import {
 
   MAT_BOTTOM_SHEET_DATA
 } from "@angular/material";
-import {Router} from "@angular/router";
-import {AnimationOptions} from "ngx-lottie";
-import {FILE_STATES} from "src/app/_fileStates/states";
-import {OrderCampus} from "src/app/_models/orders/orderCampus";
-import {Printer} from "src/app/_models/printer";
-import {ORDER_STATES} from "src/app/_orderStates/states";
-import {RING_STATES} from "src/app/_ringStates/states";
-import {GeneralService} from "src/app/_services/general.service";
-import {HttpErrorResponseHandlerService} from "src/app/_services/http-error-response-handler.service";
-import {CustomValidators} from "src/app/_validators/custom-validators";
-import {OrdersService} from "../../student/orders/orders.service";
-import {SedeService} from "../sede.service";
-import {WsOrdersService} from "./ws-orders.service";
+import { Router } from "@angular/router";
+import { AnimationOptions } from "ngx-lottie";
+import { FILE_STATES } from "src/app/_fileStates/states";
+import { OrderCampus } from "src/app/_models/orders/orderCampus";
+import { Printer } from "src/app/_models/printer";
+import { ORDER_STATES } from "src/app/_orderStates/states";
+import { RING_STATES } from "src/app/_ringStates/states";
+import { GeneralService } from "src/app/_services/general.service";
+import { HttpErrorResponseHandlerService } from "src/app/_services/http-error-response-handler.service";
+import { CustomValidators } from "src/app/_validators/custom-validators";
 import Swal from 'sweetalert2';
+import { OrdersService } from "../../student/orders/orders.service";
+import { SedeService } from "../sede.service";
+import { WsOrdersService } from "./ws-orders.service";
 
 // Bottom sheet component
 @Component({
@@ -127,7 +127,7 @@ export class BottomSheetFiles implements OnInit {
     }, error => {}, () => { });
    }
 
-   createPrinterForm(): FormGroup {
+  createPrinterForm(): FormGroup {
     return this.formBuilder.group({
       [this.PRINTER_NAME]: [this.printers[0].id.toString(), [CustomValidators.required("Por favor elija una opción")]],
     });

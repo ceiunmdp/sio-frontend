@@ -186,7 +186,7 @@ export class OrderDetailComponent implements OnInit {
         showLoaderOnConfirm: true,
         preConfirm: () => {
           return this.doCancel()
-            .then(() => this.getOrder(true));
+            .then(() => {this.getOrder(true); this.authService.getAndUpdateUserData().toPromise()});
         },
         allowOutsideClick: () => !Swal.isLoading()
       })
