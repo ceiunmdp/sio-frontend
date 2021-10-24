@@ -2,9 +2,12 @@
    <span class="mat-body-2">Dark theme</span>
 </mat-slide-toggle> -->
 <div fxLayoutAlign="start center" fxLayoutGap="20px">
-  <button mat-icon-button [matMenuTriggerFor]="menuTheme">
-     <mat-icon matBadge="15" matBadgeColor="warn">brush</mat-icon>
+  <button mat-button>
+    <mat-icon (click)="toggleDarkTheme(!isDarkTheme)">{{ isDarkTheme ? 'light_mode':'nightlight_round'}}</mat-icon>
   </button>
+  <!-- <button mat-icon-button [matMenuTriggerFor]="menuTheme">
+     <mat-icon matBadge="15" matBadgeColor="warn">brush</mat-icon>
+  </button> -->
   <div *ngIf="this.authService.currentUserValue?.type == this.userType.BECADO" fxLayoutAlign="center center" matTooltip="Copias disponibles por beca">
     <mat-icon>add_shopping_cart</mat-icon>
     <span class="mat-h4 mb-0 mls-1">{{this.authService.currentUserValue.remaining_copies}}</span>

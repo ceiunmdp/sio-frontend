@@ -4,9 +4,9 @@
         <mat-card-subtitle>{{!!this.file ? this.file.name : ''}}</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-        <form fxFlex="100" class="mts-3" (submit)="onSubmitFileForm()"
+        <form fxFlex="100" (submit)="onSubmitFileForm()"
             *ngIf="!!this.fileForm ; else loadingDiv" fxLayoutGap="2%" fxFlex="100"
-            class=" mxs-2" [formGroup]="fileForm" fxLayout="column">
+            class="mts-4 mxs-4" [formGroup]="fileForm" fxLayout="column">
             <cei-text-input [name]="this.NAMES_FORM_PATCH_FILE.FILE_NAME" [form]="this.fileForm"
             [placeholder]="'Nombre del archivo'">
             </cei-text-input>

@@ -18,6 +18,7 @@ import Swal from 'sweetalert2';
 import { AdminService } from '../../../_services/admin.service';
 import { GeneralService } from '../../../_services/general.service';
 import { OrdersService } from '../../../logged/student/orders/orders.service';
+import {AnimationOptions} from 'ngx-lottie';
 
 export interface FileUpload {
   name: string;
@@ -93,6 +94,11 @@ export class FilesComponent implements OnInit {
   courses: any[] = [];
   @ViewChild('alertError', { static: true }) alertError;
   @ViewChild('responseSwal', { static: false }) private responseSwal: SwalComponent;
+  noOrdersLottie: AnimationOptions = {
+      path: 'assets/animations/empty-orders.json',
+      loop: false
+   };
+   isUploadingFiles: boolean;
 
   constructor(public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService,private formBuilder: FormBuilder, private adminService: AdminService, private orderService: OrdersService, public generalService: GeneralService) { }
 
@@ -190,8 +196,14 @@ export class FilesComponent implements OnInit {
           }, 400)
         })
       ).subscribe(
-        (data) => { this.metaDataFiles = data.data.meta; this.linksFiles = data.data.links; this.dataSourceFiles.data = data.data.items; res(data.data.items); this.step = this.STEPS.LIST_FILES;},
-        (e) => { this.handleErrors(e); rej(e) },
+        (data) => {
+          this.metaDataFiles = data.data.meta;
+          this.linksFiles = data.data.links;
+          this.dataSourceFiles.data = data.data.items;
+          // this.dataSourceFiles.data = [];
+          res(data.data.items); this.step = this.STEPS.LIST_FILES;
+        },
+        (e) => { this.handleErrors(e); rej(e); },
       )
     })
     return from(promise);
@@ -247,6 +259,7 @@ export class FilesComponent implements OnInit {
   }
 
   uploadFiles() {
+    this.isUploadingFiles = true;
     this.adminService.uploadFiles(this.selectedCourses.join(","), Array.from(this.files.values())).subscribe(
       (message) => {
         const swalOptions = {
@@ -261,7 +274,8 @@ export class FilesComponent implements OnInit {
       },
       err => {
         this.handleErrors(err)
-      }
+      },
+      () => this.isUploadingFiles = false
     );
   }
 

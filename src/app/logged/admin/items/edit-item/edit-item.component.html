@@ -1,24 +1,24 @@
 <mat-card>
     <mat-card-header>
-        <mat-card-title>Editar Artículo</mat-card-title>
-        <mat-card-subtitle>{{!!this.item ? this.item.name : ''}}</mat-card-subtitle>
+        <mat-card-title>Edición de artículo</mat-card-title>
+        <mat-card-subtitle *ngIf="this.item.name" class="mts-3">Artículo seleccionado: {{this.item.name}}</mat-card-subtitle>
     </mat-card-header>
-    <mat-card-content>
-        <form fxFlex="100" class="mts-3" (submit)="onSubmitItemForm()"
+    <mat-card-content class="mxs-5">
+        <form fxFlex="100" class="mts-5 mxs-2" (submit)="onSubmitItemForm()"
             *ngIf="!!this.itemForm ; else loadingDiv" fxLayoutGap="2%" fxFlex="100"
-            class=" mxs-2" [formGroup]="itemForm" fxLayout="column">
-            <cei-number-input [name]="this.NAMES_FORM_PATCH_ITEM.ITEM_PRICE" [form]="this.itemForm"
-            [placeholder]="'Precio del artículo'" [minValue] = 0>
+            [formGroup]="itemForm" fxLayout="column">
+            <cei-number-input [prefix]="'$'" [name]="this.NAMES_FORM_PATCH_ITEM.ITEM_PRICE" [form]="this.itemForm"
+            [placeholder]="'Precio del artículo'">
             </cei-number-input>
             <!-- Actions Buttons -->
-            <div fxLayoutAlign="space-around stretch" class="mts-5">
-                <button mat-raised-button [color]="'warn'" [disabled]="isLoadingPatchItem"
+            <div fxLayoutAlign="space-around stretch" class="mts-5 mbs-3">
+                <button mat-raised-button [color]="'warn'" fxFlex="35" [disabled]="isLoadingPatchItem"
                     (click)="this.onClickCancel()" type="button">
                     <span>
                         Cancelar
                     </span>
                 </button>
-                <button mat-raised-button [color]="'primary'" [disabled]="!itemForm.valid || this.isLoadingPatchItem"
+                <button mat-raised-button [color]="'primary'" fxFlex="35" [disabled]="!itemForm.valid || this.isLoadingPatchItem"
                     type="submit">
                     <mat-icon *ngIf="!itemForm.valid; else saveIcon">lock</mat-icon>
                     <ng-template #saveIcon>

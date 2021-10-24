@@ -1,9 +1,9 @@
 <mat-card>
-    <mat-card-header>
+    <mat-card-header class="mts-2 mbs-5">
         <mat-card-title>{{!!this.course ? 'Editar Materia' : 'Crear Materia'}}</mat-card-title>
-        <mat-card-subtitle>{{!!this.course ? this.course.name : ''}}</mat-card-subtitle>
+        <mat-card-subtitle class="mts-3" *ngIf="!!this.course">Materia seleccionada: {{this.course.name}}</mat-card-subtitle>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content class="mxs-4">
         <form fxFlex="100" class="mts-3" (submit)="onSubmitCourseForm()"
             *ngIf="!!this.courseForm && !!this.careers && !!this.years ; else loadingDiv" fxLayoutGap="2%" fxFlex="100"
             class=" mxs-2" [formGroup]="courseForm" fxLayout="column">
@@ -12,7 +12,7 @@
             </cei-text-input>
             <!-- Relations FormArray -->
             <div fxFlex="100">
-                <div class="separator separator-center mts-2" fxLayoutAlign="center center">
+                <div class="separator separator-center mts-2 mbs-3" fxLayoutAlign="center center">
                     <div class="mx-2" fxLayoutAlign="center center">
                         <mat-icon class="text-primary mrs-1">shuffle</mat-icon>
                         <span class="text-secondary m-0">Relaciones de la materia</span>
@@ -21,9 +21,9 @@
                 <div class="mts-2" fxLayout="row" fxLayoutAlign="space-between center"
                     [formArrayName]="this.NAMES_FORM_POST_COURSE.RELATIONS"
                     *ngFor="let relations of this.relationsFormArray['controls']; let i = index;">
-                    <div fxFlex="100" [formGroupName]="i" fxLayout="row" fxLayoutGap="15px">
+                    <div fxFlex="100" [formGroupName]="i" fxLayout="row" fxLayoutGap="35px">
                         <!-- Select relation -->
-                        <cei-select-input fxFlex="1 1 auto" [name]="this.NAMES_FORM_POST_COURSE.relations.RELATION_ID"
+                        <cei-select-input fxFlex="1 1 30" [name]="this.NAMES_FORM_POST_COURSE.relations.RELATION_ID"
                             [form]="this.relationsFormArray['controls'][i]" [placeholder]="'Año'"
                             [elements]="this.getYearsElements(i)">
                         </cei-select-input>
@@ -41,7 +41,6 @@
                                 <mat-icon>remove_circle</mat-icon>
                             </button>
                         </div>
-
                     </div>
                 </div>
 
@@ -53,14 +52,14 @@
                 </div>
             </div>
             <!-- Actions Buttons -->
-            <div fxLayoutAlign="space-around stretch" class="mts-5">
-                <button mat-raised-button [color]="'warn'" [disabled]="isLoadingPostCourse"
+            <div fxLayoutAlign="space-around stretch" class="mts-5 mbs-3">
+                <button mat-raised-button fxFlex="35" [color]="'warn'" [disabled]="isLoadingPostCourse"
                     (click)="this.onClickCancel()" type="button">
                     <span>
                         Cancelar
                     </span>
                 </button>
-                <button mat-raised-button [color]="'primary'" [disabled]="!courseForm.valid || this.isLoadingPostCourse"
+                <button mat-raised-button fxFlex="35" [color]="'primary'" [disabled]="!courseForm.valid || this.isLoadingPostCourse"
                     type="submit">
                     <mat-icon *ngIf="!courseForm.valid; else saveIcon">lock</mat-icon>
                     <ng-template #saveIcon>

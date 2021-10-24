@@ -10,7 +10,8 @@ import {HomeEstudianteComponent} from './home-estudiante/home-estudiante.compone
 import { BottomMoneyTransferComponent, MoneyTransferComponent } from './money-transfer/money-transfer.component';
 import {OrdersModule} from './orders/orders.module';
 import { StudentRoutingModule } from './student-routing.module';
-
+import {LottieModule} from 'ngx-lottie';
+import player from 'lottie-web';
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import { StudentRoutingModule } from './student-routing.module';
     UtilsModule,
     MatIconModule,
     SweetAlert2Module.forRoot(),
+    LottieModule.forRoot({ player: () => player }),
     StudentRoutingModule
   ],
   entryComponents: [BottomMoneyTransferComponent]

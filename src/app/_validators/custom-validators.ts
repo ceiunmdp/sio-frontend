@@ -45,7 +45,7 @@ export class CustomValidators {
    static maxLength(maxLength: number, message: string): ValidatorFn {
       return (control: AbstractControl): { [key: string]: any } | null => {
          if (typeof control.value !== "number") {
-            return control && control.value.trim().length > maxLength
+            return control && control.value && control.value.trim().length > maxLength
                ? {
                   maxLength: message
                }

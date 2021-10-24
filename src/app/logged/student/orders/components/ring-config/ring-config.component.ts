@@ -27,7 +27,9 @@ export class RingConfigComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log('SE PRODUJO UN CAMBIO', changes);
     if (changes.configFiles && changes.configFiles.currentValue && changes.configFiles.currentValue.length > 0) {
+      this.tabs = [{files: [], quantityPages: 0, ringType: null}];
       this.configFiles = changes.configFiles.currentValue.map(configFile => {
         const _configFile = JSON.parse(JSON.stringify(configFile));
 

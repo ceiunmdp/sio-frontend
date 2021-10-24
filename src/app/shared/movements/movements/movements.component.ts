@@ -14,6 +14,7 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
 import { GeneralService } from 'src/app/_services/general.service';
 import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import { MovementService } from 'src/app/_services/movement.service';
+import {AnimationOptions} from 'ngx-lottie';
 
 export enum movementType {
   ALL = 'Todos los movimientos',
@@ -55,6 +56,10 @@ export class MovementsComponent implements OnInit {
   fb: FilterBuilder;
   @ViewChild('alertError', { static: true }) alertError;
   messageError: string;
+  noOrdersLottie: AnimationOptions = {
+      path: 'assets/animations/empty-orders.json',
+      loop: false
+   };
 
   constructor(public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private authenticationService: AuthenticationService, private movementService: MovementService, public generalService: GeneralService) { }
 

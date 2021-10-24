@@ -122,7 +122,7 @@ export class FilesConfigComponent implements OnInit {
     return this.formBuilder.group({
       [this.FILE_ID]: [file.id],
       [this.FILE]: [file],
-      [this.COPIES]: [1],
+      [this.COPIES]: [1, [CustomValidators.required('Campo requerido'), CustomValidators.minValue(1, 'Al menos debes elegir una copia')] ],
       [this.IS_SAME_CONFIG]: [true],
       [this.CONFIGURATIONS]: this.formBuilder.array([this.createConfigItemForm(file)]),
     })
