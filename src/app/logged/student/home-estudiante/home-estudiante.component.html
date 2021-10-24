@@ -62,8 +62,8 @@
          <mat-card-subtitle><span class="mat-h3">Pedidos en curso</span></mat-card-subtitle>
       </mat-card-header>
       <mat-divider></mat-divider>
-      <mat-card-content>
-         <mat-list class="mx-3">
+      <mat-card-content class="mx-3">
+         <mat-list *ngIf="orders.length > 0; else noOrders">
             <mat-list-item *ngFor="let order of orders">
                <!-- <span fxFlex.gt-md="25" fxFlex.lt-lg="15">
                   <span fxHide="true" fxShow.gt-md>Pedido</span> #{{ order.id }}
@@ -102,6 +102,15 @@
                </button>
             </mat-list-item>
          </mat-list>
+         <ng-template #noOrders>
+           <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="start center">
+             <ng-lottie width="170px" [options]="noOrdersLottie"></ng-lottie>
+             <span>
+               No tenés pedidos en curso. Para realizar un nuevo pedido <a class="text-accent" [routerLink]="this.rootPath + [routes.NEW_ORDER]">hacé click acá</a>
+             </span>
+           </div>
+         </ng-template>
+
       </mat-card-content>
       <mat-card-footer>
          <!-- Para cargar saldo -->

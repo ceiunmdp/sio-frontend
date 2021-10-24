@@ -14,7 +14,8 @@ import {
    MatRadioModule,
    MatPaginatorModule,
    MatCheckboxModule,
-   MatTooltipModule
+   MatTooltipModule,
+   MatDividerModule
 } from "@angular/material";
 import { MatCardModule } from "@angular/material/card";
 import { MatInputModule } from "@angular/material/input";
@@ -95,6 +96,7 @@ export function playerFactory() {
       MatPaginatorModule,
       MatCheckboxModule,
       MatTooltipModule,
+      MatDividerModule,
       LottieModule.forRoot({ player: playerFactory })
    ],
    exports: [

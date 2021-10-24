@@ -53,7 +53,7 @@ export class MyOrdersComponent implements OnInit {
     public router: Router,
     private httpErrorResponseHandlerService: HttpErrorResponseHandlerService
   ) {
-    this.historicOrdersShow = this.router.getCurrentNavigation().extras.state ? this.router.getCurrentNavigation().extras.state.historicOrdersShow : null;
+    this.historicOrdersShow = this.router.getCurrentNavigation() && this.router.getCurrentNavigation().extras.state ? this.router.getCurrentNavigation().extras.state.historicOrdersShow : null;
   }
 
   ngOnInit() {

@@ -18,6 +18,7 @@ import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-re
 import { MovementService } from 'src/app/_services/movement.service';
 import { CustomValidators } from 'src/app/_validators/custom-validators';
 import Swal from 'sweetalert2';
+import {AnimationOptions} from 'ngx-lottie';
 
 @Component({
   selector: 'cei-money-transfer',
@@ -53,6 +54,10 @@ export class MoneyTransferComponent implements OnInit {
   allUsersCheckbox;
   @ViewChild('alertError', { static: true }) alertError;
   messageError: string;
+  noOrdersLottie: AnimationOptions = {
+      path: 'assets/animations/empty-orders.json',
+      loop: false
+   };
 
 
   constructor(

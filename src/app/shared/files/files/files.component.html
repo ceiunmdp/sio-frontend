@@ -46,28 +46,27 @@
     <form [formGroup]="filesForm" fxLayout="row wrap"
     fxLayoutAlign="center center" (submit)="this.uploadFiles()">
     <mat-card fxFlex="100">
-       <mat-card-header>
+       <mat-card-header class="mys-4">
           <mat-card-title>
-             <span class="my-4">
+             <span>
                 Añadir nuevo archivo
              </span>
           </mat-card-title>
        </mat-card-header>
-       <mat-card-content fxLayout="column">
-          <mat-divider [inset]="true"></mat-divider>
+       <mat-card-content fxLayout="column" class="mxs-5 mys-5">
           <ng-select [items]="this.courses" bindLabel="name" bindValue="id" labelForId="state" [multiple]="true"
              placeholder="Seleccione materias" [formControlName]="this.SUBJECT" (search)="onSearchCoursesForFiles($event)"
              [notFoundText]="'Búsqueda sin resultados'" (add)="this.addCourse($event)"
              (remove)="this.removeCourse($event)">
           </ng-select>
-          <cei-file-input [options]="this.pondOptions" [name]="this.FILES" [form]="this.filesForm"
+          <cei-file-input class="mys-3" [options]="this.pondOptions" [name]="this.FILES" [form]="this.filesForm"
              [files]="this.files"></cei-file-input>
        </mat-card-content>
-       <mat-card-actions>
-          <button type="button" (click)="this.backToListCourses()" fxFlex="50%" mat-raised-button color="warn">
+       <mat-card-actions class="mxs-5 mbs-5" fxLayoutGap="10%" fxLayoutAlign="center center">
+          <button type="button" (click)="this.backToListCourses()" fxFlex="35" mat-raised-button color="warn">
              Cancelar
           </button>
-          <button type="submit" fxFlex="50%" mat-raised-button color="accent" [disabled]="!this.filesForm.valid">
+          <button type="submit" fxFlex="35" mat-raised-button color="accent" [disabled]="!this.filesForm.valid || this.isUploadingFiles">
              Agregar archivos
           </button>
        </mat-card-actions>
@@ -80,53 +79,67 @@
     <mat-icon>keyboard_arrow_left</mat-icon>
     Volver
   </button>
-   <cei-card-table class="mt-3" [metaData]="this.metaDataFiles" [title]="'Gestión de archivos'" (page)="onPaginatorFileEvent($event)">
+   <cei-card-table class="mt-3" [metaData]="this.metaDataFiles" [title]="'Gestión de archivos'" [showPaginator]="this.dataSourceFiles.data.length > 0" (page)="onPaginatorFileEvent($event)">
        <div controlButtons fxLayout="row" fxLayoutGap="15px">
             <button mat-icon-button matTooltip="Refrescar la búsqueda" (click)="this.onRefreshFiles()">
                <mat-icon>refresh</mat-icon>
            </button>
        </div>
-       <cei-text-searching-input filterInputs fxFlex="100" [placeholder]="'Búsqueda rápida por materia'"
+       <cei-text-searching-input *ngIf="this.dataSourceFiles.data.length > 0" filterInputs fxFlex="100" [placeholder]="'Búsqueda rápida por materia'"
            [label]="'Ingrese el nombre del archivo'" [inputFilterValue]="this.inputFilterValueFiles"
            (onSearch)="this.inputFilterValueFiles = $event;this.onSearchFiles($event)">
        </cei-text-searching-input>
-       <table table fxFlex="100" mat-table *ngIf="!this.isLoadingGetFiles; else loadingDiv"
-           [dataSource]="dataSourceFiles">
-           <!-- courseName Column -->
-           <ng-container matColumnDef="fileName" sticky>
-               <th mat-header-cell *matHeaderCellDef>Nombre</th>
-               <td mat-cell *matCellDef="let file">
-                   {{ file.name }}
-               </td>
-           </ng-container>
-           <!-- actions Column -->
-           <ng-container matColumnDef="actions">
-               <th mat-header-cell *matHeaderCellDef></th>
-               <td mat-cell *matCellDef="let file">
-                   <div fxLayoutAlign="end">
-                       <button mat-icon-button
-                           (click)="this.generalService.stopPropagation($event);this.onClickEditFile(file)">
-                           <mat-icon class="text-secondary m-0 mat-icon-medium" matTooltip="Editar archivo">
-                               edit
-                           </mat-icon>
-                       </button>
-                       <button (click)="this.onClickDelete(file)" mat-icon-button>
-                       <mat-icon class="text-secondary m-0 mat-icon-medium" matTooltip="Eliminar archivo">
-                           delete
-                       </mat-icon>
-                   </button>
-                   </div>
-                   <!-- <swal #confirmDeleteSwal title="Eliminar archivo" text="¿Seguro que desea eliminar el archivo: {{
-                        file.name
-                        }}?" type="question" (confirm)="this.deleteFile(file)" [showCancelButton]="true"
-                    [confirmButtonText]="'Si'" [cancelButtonText]="'No'">
-                  </swal> -->
-               </td>
-           </ng-container>
-           <tr mat-header-row *matHeaderRowDef="displayedColumnsFiles; sticky: true"></tr>
-           <tr mat-row *matRowDef="let row; columns: displayedColumnsFiles" class="bg-on-hover">
-           </tr>
-       </table>
+       <ng-container table *ngIf="this.dataSourceFiles.data.length > 0">
+         <table fxFlex="100" mat-table *ngIf="!this.isLoadingGetFiles; else loadingDiv"
+             [dataSource]="dataSourceFiles">
+             <!-- courseName Column -->
+             <ng-container matColumnDef="fileName" sticky>
+                 <th mat-header-cell *matHeaderCellDef>Nombre</th>
+                 <td mat-cell *matCellDef="let file">
+                     {{ file.name }}
+                 </td>
+             </ng-container>
+             <!-- actions Column -->
+             <ng-container matColumnDef="actions">
+                 <th mat-header-cell *matHeaderCellDef></th>
+                 <td mat-cell *matCellDef="let file">
+                     <div fxLayoutAlign="end">
+                         <button mat-icon-button
+                             (click)="this.generalService.stopPropagation($event);this.onClickEditFile(file)">
+                             <mat-icon class="text-secondary m-0 mat-icon-medium" matTooltip="Editar archivo">
+                                 edit
+                             </mat-icon>
+                         </button>
+                         <button (click)="this.onClickDelete(file)" mat-icon-button>
+                         <mat-icon class="text-secondary m-0 mat-icon-medium" matTooltip="Eliminar archivo">
+                             delete
+                         </mat-icon>
+                     </button>
+                     </div>
+                     <!-- <swal #confirmDeleteSwal title="Eliminar archivo" text="¿Seguro que desea eliminar el archivo: {{
+                          file.name
+                          }}?" type="question" (confirm)="this.deleteFile(file)" [showCancelButton]="true"
+                      [confirmButtonText]="'Si'" [cancelButtonText]="'No'">
+                    </swal> -->
+                 </td>
+             </ng-container>
+             <tr mat-header-row *matHeaderRowDef="displayedColumnsFiles; sticky: true"></tr>
+             <tr mat-row *matRowDef="let row; columns: displayedColumnsFiles" class="bg-on-hover">
+             </tr>
+         </table>
+       </ng-container>
+       <div table *ngIf="!this.isLoadingGetFiles && this.dataSourceFiles.data.length === 0" fxLayout="column" fxLayoutAlign="center center" class="pys-5">
+          <h3>
+            No se encontraron archivos asociados a {{ this.selectedCourse.name }}
+          </h3>
+          <ng-lottie width="300px" [options]="noOrdersLottie"></ng-lottie>
+          <button mat-flat-button color="accent" (click)="this.displayAddFiles()">
+            Añadir nuevo archivo
+          </button>
+          <!-- <span class="text-secondary">
+            El listado se actualizará de manera automática cuando ingrese un nuevo pedido
+          </span> -->
+        </div>
    </cei-card-table>
 </div>
 

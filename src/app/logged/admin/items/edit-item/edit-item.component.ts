@@ -35,7 +35,7 @@ export class EditItemComponent implements OnInit {
     const names = this.NAMES_FORM_PATCH_ITEM;
 
     return this.formBuilder.group({
-      [names.ITEM_PRICE]: [!!item && !!item.price ? item.price : '', [CustomValidators.required("Precio de artículo requerido"), CustomValidators.minLength(0, "El precio debe ser mayor a 0")]]
+      [names.ITEM_PRICE]: [!!item && !!item.price ? item.price : '', [CustomValidators.required("Precio de artículo requerido"), CustomValidators.minValue(0, "El precio debe ser mayor a 0")]]
     });
   }
 

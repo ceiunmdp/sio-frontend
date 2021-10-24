@@ -8,6 +8,7 @@ import { Routes } from "src/app/_routes/routes";
 import { AuthenticationService } from "src/app/_services/authentication.service";
 import { USER_TYPES } from "src/app/_users/types";
 import { OrdersService } from "../orders/orders.service";
+import {AnimationOptions} from 'ngx-lottie';
 
 @Component({
    selector: "cei-home-estudiante",
@@ -22,6 +23,10 @@ export class HomeEstudianteComponent implements OnInit {
    isLoadingGetOrders = false;
    rootPath: string;
    public userType = USER_TYPES;
+   noOrdersLottie: AnimationOptions = {
+     path: 'assets/animations/empty-2.json',
+     loop: false
+   };
 
    constructor(public orderService: OrdersService, public authService: AuthenticationService) {}
 

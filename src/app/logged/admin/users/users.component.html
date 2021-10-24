@@ -21,14 +21,16 @@
                 more_vert
             </mat-icon>
         </div>
-        <div filterInputs fxLayout="row" fxFlex="80" fxLayoutAlign="space-between center" fxLayoutGap="5%">
-            <cei-text-searching-input fxFlex="100" [placeholder]="'Búsqueda rápida'"
+        <div filterInputs fxFlex="100" fxLayout="column" fxLayoutAlign="center">
+          <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5%">
+            <cei-text-searching-input [placeholder]="'Búsqueda rápida'" fxFlex="1 1 auto"
                 [label]="'Buscar por nombre de usuario o email'" [inputFilterValue]="this.inputFilterValue"
                 (onSearch)="this.inputFilterValue = $event;this.onGetUser()">
             </cei-text-searching-input>
-            <mat-checkbox [(ngModel)]="allUsersCheckbox" (change)="onGetUser()">
+            <mat-checkbox [disabled]="this.isLoadingGetUsers" [(ngModel)]="allUsersCheckbox" (change)="onGetUser()">
                 Incluir usuarios deshabilitados
             </mat-checkbox>
+          </div>
         </div>
         <ng-container table *ngIf="!this.isLoadingGetUsers; else loadingDiv">
             <table fxFlex="100" mat-table *ngIf="this?.dataSourceUsers?.data?.length > 0; else emptyTable"

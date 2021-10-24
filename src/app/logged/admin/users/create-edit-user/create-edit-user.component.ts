@@ -92,7 +92,7 @@ export class CreateEditUserComponent implements OnInit {
     const genericForm = this.formBuilder.group({
       [this.NAMES_FORM_POST_USER.NAME]: [{ value: !!user && !!user.display_name ? user.display_name : '', disabled: false }, [CustomValidators.required("Nombre de usuario requerido")]],
       [this.NAMES_FORM_POST_USER.EMAIL]: [{ value: !!user && !!user.email ? user.email : '', disabled: !!user }, [CustomValidators.required("Email requerido"), CustomValidators.email('Formato de email inválido')]],
-      [this.NAMES_FORM_POST_USER.PASSWORD]: [{ value: '', disabled: true }, [CustomValidators.required("Contraseña requerida"), CustomValidators.password('La contraseña debe cumplir con lo siguiente: un mínimo de 8 caracteres, una mayúscula, un número y un caracter especial')]],
+      [this.NAMES_FORM_POST_USER.PASSWORD]: [{ value: '', disabled: false }, [CustomValidators.required("Contraseña requerida"), CustomValidators.password('La contraseña debe cumplir con lo siguiente: un mínimo de 8 caracteres, una mayúscula, un número y un caracter especial')]],
     });
     return (typeUserSelected) => {
       const handleAdmin = () => {
@@ -101,7 +101,7 @@ export class CreateEditUserComponent implements OnInit {
       const handleCampusUser = () => {
         const specificForm = this.formBuilder.group({
           ...genericForm.controls,
-          [this.NAMES_FORM_POST_USER.CAMPUS]: [{value: !!user && !!user.campus && !!user.campus.id ? user.campus.id : '', disabled: true}, [CustomValidators.required("Sede requerida")]],
+          [this.NAMES_FORM_POST_USER.CAMPUS]: [{value: !!user && !!user.campus && !!user.campus.id ? user.campus.id : '', disabled: !!user}, [CustomValidators.required("Sede requerida")]],
         })
         return specificForm;
       }

@@ -1,5 +1,5 @@
 <div fxFlex="100">
-    <cei-card-table [metaData]="this.metaDataItems" [title]="'Listado de movimientos'" (page)="onPaginatorEvent($event)">
+    <cei-card-table [showPaginator]="this.dataSourceMovements.data.length > 0" [metaData]="this.metaDataItems" [title]="'Listado de movimientos'" (page)="onPaginatorEvent($event)">
         <div controlButtons fxLayout="row" fxLayoutGap="15px">
             <button mat-icon-button matTooltip="Refrescar la búsqueda" (click)="this.onRefresh()">
                 <mat-icon>refresh</mat-icon>
@@ -8,7 +8,7 @@
                 more_vert
             </mat-icon>
         </div>
-        <table table fxFlex="100" mat-table *ngIf="!this.isLoadingGetMovements; else loadingDiv"
+        <table table fxFlex="100" mat-table *ngIf="!this.isLoadingGetMovements && this.dataSourceMovements.data.length > 0; else loadingDiv"
             [dataSource]="dataSourceMovements">
             <!-- movementDate Column -->
             <ng-container matColumnDef="movementDate" sticky>
@@ -49,11 +49,23 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns" class="bg-on-hover">
             </tr>
         </table>
+        <div table *ngIf="this.dataSourceMovements.data.length === 0" fxLayout="column" fxLayoutAlign="center center" class="pys-5">
+          <ng-lottie width="300px" [options]="noOrdersLottie"></ng-lottie>
+          <div fxLayout="column" fxLayoutAlign="center center">
+            <h3>
+              {{ this.movementTypeSelected === this.movementsEnum.ALL ? 'Aún no se registraron movimientos en tu cuenta' : 'Aún no se registraron movimientos de este tipo en tu cuenta' }}
+            </h3>
+            <!-- <button mat-flat-button routerLink="{{ this.rootPath + ROUTES.NEW_ORDER }}" color="primary">
+              <mat-icon class="mrs-2">add</mat-icon>
+              <span>Solicitar nuevo pedido</span>
+            </button> -->
+          </div>
+        </div>
     </cei-card-table>
 </div>
 
 <ng-template #loadingDiv>
-    <app-spinner fxFlex="100" fxLayoutAlign="center start"></app-spinner>
+    <app-spinner *ngIf="this.isLoadingGetMovements" fxFlex="100" fxLayoutAlign="center start"></app-spinner>
 </ng-template>
 
 <mat-menu #menuSelect="matMenu">
