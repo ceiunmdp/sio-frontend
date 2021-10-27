@@ -62,8 +62,8 @@ export class NavbarComponent implements OnInit {
       this.dialogRef.open(ProfileDialogComponent).updateSize('40vw')
    }
 
-   changePassword() {
-      this.dialogRef.open(ChangePasswordDialogComponent).updateSize('40vw')
+   changePassword(user) {
+      this.dialogRef.open(ChangePasswordDialogComponent, { data: {userId: user.id, userName: user.display_name, self: true} } ).updateSize('40vw', '55vh')
    }
 
    logout() {

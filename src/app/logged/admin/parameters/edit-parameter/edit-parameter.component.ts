@@ -36,7 +36,7 @@ export class EditParameterComponent implements OnInit {
   createParameterForm(parameter?: Parameter): FormGroup {
     const names = this.NAMES_FORM_PATCH_PARAMETER;
 
-    if (parameter.code = ParameterType.USERS_MINIMUM_BALANCE_ALLOWED) {
+    if (parameter.code === ParameterType.USERS_MINIMUM_BALANCE_ALLOWED) {
       return this.formBuilder.group({
         [names.PARAMETER_VALUE]: [!!parameter && !!parameter.value ? parameter.value : '', [CustomValidators.minLength(0, "Valor del parámetro requerido")]]
       });
@@ -60,7 +60,7 @@ export class EditParameterComponent implements OnInit {
   patchParameter(parameterId: string) {
     this.isLoadingPatchParameter = true;
     let value = this.parameterForm.value.value
-    if (this.parameter.code == ParameterType.USERS_PROFESSORSHIPS_INITIAL_AVAILABLE_STORAGE || this.parameter.code == ParameterType.FILES_MAX_SIZE_ALLOWED)  {
+    if (this.parameter.code === ParameterType.USERS_PROFESSORSHIPS_INITIAL_AVAILABLE_STORAGE || this.parameter.code === ParameterType.FILES_MAX_SIZE_ALLOWED)  {
         value = this.megaBytesToBytes(this.parameterForm.value.value)
     }
     this.adminService.patchParameter({value : value}, parameterId).subscribe(response => {

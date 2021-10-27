@@ -1,9 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource, PageEvent } from '@angular/material';
+import { MatDialog, MatDialogRef, MatTableDataSource, PageEvent } from '@angular/material';
 import { Router } from '@angular/router';
 import { from, Observable, Subscription } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
+import { ChangePasswordDialogComponent } from 'src/app/shared/change-password-dialog/change-password-dialog.component';
 import { AND, FilterBuilder, OPERATORS, OR } from 'src/app/_helpers/filterBuilder';
 import { Pagination } from 'src/app/_models/pagination';
 import { LinksAPI, MetadataAPI, ResponseAPI } from 'src/app/_models/response-api';
@@ -53,6 +54,7 @@ export class UsersComponent implements OnInit {
     'role',
     'verified',
     'disabled',
+    'password'
   ];
   displayedStudentsColumns: string[] = [
     'selection',
@@ -62,7 +64,8 @@ export class UsersComponent implements OnInit {
     'verified',
     'disabled',
     'scholarship',
-    'actions'
+    'actions',
+    'password'
   ];
   displayedScholarshipsColumns: string[] = [
     'selection',
@@ -73,28 +76,32 @@ export class UsersComponent implements OnInit {
     'verified',
     'disabled',
     'scholarship',
-    'actions'
+    'actions',
+    'password'
   ];
   displayedAdminColumns: string[] = [
     'name',
     'email',
     'verified',
     'disabled',
-    'actions'
+    'actions',
+    'password'
   ];
   displayedCampusColumns: string[] = [
     'name',
     'email',
     'verified',
     'disabled',
-    'actions'
+    'actions',
+    'password'
   ];
   displayedProfessorshipsColumns: string[] = [
     'name',
     'email',
     'verified',
     'disabled',
-    'actions'
+    'actions',
+    'password'
   ];
 
   typeUserFilterSelected: typeUserFilter;
@@ -110,8 +117,9 @@ export class UsersComponent implements OnInit {
   allUsersCheckbox;
   @ViewChild('alertError', { static: true }) alertError;
   messageError: string;
+  changePasswordDialog: MatDialogRef<ChangePasswordDialogComponent>;
 
-  constructor(public generalService: GeneralService, public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private authService: AuthenticationService, private adminService: AdminService) { }
+  constructor(public generalService: GeneralService, public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private dialogRef: MatDialog, private authService: AuthenticationService, private adminService: AdminService) { }
 
   ngOnInit() {
     this.generalService.sendMessage({ title: 'Usuarios' })
@@ -231,6 +239,10 @@ export class UsersComponent implements OnInit {
         }).catch(err => this.handleErrors(err))
       }
     })
+  }
+
+  changePassword(user) {
+      this.dialogRef.open(ChangePasswordDialogComponent, { data: {userId: user.id, userName: user.display_name, self: false} } ).updateSize('40vw', '55vh')
   }
 
   onChangeScholarshipUser(user) {

@@ -92,7 +92,7 @@ export class CreateEditUserComponent implements OnInit {
     const genericForm = this.formBuilder.group({
       [this.NAMES_FORM_POST_USER.NAME]: [{ value: !!user && !!user.display_name ? user.display_name : '', disabled: false }, [CustomValidators.required("Nombre de usuario requerido")]],
       [this.NAMES_FORM_POST_USER.EMAIL]: [{ value: !!user && !!user.email ? user.email : '', disabled: !!user }, [CustomValidators.required("Email requerido"), CustomValidators.email('Formato de email inválido')]],
-      [this.NAMES_FORM_POST_USER.PASSWORD]: [{ value: '', disabled: false }, [CustomValidators.required("Contraseña requerida"), CustomValidators.password('La contraseña debe cumplir con lo siguiente: un mínimo de 8 caracteres, una mayúscula, un número y un caracter especial')]],
+       [this.NAMES_FORM_POST_USER.PASSWORD]: [{ value: '', disabled: false }, [CustomValidators.required("Contraseña requerida"), CustomValidators.password('La contraseña debe cumplir con lo siguiente: un mínimo de 8 caracteres, una mayúscula, un número y un caracter especial')]]
     });
     return (typeUserSelected) => {
       const handleAdmin = () => {
@@ -179,10 +179,10 @@ export class CreateEditUserComponent implements OnInit {
         resourceUrl$ = !this.user ? this.authService.postAdmin(body) : this.authService.patchAdmin(body, this.user.id);
         break;
       case typeUserFilter.CAMPUS_USER:
-        resourceUrl$ = !this.user ? this.authService.postCampusUser(body) : this.authService.patchCampusUser({display_name: body.display_name, password: body.password}, this.user.id);
+        resourceUrl$ = !this.user ? this.authService.postCampusUser(body) : this.authService.patchCampusUser({display_name: body.display_name}, this.user.id);
         break;
       case typeUserFilter.PROFESSOR_SHIP:
-        resourceUrl$ = !this.user ? this.authService.postProfessorShip(body): this.authService.patchProfessorShip({display_name: body.display_name, password: body.password, available_storage: this.megaBytesToBytes(body.available_storage)}, this.user.id);
+        resourceUrl$ = !this.user ? this.authService.postProfessorShip(body): this.authService.patchProfessorShip({display_name: body.display_name, available_storage: this.megaBytesToBytes(body.available_storage)}, this.user.id);
         break;
       case typeUserFilter.STUDENT:
         resourceUrl$ = this.authService.patchUserStudentScholarship(API.USERS_STUDENTS, body, this.user.id);

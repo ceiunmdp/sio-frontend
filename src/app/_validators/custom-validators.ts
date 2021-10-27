@@ -1,6 +1,7 @@
-import { AbstractControl, ValidatorFn } from "@angular/forms";
+import { AbstractControl, FormGroup, ValidatorFn } from "@angular/forms";
 
 export class CustomValidators {
+
    static required(message: string): ValidatorFn {
       return (control: AbstractControl): { [key: string]: any } | null => {
          return control && (!control.value || (typeof control.value !== "number" ? control.value.length < 1 : false))
@@ -131,5 +132,17 @@ export class CustomValidators {
             }
             : null;
       };
+   }
+
+
+   static sameAs(form: FormGroup, compareValue: string, message: string): ValidatorFn {
+      return (control: AbstractControl): { [key: string]: any } | null => {
+
+         return form.controls[`${compareValue}`] === control.value 
+            ? {
+               sameAsInvalid: message
+            }
+            : null;
+      }
    }
 }

@@ -79,6 +79,7 @@ export class ParametersComponent implements OnInit {
 
   onClickEditItem(parameter: Parameter) {
     this.selectedParameter = parameter;
+    console.log('paramter selected', parameter);
     this.step = STEPS.CREATE_OR_EDIT;
   }
 

@@ -184,6 +184,44 @@ export class AdminService {
          );
    }
 
+   patchGenericUser(body: StudentPatch, userId: string): Observable<Student> {
+      const queryHeaders = new HttpHeaders().append(
+         "Content-Type",
+         "application/json"
+      );
+      if (body.dni !== undefined)
+         body = {...body, dni: String(body.dni)}
+      return this.http
+         .patch<any>(`${environment.apiUrl}${API.USERS}/${userId}`, body, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
+   patchSelfUser(body: StudentPatch): Observable<Student> {
+      const queryHeaders = new HttpHeaders().append(
+         "Content-Type",
+         "application/json"
+      );
+      if (body.dni !== undefined)
+         body = {...body, dni: String(body.dni)}
+      return this.http
+         .patch<any>(`${environment.apiUrl}${API.USER}`, body, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
    patchUser(body: StudentPatch): Observable<Student> {
       const queryHeaders = new HttpHeaders().append(
          "Content-Type",
