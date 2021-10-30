@@ -21,7 +21,22 @@
             <ng-container matColumnDef="movementType" sticky>
                 <th mat-header-cell *matHeaderCellDef>Tipo de movimiento</th>
                 <td mat-cell *matCellDef="let movement">
-                    {{ movement.type.name }}
+                  <div fxLayoutAlign="start center">
+                    <span class="mrs-2 text-secondary" [ngSwitch]="movement.type.code">
+                      <mat-icon [svgIcon]="'transferir_saldo_simple'" *ngSwitchCase="this.movementsEnum.TRANSFER">
+                      </mat-icon>
+                      <mat-icon *ngSwitchCase="this.movementsEnum.TOP_UP">
+                        trending_up
+                      </mat-icon>
+                      <mat-icon [svgIcon]="'pedidos_en_curso_simple'" *ngSwitchCase="this.movementsEnum.REQUESTED_ORDER">
+
+                      </mat-icon>
+                      <mat-icon *ngSwitchCase="this.movementsEnum.CANCELLED_ORDER">
+                        cancel_schedule_send
+                      </mat-icon>
+                    </span>
+                      {{ movement.type.name }}
+                  </div>
                 </td>
             </ng-container>
             <!-- movementSource Column -->
@@ -41,15 +56,20 @@
             <!-- movementAmount Column -->
             <ng-container matColumnDef="movementAmount" sticky>
                 <th mat-header-cell *matHeaderCellDef>Monto</th>
-                <td [ngClass]="{'text-success': isIncome(movement), 'text-warn': !isIncome(movement)}" mat-cell *matCellDef="let movement">
-                   {{ isIncome(movement) ? '': '-' }} {{ movement.amount | moneda }}
+                <td [ngClass]="{'text-success': this.authenticationService.currentUserValue.type !== roles.Sede && isIncome(movement), 'text-warn': this.authenticationService.currentUserValue.type !== roles.Sede && !isIncome(movement)}" mat-cell *matCellDef="let movement">
+                  <span *ngIf="this.authenticationService.currentUserValue.type !== roles.Sede">
+                    {{ isIncome(movement) ? '': '-' }} {{ movement.amount | moneda }}
+                  </span>
+                  <b *ngIf="this.authenticationService.currentUserValue.type === roles.Sede">
+                    {{ movement.amount | moneda }}
+                  </b>
                 </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns" class="bg-on-hover">
             </tr>
         </table>
-        <div table *ngIf="this.dataSourceMovements.data.length === 0" fxLayout="column" fxLayoutAlign="center center" class="pys-5">
+        <div table *ngIf="this.dataSourceMovements.data.length === 0 && !this.isLoadingGetMovements" fxLayout="column" fxLayoutAlign="center center" class="pys-5">
           <ng-lottie width="300px" [options]="noOrdersLottie"></ng-lottie>
           <div fxLayout="column" fxLayoutAlign="center center">
             <h3>

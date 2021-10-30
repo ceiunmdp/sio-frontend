@@ -15,6 +15,7 @@ import { GeneralService } from 'src/app/_services/general.service';
 import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-response-handler.service';
 import { MovementService } from 'src/app/_services/movement.service';
 import {AnimationOptions} from 'ngx-lottie';
+import {Roles} from 'src/app/_roles/roles';
 
 export enum movementType {
   ALL = 'Todos los movimientos',
@@ -33,6 +34,7 @@ export enum movementType {
 export class MovementsComponent implements OnInit {
   movementType = movementType;
   movementsEnum = MOVEMENTS;
+  roles = Roles;
   movementTypeSelected;
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   inputFilterValue = ''
@@ -61,7 +63,7 @@ export class MovementsComponent implements OnInit {
       loop: false
    };
 
-  constructor(public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private authenticationService: AuthenticationService, private movementService: MovementService, public generalService: GeneralService) { }
+  constructor(public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, public authenticationService: AuthenticationService, private movementService: MovementService, public generalService: GeneralService) { }
 
   ngOnInit() {
     this.fb = new FilterBuilder();

@@ -25,6 +25,7 @@ import Swal from 'sweetalert2';
 import { OrdersService } from "../../student/orders/orders.service";
 import { SedeService } from "../sede.service";
 import { WsOrdersService } from "./ws-orders.service";
+import {ClipboardService, IClipboardResponse} from 'ngx-clipboard';
 
 // Bottom sheet component
 @Component({
@@ -48,8 +49,11 @@ export class BottomSheetFiles implements OnInit {
    printerForm: FormGroup;
    order;
    actualState;
+   configurationRangeCopied;
+
    public readonly PRINTER_NAME = 'printer';
    constructor(
+      private _clipboardService: ClipboardService,
       private httpErrorResponseHandlerService: HttpErrorResponseHandlerService,
       public router: Router,
       private wsOrdersService: WsOrdersService,
@@ -62,21 +66,34 @@ export class BottomSheetFiles implements OnInit {
    ) {
      this.order = data._order;
      this.actualState = data.actualState;
-      console.log(data);
    }
 
    ngOnInit() {
       this.wsOrdersService.joinOrderRoom(this.order.id);
       this.wsOrdersService.subscribeToUpdatedBindingGroup(this.onUpdateBindingGroup);
       this.wsOrdersService.subscribeToUpdatedOrderFile(this.onUpdateOrderFile);
-      this.getPrinters()
-        .then(printers => {
-          this.printers = printers;
-          console.log(this.printers);
-        })
-        .then(_ => this.printerForm = this.createPrinterForm())
-        .then(_ => this.bindFormControls())
-        .then(_ => this.cd.markForCheck())
+      // this.printerForm = this.createPrinterForm();
+      // this.bindFormControls();
+      // this.cd.markForCheck();
+      // console.log(this.printerForm);
+      this._clipboardService.copyResponse$.subscribe((res: IClipboardResponse) => {
+        console.log('entrooo')
+        if (res.isSuccess) {
+          setTimeout(() => {
+            this.configurationRangeCopied = null;
+            this.cd.detectChanges();
+          }, 3000);
+        }
+      });
+
+      // this.getPrinters()
+      //   .then(printers => {
+      //     this.printers = printers;
+      //     console.log(this.printers);
+      //   })
+      //   .then(_ => this.printerForm = this.createPrinterForm())
+      //   .then(_ => this.bindFormControls())
+      //   .then(_ => this.cd.markForCheck())
       this.ringedGroups = this.createRingedGroups(this.order.orderFiles);
    }
 
@@ -140,9 +157,9 @@ export class BottomSheetFiles implements OnInit {
 
    onPrintFile(orderId, orderFile) {
      orderFile.isLoading = true;
-     const printer_id = this.printerForm.get(this.PRINTER_NAME).value == 0 ? null : this.printerForm.get(this.PRINTER_NAME).value;
-     const stateCode = !!printer_id ? FILE_STATES.PRINTING : FILE_STATES.PRINTED;
-      this.patchOrderFile(orderId, orderFile.id, stateCode, printer_id)
+    //  const printer_id = this.printerForm.get(this.PRINTER_NAME).value == 0 ? null : this.printerForm.get(this.PRINTER_NAME).value;
+     const stateCode = FILE_STATES.PRINTED;
+      this.patchOrderFile(orderId, orderFile.id, stateCode)
          .catch(error => this.handleErrors(error))
          .finally(() => {
            orderFile.isLoading = false

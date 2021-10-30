@@ -20,6 +20,7 @@ import {SedeRoutingModule} from "./sede-routing.module";
 import player from 'lottie-web';
 import {HomeSedeComponent} from "./home-sede/home-sede.component";
 import {FilesModule} from 'src/app/shared/files/files.module';
+import { ClipboardModule } from 'ngx-clipboard';
 @NgModule({
    declarations: [
       OrdersComponent,
@@ -48,6 +49,7 @@ import {FilesModule} from 'src/app/shared/files/files.module';
       MatSortModule,
       MatMenuModule,
       FilesModule,
+      ClipboardModule,
       MatProgressSpinnerModule,
       SweetAlert2Module.forRoot(),
       LottieModule.forRoot({ player: () => player })

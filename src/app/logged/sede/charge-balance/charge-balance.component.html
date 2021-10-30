@@ -6,13 +6,13 @@
           (onSearch)="this.inputFilterValue = $event;this.onSearch($event)">
       </cei-text-searching-input> -->
 
-      <div filterInputs class="mys-3">
-         <form [formGroup]="this.findUserForm" *ngIf="!!this.findUserForm">
-            <div fxLayout="row wrap" fxLayoutAlign="space-around start">
-               <cei-text-input [hint]="'Opcional'" [form]="this.findUserForm" [name]="this.FULLNAME"
+      <div fxFlex="100" filterInputs class="mys-3">
+         <form fxFlex="100" [formGroup]="this.findUserForm" *ngIf="!!this.findUserForm">
+            <div fxFlex="100" fxLayout="row wrap" fxLayoutAlign="space-around start">
+               <cei-text-input fxFlex="35" [hint]="'Opcional'" [form]="this.findUserForm" [name]="this.FULLNAME"
                   [label]="'Nombre/Apellido'">
                </cei-text-input>
-               <cei-number-input [hint]="'Opcional'" [form]="this.findUserForm" [name]="this.DNI" [label]="'DNI'">
+               <cei-number-input fxFlex="35" [hint]="'Opcional'" [form]="this.findUserForm" [name]="this.DNI" [label]="'DNI'">
                </cei-number-input>
                <div>
                   <button type="button" (click)="this.onSubmitStudents()" [disabled]="!findUserForm.valid"

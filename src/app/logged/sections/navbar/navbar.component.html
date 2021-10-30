@@ -44,7 +44,7 @@
                   history
                </mat-icon>
                <mat-icon [svgIcon]="'transferir_saldo_simple'" *ngSwitchCase="menuItems.TRANSFER_MONEY"> </mat-icon>
-               <mat-icon [svgIcon]="'transferir_saldo_simple'" *ngSwitchCase="menuItems.TOP_UP"> </mat-icon>
+               <mat-icon *ngSwitchCase="menuItems.TOP_UP"> trending_up </mat-icon>
                <mat-icon [svgIcon]="'movimientos'" *ngSwitchCase="menuItems.MOVEMENTS"> </mat-icon>
                <mat-icon [svgIcon]="'movimientos'" *ngSwitchCase="menuItems.MOVEMENTS_LIST"> </mat-icon>
                <mat-icon *ngSwitchCase="menuItems.STUDENT_LIST">
