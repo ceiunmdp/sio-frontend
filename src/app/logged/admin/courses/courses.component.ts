@@ -57,7 +57,7 @@ export class CoursesComponent implements OnInit {
     this.fb = new FilterBuilder();
     this.step = STEPS.LIST;
     this.sort = [{ field: 'course.name', sort: "ASC" }];
-    this.pagination = { page: 0, limit: 10 }
+    this.pagination = { page: 0, limit: 25 }
     this.getCourses(this.filter, this.sort, this.pagination);
     this.dataSourceCourses = new MatTableDataSource();
     this.getCareers();

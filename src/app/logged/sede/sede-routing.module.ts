@@ -10,7 +10,7 @@ import {FilesComponent} from 'src/app/shared/files/files/files.component';
 const routes: Routes = [
    {
       path: "",
-      redirectTo: "home"
+      redirectTo: "pedidos"
    },
    {
       path: "home",
