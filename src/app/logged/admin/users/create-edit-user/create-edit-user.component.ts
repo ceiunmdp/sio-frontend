@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -12,6 +12,13 @@ import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-re
 import { CustomValidators } from 'src/app/_validators/custom-validators';
 import { typeUserFilter } from '../users.component';
 import { API } from './../../../../_api/api';
+
+export const availabeAndRemainCopiesValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    const availableCopies = control.get('available_copies');
+    const remainingCopies = control.get('remaining_copies')
+
+    return availableCopies && availableCopies && availableCopies.value >= remainingCopies.value ? null : { availableRemainingError: true };
+};
 
 @Component({
   selector: 'cei-create-edit-user',
@@ -120,7 +127,7 @@ export class CreateEditUserComponent implements OnInit {
           [this.NAMES_FORM_POST_USER.BALANCE]: [!!user && !!user.balance ? Number(user.balance): '', [CustomValidators.minValue(1, 'Debe ser un valor mayor a 0'), CustomValidators.minLength(1, "Valor del parámetro requerido")]],
           [this.NAMES_FORM_POST_USER.AVAILABLE_COPIES]: [!!user ? user.available_copies: '', [CustomValidators.minValue(1, 'Debe ser un valor mayor a 0'), CustomValidators.minLength(1, "Valor del parámetro requerido"), CustomValidators.required("El valor es obligatorio, debe ser un valor mayor a 0")]],
           [this.NAMES_FORM_POST_USER.REMAINING_COPIES]: [!!user ? user.remaining_copies : '', [CustomValidators.minValue(0, 'Debe ser un valor igual o mayor a 0'), CustomValidators.minLength(1, "Valor del parámetro requerido")]],
-        })
+        }, { validators: [availabeAndRemainCopiesValidator], updateOn: 'change'})
         return specificForm;
       }
       const handleProfessorShip = () => {

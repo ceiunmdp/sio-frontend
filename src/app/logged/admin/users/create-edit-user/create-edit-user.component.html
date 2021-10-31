@@ -212,6 +212,10 @@
                     <cei-number-input [name]="this.NAMES_FORM_POST_USER.REMAINING_COPIES" [form]="this.userForm"
                     [placeholder]="'Copias restantes'" [minValue] = 0>
                     </cei-number-input>
+                    <div>
+                      <mat-error *ngIf="userForm.errors?.availableRemainingError &&
+                        (userForm.touched || userForm.dirty)">La cantidad de copias disponibles debe ser mayor o igual a las copias restantes</mat-error>
+                    </div>
                     <!-- Actions Buttons -->
                     <div fxLayoutAlign="space-around stretch" class="mts-5">
                         <button mat-raised-button [color]="'warn'" [disabled]="isLoadingPostUser"

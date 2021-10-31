@@ -411,6 +411,35 @@ export class AuthenticationService {
         this._redirectUrl = null;
     }
 
+    deleteUser(userId, role) {
+      const queryHeaders = new HttpHeaders().append('Content-Type', 'application/json');
+      var url;
+      switch (role) {
+          case USER_TYPES.ADMIN:
+              url = `${APIS.USERS_ADMINS}`
+              break;
+          case USER_TYPES.BECADO:
+              url = `${APIS.USERS_SCHOLARSHIPS}`
+              break;
+          case USER_TYPES.CATEDRA:
+              url = `${APIS.USERS_PROFESSORSHIPS}`
+              break;
+          case USER_TYPES.SEDE:
+              url = `${APIS.USERS_CAMPUS}`
+              break;
+          default:
+              url = `${APIS.USERS_STUDENTS}`
+              break;
+      }
+      return this.http
+        .delete(environment.apiUrl + url + '/' + userId, { headers: queryHeaders, observe: 'response' })
+        .pipe(
+          map<HttpResponse<any>, any>(response => {
+              return response.body
+          })
+      );
+    }
+
     logout(): Observable<any> {
       // console.log('USUARIO',this.afAuth.auth.currentUser );
       // console.log('USUARIO COND', !!this.afAuth.auth.currentUser );
