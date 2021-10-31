@@ -54,7 +54,8 @@ export class UsersComponent implements OnInit {
     'role',
     'verified',
     'disabled',
-    'password'
+    'password',
+    'delete'
   ];
   displayedStudentsColumns: string[] = [
     'selection',
@@ -85,7 +86,8 @@ export class UsersComponent implements OnInit {
     'verified',
     'disabled',
     'actions',
-    'password'
+    'password',
+    'delete'
   ];
   displayedCampusColumns: string[] = [
     'name',
@@ -93,7 +95,8 @@ export class UsersComponent implements OnInit {
     'verified',
     'disabled',
     'actions',
-    'password'
+    'password',
+    'delete'
   ];
   displayedProfessorshipsColumns: string[] = [
     'name',
@@ -101,7 +104,8 @@ export class UsersComponent implements OnInit {
     'verified',
     'disabled',
     'actions',
-    'password'
+    'password',
+    'delete'
   ];
 
   typeUserFilterSelected: typeUserFilter;
@@ -118,6 +122,7 @@ export class UsersComponent implements OnInit {
   @ViewChild('alertError', { static: true }) alertError;
   messageError: string;
   changePasswordDialog: MatDialogRef<ChangePasswordDialogComponent>;
+  USER_TYPES = USER_TYPES;
 
   constructor(public generalService: GeneralService, public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private dialogRef: MatDialog, private authService: AuthenticationService, private adminService: AdminService) { }
 
@@ -243,6 +248,30 @@ export class UsersComponent implements OnInit {
 
   changePassword(user) {
       this.dialogRef.open(ChangePasswordDialogComponent, { data: {userId: user.id, userName: user.display_name, self: false} } ).updateSize('40vw', '55vh')
+  }
+
+  deleteUser (user) {
+    Swal.fire({
+      title: `Atención`,
+      text: `¿Seguro desea eliminar del sistema al usuario ${user.display_name}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      reverseButtons: true,
+      confirmButtonColor: '#d33',
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar',
+      showLoaderOnConfirm: true,
+      allowOutsideClick: false,
+      preConfirm: () => {
+        return this.authService.deleteUser(user.id, user.type).toPromise().then(() => {
+          Swal.fire({
+            title: `Usuario eliminado correctamente`,
+            icon: 'success'
+          })
+          this.onRefresh();
+        }).catch(err => this.handleErrors(err))
+      }
+    })
   }
 
   onChangeScholarshipUser(user) {
