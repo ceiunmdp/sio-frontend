@@ -45,13 +45,13 @@ export class DniDialogComponent implements OnInit {
 
   createDniForm(): FormGroup {
     return this.fb.group({
-        [this.DNI]: ["", [CustomValidators.required("Ingrese su numero de DNI"), CustomValidators.maxLength(10, "Ingrese un numero de DNI valido")]]
+        [this.DNI]: ["", [CustomValidators.required("Ingrese su numero de DNI")]]
     });
   }
 
   onSubmit() {
     this.isLoadingPatchStudent = true;
-    this.adminService.patchUser(this.dniForm.value).subscribe(response => {
+    this.adminService.patchStudent(this.dniForm.value).subscribe(response => {
       this.isLoadingPatchStudent = false;
       this.isSent = true;
       this.authService.getAndUpdateUserData().toPromise()

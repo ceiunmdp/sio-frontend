@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -96,18 +96,25 @@ export class CreateEditUserComponent implements OnInit {
   }
 
   createForm(user?) {
-    const genericForm = this.formBuilder.group({
+    let genericForm = this.formBuilder.group({
       [this.NAMES_FORM_POST_USER.NAME]: [{ value: !!user && !!user.display_name ? user.display_name : '', disabled: false }, [CustomValidators.required("Nombre de usuario requerido")]],
-      [this.NAMES_FORM_POST_USER.EMAIL]: [{ value: !!user && !!user.email ? user.email : '', disabled: !!user }, [CustomValidators.required("Email requerido"), CustomValidators.email('Formato de email inválido')]],
-       [this.NAMES_FORM_POST_USER.PASSWORD]: [{ value: '', disabled: false }, [CustomValidators.required("Contraseña requerida"), CustomValidators.password('La contraseña debe cumplir con lo siguiente: un mínimo de 8 caracteres, una mayúscula, un número y un caracter especial')]]
+      [this.NAMES_FORM_POST_USER.EMAIL]: [{ value: !!user && !!user.email ? user.email : '', disabled: !!user }, [CustomValidators.required("Email requerido"), CustomValidators.email('Formato de email inválido')]]
     });
+
+    if(!this.user) {
+    genericForm = this.formBuilder.group({
+        ...genericForm.controls,
+        [this.NAMES_FORM_POST_USER.PASSWORD]: [{ value: '', disabled: false }, [CustomValidators.required("Contraseña requerida"), CustomValidators.password('La contraseña debe cumplir con lo siguiente: un mínimo de 8 caracteres, una mayúscula, un número y un caracter especial')]]
+      })
+    }
+
     return (typeUserSelected) => {
       const handleAdmin = () => {
         return genericForm;
       }
       const handleCampusUser = () => {
         const specificForm = this.formBuilder.group({
-          ...genericForm.controls,
+          ...genericForm.controls,  
           [this.NAMES_FORM_POST_USER.CAMPUS]: [{value: !!user && !!user.campus && !!user.campus.id ? user.campus.id : '', disabled: !!user}, [CustomValidators.required("Sede requerida")]],
         })
         return specificForm;
@@ -115,16 +122,16 @@ export class CreateEditUserComponent implements OnInit {
       const handleStudent = () => {
         const specificForm = this.formBuilder.group({
           ...genericForm.controls,
-          [this.NAMES_FORM_POST_USER.DNI]: [!!user && !!user.dni ? Number(user.dni): '', [CustomValidators.minValue(1, 'Debe ser un valor mayor a 0'), CustomValidators.minLength(1, "Valor del parámetro requerido")]],
-          [this.NAMES_FORM_POST_USER.BALANCE]: [!!user && !!user.balance ? Number(user.balance): '', [CustomValidators.minValue(1, 'Debe ser un valor mayor a 0'), CustomValidators.minLength(1, "Valor del parámetro requerido")]]
+          [this.NAMES_FORM_POST_USER.DNI]: [!!user && !!user.dni ? user.dni: '', [CustomValidators.required("El valor es obligatorio")]],
+          [this.NAMES_FORM_POST_USER.BALANCE]: [!!user && !!user.balance ? Number(user.balance): 0, []]
         })
         return specificForm;
       }
       const handleScholarShip = () => {
         const specificForm = this.formBuilder.group({
           ...genericForm.controls,
-          [this.NAMES_FORM_POST_USER.DNI]: [!!user && !!user.dni ? Number(user.dni): '', [CustomValidators.minValue(1, 'Debe ser un valor mayor a 0'), CustomValidators.minLength(1, "Valor del parámetro requerido"), CustomValidators.required("El valor es obligatorio, debe ser un valor mayor a 0")]],
-          [this.NAMES_FORM_POST_USER.BALANCE]: [!!user && !!user.balance ? Number(user.balance): '', [CustomValidators.minValue(1, 'Debe ser un valor mayor a 0'), CustomValidators.minLength(1, "Valor del parámetro requerido")]],
+          [this.NAMES_FORM_POST_USER.DNI]: [!!user && !!user.dni ? user.dni: '', [CustomValidators.required("El valor es obligatorio")]],
+          [this.NAMES_FORM_POST_USER.BALANCE]: [!!user && !!user.balance ? Number(user.balance): 0, []],
           [this.NAMES_FORM_POST_USER.AVAILABLE_COPIES]: [!!user ? user.available_copies: '', [CustomValidators.minValue(1, 'Debe ser un valor mayor a 0'), CustomValidators.minLength(1, "Valor del parámetro requerido"), CustomValidators.required("El valor es obligatorio, debe ser un valor mayor a 0")]],
           [this.NAMES_FORM_POST_USER.REMAINING_COPIES]: [!!user ? user.remaining_copies : '', [CustomValidators.minValue(0, 'Debe ser un valor igual o mayor a 0'), CustomValidators.minLength(1, "Valor del parámetro requerido")]],
         }, { validators: [availabeAndRemainCopiesValidator], updateOn: 'change'})

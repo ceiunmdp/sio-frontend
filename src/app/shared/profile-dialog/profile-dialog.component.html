@@ -9,8 +9,8 @@
         </cei-text-input>
         <span *ngIf="this.user.type === this.USER_TYPES.ESTUDIANTE ||
         this.user.type === this.USER_TYPES.BECADO">
-            <cei-number-input placeholder="Ingrese su numero de DNI" [form]="this.userForm" [name]="this.DNI" [label]="'DNI'">
-            </cei-number-input>
+            <cei-text-input placeholder="Ingrese su numero de DNI" [form]="this.userForm" [name]="this.DNI" [label]="'DNI'">
+            </cei-text-input>
         </span>
     </div>
     <div mat-dialog-actions>

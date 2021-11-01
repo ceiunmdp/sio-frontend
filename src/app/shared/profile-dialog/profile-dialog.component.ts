@@ -54,7 +54,7 @@ createUserForm(user) {
       const handleStudent = () => {
         const specificForm = this.fb.group({
           ...genericForm.controls,
-          [this.DNI]: [{ value: !!user && !!user.dni ? Number(user.dni) : '', disabled: false }, [CustomValidators.minValue(1, 'Debe ser un valor mayor a 0'), CustomValidators.minLength(1, "Valor del parámetro requerido"), CustomValidators.required("El valor es obligatorio, debe ser un valor mayor a 0")]]
+          [this.DNI]: [{ value: !!user && !!user.dni ? user.dni : '', disabled: false }, [CustomValidators.required("El valor es obligatorio, debe ser un valor mayor a 0")]]
         })
         return specificForm;
       }
@@ -87,7 +87,7 @@ createUserForm(user) {
         } , e => {this.handleErrors(e); this.dialogRef.close(); this.isLoadingPatchUser = false}
       )
     } else {
-        this.adminService.patchUser(this.userForm.value).subscribe(response => {
+        this.adminService.patchSelfUser(this.userForm.value).subscribe(response => {
         this.isLoadingPatchUser = false;
         this.isSent = true;
         this.authService.getAndUpdateUserData().toPromise()

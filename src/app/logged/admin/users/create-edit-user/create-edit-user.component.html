@@ -15,7 +15,7 @@
                     <cei-email-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.EMAIL" [form]="this.userForm"
                         [placeholder]="'Email'">
                     </cei-email-input>
-                    <cei-password-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.PASSWORD"
+                    <cei-password-input *ngIf="!this.user" [clearable]="true" [name]="this.NAMES_FORM_POST_USER.PASSWORD"
                         [form]="this.userForm" [placeholder]="'Contraseña'">
                     </cei-password-input>
                     <!-- Actions Buttons -->
@@ -55,7 +55,7 @@
                     <cei-email-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.EMAIL" [form]="this.userForm"
                         [placeholder]="'Email'">
                     </cei-email-input>
-                    <cei-password-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.PASSWORD"
+                    <cei-password-input *ngIf="!this.user" [clearable]="true" [name]="this.NAMES_FORM_POST_USER.PASSWORD"
                         [form]="this.userForm" [placeholder]="'Contraseña'">
                     </cei-password-input>
                     <cei-select-searching-dynamic-input [disabled]="!!this.user" fxFlex.lt-md="1 1 auto" fxFlex.gt-xs="50"
@@ -110,7 +110,7 @@
                     <cei-email-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.EMAIL" [form]="this.userForm"
                         [placeholder]="'Email'">
                     </cei-email-input>
-                    <cei-password-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.PASSWORD"
+                    <cei-password-input *ngIf="!this.user" [clearable]="true" [name]="this.NAMES_FORM_POST_USER.PASSWORD"
                         [form]="this.userForm" [placeholder]="'Contraseña'">
                     </cei-password-input>
                     <cei-select-input fxFlex="1 1 auto"  [name]="this.NAMES_FORM_POST_USER.CAMPUS" [form]="this.userForm"
@@ -154,11 +154,11 @@
                     <cei-email-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.EMAIL" [form]="this.userForm"
                         [placeholder]="'Email'">
                     </cei-email-input>
-                    <cei-number-input [form]="this.userForm" [name]="this.NAMES_FORM_POST_USER.DNI" [label]="'DNI'">
-                    </cei-number-input>
+                    <cei-text-input [placeholder]="'DNI del usuario'" [clearable]="true" [form]="this.userForm" [name]="this.NAMES_FORM_POST_USER.DNI" [label]="'DNI'">
+                    </cei-text-input>
                     <cei-number-input [form]="this.userForm" [name]="this.NAMES_FORM_POST_USER.BALANCE" [label]="'Saldo'">
                     </cei-number-input>
-                    <cei-password-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.PASSWORD"
+                    <cei-password-input *ngIf="!this.user" [clearable]="true" [name]="this.NAMES_FORM_POST_USER.PASSWORD"
                         [form]="this.userForm" [placeholder]="'Contraseña'">
                     </cei-password-input>
                     <!-- Actions Buttons -->
@@ -199,11 +199,11 @@
                     <cei-email-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.EMAIL" [form]="this.userForm"
                         [placeholder]="'Email'">
                     </cei-email-input>
-                    <cei-number-input [form]="this.userForm" [name]="this.NAMES_FORM_POST_USER.DNI" [label]="'DNI'">
-                    </cei-number-input>
+                    <cei-text-input [clearable]="true" [form]="this.userForm" [name]="this.NAMES_FORM_POST_USER.DNI" [label]="'DNI'">
+                    </cei-text-input>
                     <cei-number-input [form]="this.userForm" [name]="this.NAMES_FORM_POST_USER.BALANCE" [label]="'Saldo'">
                     </cei-number-input>
-                    <cei-password-input [clearable]="true" [name]="this.NAMES_FORM_POST_USER.PASSWORD"
+                    <cei-password-input *ngIf="!this.user" [clearable]="true" [name]="this.NAMES_FORM_POST_USER.PASSWORD"
                         [form]="this.userForm" [placeholder]="'Contraseña'">
                     </cei-password-input>
                     <cei-number-input [name]="this.NAMES_FORM_POST_USER.AVAILABLE_COPIES" [form]="this.userForm"
