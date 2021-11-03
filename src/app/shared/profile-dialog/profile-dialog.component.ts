@@ -75,7 +75,7 @@ createUserForm(user) {
 
   onSubmit(userType) {
     this.isLoadingPatchUser = true;
-    if (userType === this.USER_TYPES.ESTUDIANTE || userType === this.USER_TYPES.ESTUDIANTE) {
+    if (userType === this.USER_TYPES.ESTUDIANTE || userType === this.USER_TYPES.BECADO) {
       this.adminService.patchStudent(this.userForm.value).subscribe(response => {
         this.isLoadingPatchUser = false;
         this.isSent = true;
