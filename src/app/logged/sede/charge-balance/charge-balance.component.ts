@@ -33,7 +33,7 @@ export class BottomChargeBalance implements OnInit {
    /* Charge Balance Form */
    chargeBalanceForm: FormGroup;
    public readonly MONEY = "money";
-   
+
    constructor(
       private _bottomSheetRef: MatBottomSheetRef<BottomChargeBalance>,
       @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
@@ -41,8 +41,6 @@ export class BottomChargeBalance implements OnInit {
       private sedeService: SedeService
    ) {
       this.chargeBalanceUser = data;
-      // Setear this.chargeBalanceUser
-      console.log(data);
    }
 
    ngOnInit() {

@@ -1,28 +1,81 @@
-<div style="min-height: 100vh;" fxLayout="column" fxLayoutAlign="stretch">
-   <cei-header></cei-header>
-   <div fxFlex="100" fxLayoutAlign="center start" >
-      <ngx-auth-firebaseui fxFlex="60" [signInTabText]="'Iniciar Sesión'"
-         [signInCardTitleText]="'Ingresá tus credenciales'" [loginButtonText]="'Ingresar' "
-         [forgotPasswordButtonText]="'Olvidé mi contraseña'" [nameText]="'Nombre' "
-         [nameErrorRequiredText]="'El nombre es requerido'" [nameErrorMinLengthText]="'El nombre es muy corto!' "
-         [nameErrorMaxLengthText]="'El nombre es muy largo!' " [emailText]="'E-mail'"
-         [emailErrorRequiredText]="'El e-mail es requerido' "
-         [emailErrorPatternText]="'El formato del e-mail no es válido' " [passwordText]="'Contraseña'"
-         [passwordErrorRequiredText]="'La contraseña es requerida' " [registerTabText]="'Registrarse'"
-         [registerCardTitleText]="'Completá el formulario de registro' " [registerButtonText]="'Registrarme' "
-         [guestButtonText]="'Continuar como invitado' " [resetPasswordTabText]="'Resetear contraseña' "
-         [resetPasswordInputText]="'Ingrese su e-mail' " [resetPasswordErrorRequiredText]="'El e-mail es requerido' "
-         [resetPasswordErrorPatternText]="'El formato del e-mail no es válido'"
-         [resetPasswordActionButtonText]="'Resetear'"
-         [resetPasswordInstructionsText]="'Te enviamos un mail a la casilla indicada. Seguí las instrucciones para reestablecer tu contraseña' "
-         [sendNewVerificationEmailText]="'Enviar un nuevo e-mail de confirmación'" [messageOnEmailConfirmationSuccess]="'
-         Se ha enviado un nuevo correo electrónico de confirmación.'" [signOutText]="'Salir'"
-         [verifyEmailGoBackText]="'Volver'" [verifyEmailTitleText]="'¡Sólo falta confirmar tu dirección de correo!'"
-         [verifyEmailConfirmationText]="'Te acabamos de enviar un correo electrónico de confirmación. Para validar tu cuenta, revisá la bandeja de entrada y hacé clic en el enlace adjunto.'"
-         (onSuccess)="this.onSuccess($event)" [emailConfirmationTitle]="'?' " [emailConfirmationText]="'?' "
-         (onError)="this.onError($event)" [guestEnabled]="false" [providers]="[]">
+<div class="content" fxLayout="column" fxLayoutAlign="stretch">
+   <cei-header fxHide fxShow.lt-md></cei-header>
+   <div fxFlex="100" fxLayoutAlign="stretch stretch" >
+      <div fxHide fxShow.gt-sm fxFlex="30" fxLayout="column wrap"
+        [style.background-image]="'url(../../../assets/images/login.jpg)'"
+        fxLayoutAlign="space-between center" class="img-overlay-side">
+        <div fxFlex="66" style="z-index: 3 !important;" fxLayoutAlign="center center" fxLayout="column">
+          <img
+              src="../../../assets/images/cei-verde.png"
+              class="logo mbs-4" />
+          <!-- <div style="text-align: center; text-justify: inter-word;">
+            <h1 style="text-align: center;" fxLayoutAlign="center center" style="color: white">
+              Sistema online de impresiones
+            </h1>
+          </div> -->
+        </div>
+        <div fxFlex="33" fxLayoutAlign="center center">
+          <!-- <img *ngIf="(this.tenant$ | async)?.logo" [src]="this.generalService.sanitizeUrl((this.tenant$ | async)?.logo)"
+              class="logo" /> -->
+        </div>
+        <!-- <div fxFlex="10" fxLayoutAlign="center center">
+              <b class=" mat-h3 mts-1" style="color: white;margin: 0; opacity: 1;">
+                Powered by
+              </b>
+              <img class="logoTramontech" src="assets/logos/simfinix/logotext.png">
 
-      </ngx-auth-firebaseui>
+          </div> -->
+          <div fxFlex="33">
+
+          </div>
+        <!-- <div fxLayoutAlign="center center" fxLayout="column">
+          <div fxLayoutAlign="center center">
+              <b class=" mat-h3 mts-1" style="color: white;margin: 0; opacity: 1;">
+                Powered by
+              </b>
+              <img class="logoTramontech" src="assets/logos/simfinix/logotext.png">
+          </div>
+          <span class="text-secondary-lighter" style=" opacity: 1;">
+              v&nbsp;{{pjson.version}}
+          </span>
+        </div> -->
+      </div>
+      <div fxFlex.lt-md="100" fxFlex.gt-sm="70" fxLayout="row wrap" fxLayoutAlign="center center" fxFlexOrder.lt-md="2">
+        <div class="text-primary mb-5" fxFlex="100" fxLayoutAlign="center center">
+          <h1 class="mb-5">
+            Sistema online de impresiones
+          </h1>
+        </div>
+        <ngx-auth-firebaseui class="mat-elevation-z6" *ngIf="!this.isLoading; else loadingDiv" fxFlex.lt-md="100" fxFlex.gt-sm="60" [signInTabText]="'Iniciar Sesión'"
+          [signInCardTitleText]="'Ingresá tus credenciales'" [loginButtonText]="'Ingresar' "
+          [forgotPasswordButtonText]="'Olvidé mi contraseña'" [nameText]="'Nombre' "
+          [nameErrorRequiredText]="'El nombre es requerido'" [nameErrorMinLengthText]="'El nombre es muy corto!' "
+          [nameErrorMaxLengthText]="'El nombre es muy largo!' " [emailText]="'E-mail'"
+          [emailErrorRequiredText]="'El e-mail es requerido' "
+          [emailErrorPatternText]="'El formato del e-mail no es válido' " [passwordText]="'Contraseña'"
+          [passwordErrorRequiredText]="'La contraseña es requerida' " [registerTabText]="'Registrarse'"
+          [registerCardTitleText]="'Completá el formulario de registro' " [registerButtonText]="'Registrarme' "
+          [guestButtonText]="'Continuar como invitado' " [resetPasswordTabText]="'Resetear contraseña' "
+          [resetPasswordInputText]="'Ingrese su e-mail' " [resetPasswordErrorRequiredText]="'El e-mail es requerido' "
+          [resetPasswordErrorPatternText]="'El formato del e-mail no es válido'"
+          [resetPasswordActionButtonText]="'Resetear'"
+          [resetPasswordInstructionsText]="'Te enviamos un mail a la casilla indicada. Seguí las instrucciones para reestablecer tu contraseña' "
+          [sendNewVerificationEmailText]="'Enviar un nuevo e-mail de confirmación'" [messageOnEmailConfirmationSuccess]="'
+          Se ha enviado un nuevo correo electrónico de confirmación.'" [signOutText]="'Salir'"
+          [verifyEmailGoBackText]="'Volver'" [verifyEmailTitleText]="'¡Sólo falta confirmar tu dirección de correo!'"
+          [verifyEmailConfirmationText]="'Te acabamos de enviar un correo electrónico de confirmación. Para validar tu cuenta, revisá la bandeja de entrada y hacé clic en el enlace adjunto.'"
+          (onSuccess)="this.onSuccess($event)" [emailConfirmationTitle]="'?' " [emailConfirmationText]="'?' "
+          (onError)="this.onError($event)" [guestEnabled]="false" [providers]="[]">
+
+        </ngx-auth-firebaseui>
+        <div>
+
+        </div>
+
+        <ng-template #loadingDiv>
+            <app-spinner fxFlex="100" fxLayoutAlign="center start"></app-spinner>
+        </ng-template>
+      </div>
    </div>
 
    <!-- <ngx-auth-firebaseui-avatar [links]="[{text:'probando'}]"></ngx-auth-firebaseui-avatar> -->

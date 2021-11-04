@@ -11,7 +11,6 @@ $grey-lighter: mat-color($grey-map, lighter);
 
 // Personalización de prueba (considerar alternativas).
 html, body {
-   height: 100%;
    margin: 0;
  }
 
@@ -22,6 +21,22 @@ html, body {
 //    margin: 0;
 //    // line-height: 1.5;
 // }
+ngx-auth-firebaseui {
+  .verify-email {
+    .go-back-button {
+      display: none !important;
+    }
+  }
+  .mat-tab-group {
+    background-color: white !important;
+  }
+  .mat-card {
+    box-shadow: none !important;
+    .mat-card-title {
+      margin-bottom: 10px;
+    }
+  }
+}
 
 // Text
 .text-center {

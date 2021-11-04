@@ -247,7 +247,12 @@ export class UsersComponent implements OnInit {
   }
 
   changePassword(user) {
-      this.dialogRef.open(ChangePasswordDialogComponent, { data: {userId: user.id, userName: user.display_name, self: false} } ).updateSize('40vw', '55vh')
+    this.dialogRef.open(ChangePasswordDialogComponent, {
+      data: {
+        userId: user.id, userName: user.display_name, self: true
+      },
+      minWidth: '40vw'
+    });
   }
 
   deleteUser (user) {

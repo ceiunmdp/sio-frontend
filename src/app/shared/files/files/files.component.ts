@@ -62,6 +62,8 @@ export class FilesComponent implements OnInit {
   ];
   displayedColumnsFiles: string[] = [
     'fileName',
+    'owner',
+    'pages',
     'actions',
   ];
   // metadata from api
@@ -155,6 +157,21 @@ export class FilesComponent implements OnInit {
     this.step = this.STEPS.LIST_FILES;
     this.selectedFile = null; // Reset selectedFile
     if (refresh) this.onRefreshFiles();
+  }
+
+  openFile(file) {
+    file.isLoading = true;
+    this.orderService.getFile(file.id).subscribe(
+      (blob: any) => {
+        var fileURL: any = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = fileURL;
+        a.target = '_blank';
+        a.click();
+      },
+      error => { this.handleErrors(error) },
+      () => file.isLoading = false
+    );
   }
 
   // Services

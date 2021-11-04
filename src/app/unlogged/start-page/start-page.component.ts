@@ -7,6 +7,7 @@ import { CODE_FIREBASE_AUTH } from 'src/app/_api/codeFirebaseAuth';
 import { User } from "src/app/_models/users/user";
 import { AuthenticationService } from "src/app/_services/authentication.service";
 import { HttpErrorResponseHandlerService } from "src/app/_services/http-error-response-handler.service";
+import {GeneralService} from 'src/app/_services/general.service';
 
 @Component({
    selector: "cei-start-page",
@@ -19,9 +20,11 @@ export class StartPageComponent implements OnInit, OnDestroy {
    typeAlert: string;
    messageAlert: string;
   _authState: Subscription;
+   isLoading: boolean;
 
    constructor(
       private authService: AuthenticationService,
+      private generalService: GeneralService,
       private router: Router,
       private httpErrorResponseHandlerService: HttpErrorResponseHandlerService,
       private cd: ChangeDetectorRef,
@@ -33,6 +36,7 @@ export class StartPageComponent implements OnInit, OnDestroy {
    }
 
    ngOnInit() {
+      this.generalService.setDarkTheme(false);
       console.log('inicio auth')
       this._authState = this.afAuth.authState.subscribe(user => {
          if (!!user && !!user.email && !!user.emailVerified) {
@@ -51,21 +55,24 @@ export class StartPageComponent implements OnInit, OnDestroy {
    onSuccess(e) {
       const u: User = {
          token: e.xa,
-      }
+      };
       // TODO: Buscar en que property está el emailVerified del objeto "e", si está verificado -> seguir con el flujo
       // del getUserData,  sino se debería quedar bloqueado en esa pantalla (verificar API del componente
       // para obtener el evento cuando se presiona "Volver" y llamar a onSuccess nuevamente para que continúe el flujo)
-      this.authService.updateCurrentUser(u);
-
-      this.authService.getUserData().toPromise()
+      console.log('entroo', e);
+      if (e.emailVerified) {
+        this.authService.updateCurrentUser(u);
+        this.isLoading = true;
+        this.authService.getUserData().toPromise()
          .then((u: Partial<User>) => {
+           if (this.authService.redirectUrl) {
+              this.router.navigate(/*TODO rootpath*/[this.authService.redirectUrl]);
+           } else {
+              this.router.navigate([u.rootPath]);
+           }
             this.authService.updateCurrentUser(u);
-            if (this.authService.redirectUrl) {
-               this.router.navigate(/*TODO rootpath*/[this.authService.redirectUrl]);
-            } else {
-               this.router.navigate([u.rootPath]);
-            }
          })
+      }
    }
 
    onError(e) {

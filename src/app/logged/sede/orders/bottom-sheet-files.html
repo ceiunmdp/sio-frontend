@@ -57,9 +57,9 @@
                </div>
                <h2 fxFlex="50" fxLayoutAlign="center center" class="text-secondary">
                   $
-                  <h5 class="ml-2">
+                  <span class="ml-2 mat-display-1 mb-0">
                      {{orderFile.itemPrice}}
-                  </h5>
+                  </span>
                </h2>
             </div>
             <ng-container *ngIf="this.order.state.code !== ORDER_STATES.CANCELADO && this.order.state.code !== ORDER_STATES.NO_ENTREGADO && (orderFile.state.code == FILE_STATES.PRINTING || orderFile.state.code == FILE_STATES.TO_PRINT)">

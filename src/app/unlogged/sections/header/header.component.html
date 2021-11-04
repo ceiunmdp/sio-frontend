@@ -11,15 +11,15 @@
 
 <mat-toolbar color="primary" class="position-sticky mat-toolbar-right">
    <div fxLayout="row" fxFlex="100">
-      <div fxFlex.lt-md="100" fxFlex.gt-sm="30" fxLayoutAlign="start center" fxLayoutAlign.lt-md="center center">
+      <div fxHide fxShow.gt-sm fxFlex.lt-md="100" fxFlex.gt-sm="30" fxLayoutAlign="start center" fxLayoutAlign.lt-md="center center">
          <img src="assets/images/cei-blanco.png" alt="" style="width: 50px;
              height: auto;">
          <!-- <mat-icon class="text-primary">directions_boat</mat-icon> -->
       </div>
-      <div fxFlex="40" fxLayoutAlign="center center">
-         Sistema de Impresiones
+      <div fxFlex.gt-sm="40" fxFlex="100" fxLayoutAlign="center center">
+         Sistema online de impresiones
       </div>
-      <div fxFlexOffset="20" fxFlex="10" fxLayoutAlign="end center">
+      <div fxHide fxShow.gt-sm fxFlexOffset="20" fxFlex="10" fxLayoutAlign="end center">
          <cei-toggle-theme class="ml-5"></cei-toggle-theme>
          <!-- <span class="mat-subheading-2 m-0" fxFlex="80">¿tema?</span> -->
       </div>

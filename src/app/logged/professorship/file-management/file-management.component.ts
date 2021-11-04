@@ -51,6 +51,7 @@ export class FileManagementComponent implements OnInit {
   dataSourceFiles: MatTableDataSource<File>;
   displayedColumnsFiles: string[] = [
     'fileName',
+    'pages',
     'actions',
   ];
   // metadata from api
@@ -177,7 +178,7 @@ export class FileManagementComponent implements OnInit {
           this.authService.getAndUpdateUserData().toPromise()
           this.onRefreshFiles();
         });
-        
+
       },
       err => {
         this.handleErrors(err)

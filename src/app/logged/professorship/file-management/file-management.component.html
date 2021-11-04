@@ -16,11 +16,18 @@
            [dataSource]="dataSourceFiles">
            <!-- courseName Column -->
            <ng-container matColumnDef="fileName" sticky>
-               <th mat-header-cell *matHeaderCellDef>Nombre</th>
-               <td mat-cell *matCellDef="let file">
-                   {{ file.name }}
-               </td>
-           </ng-container>
+             <th mat-header-cell *matHeaderCellDef>Archivo</th>
+             <td mat-cell *matCellDef="let file">
+               {{ file.name }}
+              </td>
+            </ng-container>
+            <!-- pages Column -->
+           <ng-container matColumnDef="pages" sticky>
+                 <th mat-header-cell *matHeaderCellDef>Páginas</th>
+                 <td mat-cell *matCellDef="let file">
+                     {{ file.number_of_sheets }} ({{this.generalService.formatBytes(file.size,1)}})
+                 </td>
+             </ng-container>
            <!-- actions Column -->
            <ng-container matColumnDef="actions">
                <th mat-header-cell *matHeaderCellDef></th>
@@ -78,7 +85,7 @@
      </mat-card>
   </form>
 </div>
- 
+
 <div fxFlex="100" *ngIf="this.step == STEPS.EDIT">
     <cei-edit-file *ngIf="!this.isLoadingGetFiles; else loadingDiv" fxFlex="100" [file]="this.selectedFile"
         (created)="this.fromCreateOrEditToList(true)" (cancelled)="this.fromCreateOrEditToList(false)">
@@ -86,7 +93,7 @@
 </div>
 
 <cei-alert-error #alertError></cei-alert-error>
- 
+
 <ng-template #loadingDiv>
     <app-spinner fxFlex="100" fxLayoutAlign="center start"></app-spinner>
 </ng-template>
