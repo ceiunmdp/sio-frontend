@@ -46,7 +46,7 @@
             Sistema online de impresiones
           </h1>
         </div>
-        <ngx-auth-firebaseui class="mat-elevation-z6" *ngIf="!this.isLoading; else loadingDiv" fxFlex.lt-md="100" fxFlex.gt-sm="60" [signInTabText]="'Iniciar Sesión'"
+        <ngx-auth-firebaseui [ngClass]="{'mat-elevation-z6': this.showElevation}" *ngIf="!this.isLoading; else loadingDiv" fxFlex.lt-md="100" fxFlex.gt-sm="60" [signInTabText]="'Iniciar Sesión'"
           [signInCardTitleText]="'Ingresá tus credenciales'" [loginButtonText]="'Ingresar' "
           [forgotPasswordButtonText]="'Olvidé mi contraseña'" [nameText]="'Nombre' "
           [nameErrorRequiredText]="'El nombre es requerido'" [nameErrorMinLengthText]="'El nombre es muy corto!' "

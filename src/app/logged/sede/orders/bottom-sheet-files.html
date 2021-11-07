@@ -133,9 +133,9 @@
              </mat-list>
              <h2 fxFlex="50" fxLayoutAlign="center center" class="text-secondary">
                   $
-                  <h5 class="ml-2">
+                  <span class="ml-2 mat-display-1 mb-0">
                      {{ringed.price}}
-                  </h5>
+                  </span>
                </h2>
            </div>
             <div class="separator separator-center mt-1" *ngIf="this.order.state.code !== ORDER_STATES.CANCELADO && this.order.state.code !== ORDER_STATES.NO_ENTREGADO && ringed.state.code == RING_STATES.TO_RING">

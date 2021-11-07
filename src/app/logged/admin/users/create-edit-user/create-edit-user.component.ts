@@ -114,7 +114,7 @@ export class CreateEditUserComponent implements OnInit {
       }
       const handleCampusUser = () => {
         const specificForm = this.formBuilder.group({
-          ...genericForm.controls,  
+          ...genericForm.controls,
           [this.NAMES_FORM_POST_USER.CAMPUS]: [{value: !!user && !!user.campus && !!user.campus.id ? user.campus.id : '', disabled: !!user}, [CustomValidators.required("Sede requerida")]],
         })
         return specificForm;
@@ -143,7 +143,7 @@ export class CreateEditUserComponent implements OnInit {
         let professorshipGroup;
         if (!!user) {
           professorshipGroup = this.formBuilder.group({
-            [this.NAMES_FORM_POST_USER.AVAILABLE_STORAGE]: [!!user && !!user.available_storage && !!user.storage_used ? availableStorage : '', [CustomValidators.minValue(storageUsed, "El valor de almacenamiento no puede ser menor al utilizado"), CustomValidators.required("Valor requerido")]],
+            [this.NAMES_FORM_POST_USER.AVAILABLE_STORAGE]: [!!user && !!user.available_storage && !!user.storage_used ? availableStorage : '', [CustomValidators.required("Valor requerido"), CustomValidators.minValue(0,"Debes ingresar un valor positivo")]],
             [this.NAMES_FORM_POST_USER.STORAGE_USED]: [{ value: !!user && !!user.storage_used ? storageUsed : '', disabled: true}, [CustomValidators.required("Valor requerido")]],
             [this.NAMES_FORM_POST_USER.COURSE]: [!!user && !!user.course && !!user.course.id ? user.course.id : '', [CustomValidators.required("Materia requerida")]],
             [this.NAMES_FORM_POST_USER.COURSE]: [!!user && !!user.course && !!user.course.id ? user.course.id : '', [CustomValidators.required("Materia requerida")]],

@@ -133,7 +133,7 @@ export class OrderDetailComponent implements OnInit {
       public router: Router,
       private _bottomSheet: MatBottomSheet
    ) {
-      this.order = router.getCurrentNavigation().extras.state ? router.getCurrentNavigation().extras.state.order : null;
+      this.order = !!router.getCurrentNavigation() && router.getCurrentNavigation().extras.state ? router.getCurrentNavigation().extras.state.order : null;
       this.historicOrdersShow = this.router.getCurrentNavigation() && this.router.getCurrentNavigation().extras.state ? this.router.getCurrentNavigation().extras.state.historicOrdersShow : null;
    }
 
