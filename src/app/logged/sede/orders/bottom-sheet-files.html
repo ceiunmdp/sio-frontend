@@ -50,9 +50,9 @@
                       Rango copiado!
                      </i>
                   </p>
-                  <p fxLayoutAlign="start center" *ngIf="!!orderFile.configuration.color">
-                     <mat-icon color="primary">keyboard_arrow_right</mat-icon>Color {{ orderFile.configuration.colour ?
-                     "✔" : "✘" }}
+                  <p fxLayoutAlign="start center">
+                     <mat-icon color="primary">keyboard_arrow_right</mat-icon>{{ orderFile.configuration.colour ?
+                     "Color" : "Blanco y negro" }}
                   </p>
                </div>
                <h2 fxFlex="50" fxLayoutAlign="center center" class="text-secondary">

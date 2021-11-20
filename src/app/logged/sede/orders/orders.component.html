@@ -75,7 +75,10 @@
                <ng-container matColumnDef="state">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
                   <td mat-cell *matCellDef="let element">
-                     {{ element.state.name }}
+                     <div fxLayoutAlign="start center">
+                     <mat-icon  ceiStatusColorDirective [status]="element.state.code" class="mr-1 mat-icon-small" mat-list-icon svgIcon="customCircle"></mat-icon>
+                      {{ element.state.name }}
+                   </div>
                   </td>
                </ng-container>
 

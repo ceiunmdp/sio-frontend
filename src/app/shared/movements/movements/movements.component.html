@@ -94,7 +94,7 @@
         <!-- <mat-icon>person</mat-icon> -->
         <span>{{movementType.ALL}}</span>
     </button>
-    <button [ngClass]="{'text-primary': this.movementTypeSelected === this.movementsEnum.TRANSFER}" mat-menu-item [disabled]="this.movementTypeSelected == this.movementsEnum.TRANSFER"
+    <button *ngIf="authenticationService.currentUserValue.type === USER_TYPES.ESTUDIANTE || authenticationService.currentUserValue.type === USER_TYPES.BECADO " [ngClass]="{'text-primary': this.movementTypeSelected === this.movementsEnum.TRANSFER}" mat-menu-item [disabled]="this.movementTypeSelected == this.movementsEnum.TRANSFER"
         (click)="onTypeMovementFilter(this.movementsEnum.TRANSFER)">
         <!-- <mat-icon>group</mat-icon> -->
         <span>{{movementType.TRANSFER}}</span>

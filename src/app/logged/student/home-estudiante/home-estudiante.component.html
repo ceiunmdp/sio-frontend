@@ -75,7 +75,7 @@
                   {{ order.tracking[0].timestamp | date: "dd/MM/yy H:mm" }}
                </span>
                <span fxFlex.gt-md="37" fxFlex.lt-lg="1 1 auto" fxLayoutAlign="start center">
-                  <mat-icon class="text-primary mr-1 mat-icon-small" mat-list-icon svgIcon="customCircle"></mat-icon>
+                  <mat-icon ceiStatusColorDirective [status]="order.state.code" class="mr-1 mat-icon-small" mat-list-icon svgIcon="customCircle"></mat-icon>
                   {{ order.state.name }}
                </span>
                <button

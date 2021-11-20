@@ -16,6 +16,7 @@ import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-re
 import { MovementService } from 'src/app/_services/movement.service';
 import {AnimationOptions} from 'ngx-lottie';
 import {Roles} from 'src/app/_roles/roles';
+import {USER_TYPES} from 'src/app/_users/types';
 
 export enum movementType {
   ALL = 'Todos los movimientos',
@@ -40,6 +41,7 @@ export class MovementsComponent implements OnInit {
   inputFilterValue = ''
   movements: Movement[]; isLoadingGetMovements = false; _movements: Subscription;
   dataSourceMovements: MatTableDataSource<Movement>; /*isLoadingGetItems = false;*/
+  USER_TYPES = USER_TYPES;
   displayedColumns: string[] = [
     'movementDate',
     'movementType',

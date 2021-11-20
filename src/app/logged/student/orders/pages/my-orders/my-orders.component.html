@@ -33,7 +33,12 @@
               <!-- state Column -->
               <ng-container matColumnDef="state">
                  <th mat-header-cell *matHeaderCellDef>Estado</th>
-                 <td mat-cell *matCellDef="let data">{{ data.state.name }}</td>
+                 <td mat-cell *matCellDef="let data">
+                   <div fxLayoutAlign="start center">
+                     <mat-icon *ngIf="!historicOrdersShow" ceiStatusColorDirective [status]="data.state.code" class="mr-1 mat-icon-small" mat-list-icon svgIcon="customCircle"></mat-icon>
+                      {{ data.state.name }}
+                   </div>
+                  </td>
               </ng-container>
 
               <!-- subtotal Column -->
