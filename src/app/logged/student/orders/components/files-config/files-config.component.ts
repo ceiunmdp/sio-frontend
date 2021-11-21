@@ -128,6 +128,12 @@ export class FilesConfigComponent implements OnInit {
     })
   }
 
+  resetRange(formConfig: FormGroup, fileForm: FormGroup) {
+    const file = fileForm.get(this.FILE).value;
+    const quantityPagesFile = file.number_of_sheets;
+    formConfig.get(this.RANGE).setValue(quantityPagesFile > 1 ? `1-${quantityPagesFile}` : '1');
+  }
+
   createConfigItemForm(file: _File, value?): FormGroup {
     const quantityPagesFile = file.number_of_sheets;
     const slidesPerSheetValue = value && value[this.SLIDES_PER_SHEET] ? value[this.SLIDES_PER_SHEET] : '1';
