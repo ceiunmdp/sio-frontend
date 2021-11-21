@@ -113,7 +113,12 @@
       <ng-container matColumnDef="disclaimerDiscount">
         <td mat-footer-cell *matFooterCellDef colspan="5">
           <i class="text-secondary" >
-            * Se utilizarán {{usedCopies}} de las {{availablesCopies}} copias disponibles que posee por su condición de becado
+            <span *ngIf="this.discount > 0">
+              * Se utilizarán {{usedCopies}} de las {{availablesCopies}} copias disponibles que posee por su condición de becado
+            </span>
+            <span *ngIf="this.discount === 0">
+              * No se hará uso de las copias disponibles que posee por la condición de becado
+            </span>
           </i>
         </td>
       </ng-container>
@@ -132,6 +137,9 @@
 
       <tr mat-footer-row *matFooterRowDef="['disclaimer']" class="example-second-footer-row"></tr>
     </table>
+  </div>
+  <div *ngIf="this.authService.currentUserValue.type === USER_TYPES.BECADO" class="mts-5">
+    <mat-checkbox [(ngModel)]="this.useFreeCopies" (change)="changeUseFreeCopies()">Utilizar el beneficio otorgado por la beca</mat-checkbox>
   </div>
 </div>
 <div fxLayoutAlign="space-between">

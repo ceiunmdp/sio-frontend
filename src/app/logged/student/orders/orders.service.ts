@@ -23,6 +23,7 @@ import {ORDER_STATES} from 'src/app/_orderStates/states';
 
 export interface PostOrder {
   campus_id: string,
+  use_free_copies?: boolean,
   order_files: {
     file_id: string,
     copies: number,
@@ -355,9 +356,12 @@ export class OrdersService {
     mapToOrderApi(order: UnproccesedOrder): PostOrder {
         let postOrder: Partial<PostOrder> = {
             campus_id: order.campus_id,
-            order_files: [],
+            order_files: []
         };
         console.log(order);
+        if (order.use_free_copies != undefined && order.use_free_copies != null) {
+          postOrder['use_free_copies'] = order.use_free_copies;
+        }
         order.order_files.forEach((orderFile) => {
             if (orderFile.same_config) {
                 // Sacar los bindings groups de cada configuration
