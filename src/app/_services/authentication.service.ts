@@ -316,9 +316,18 @@ export class AuthenticationService {
         const token = this.currentUserValue.token;
         const decodedToken = jwt_decode(token);
         return this.getSpecificUserData(decodedToken.role).pipe(
-          tap(user => this.updateCurrentUser(user)),
+          tap(user => {
+            if (decodedToken.role === USER_TYPES.ESTUDIANTE && user.type === USER_TYPES.BECADO) {
+              console.log('entro',decodedToken.role, user.type)
+              this.getSpecificUserData(USER_TYPES.BECADO).pipe(
+                tap(user => this.updateCurrentUser(user)),
+              ).toPromise();
+            } else {
+              this.updateCurrentUser(user)
+            }
+          }),
           catchError((e: any) => {
-            if(decodedToken.role === USER_TYPES.BECADO) {
+            if (decodedToken.role === USER_TYPES.BECADO) {
               return this.getSpecificUserData(USER_TYPES.ESTUDIANTE).pipe(
                 tap(user => this.updateCurrentUser(user)),
               );
