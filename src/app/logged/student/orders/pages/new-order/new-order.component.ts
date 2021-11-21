@@ -16,6 +16,7 @@ import {GeneralService} from 'src/app/_services/general.service';
 
 export interface UnproccesedOrder {
   campus_id: string,
+  use_free_copies?: boolean,
   order_files: {
     file_id: string,
     file: File,

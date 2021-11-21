@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
@@ -31,6 +31,7 @@ export class ConfirmOrderComponent implements OnInit {
   bindingsDetail: Binding[];
   filesDetail: any[];
   confirmOrderForm: FormGroup;
+  USER_TYPES = USER_TYPES;
   public readonly CAMPUS = 'campus_id' // Form array ppal
   displayedColumns: string[] = ["file", "quantity", "totalPages", "unitPrice", "totalPrice"];
   displayedFooter1: string[] = ["subtotalTitle", "emptyFooter", "emptyFooter", "emptyFooter", "subtotalVal"];
@@ -38,8 +39,9 @@ export class ConfirmOrderComponent implements OnInit {
   displayedFooter3: string[] = ["totalTitle", "emptyFooter", "emptyFooter", "emptyFooter", "totalVal"];
   @ViewChild('alertError', { static: true }) alertError;
   messageError: string;
+  useFreeCopies = true;
 
-  constructor(public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private formBuilder: FormBuilder, private orderService: OrdersService, private authService: AuthenticationService) {}
+  constructor(public router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private formBuilder: FormBuilder, private orderService: OrdersService, public authService: AuthenticationService, private cd: ChangeDetectorRef) {}
 
 
   ngOnInit() {
@@ -58,13 +60,21 @@ export class ConfirmOrderComponent implements OnInit {
     }
   }
 
-  calculatePrices = (): {total: number, subtotal: number, discount: number} => {
+  changeUseFreeCopies = () => {
+    const {subtotal, total, discount} = this.calculatePrices(this.useFreeCopies);
+    this.totalPrice = subtotal;
+    this.discount = discount;
+    this.finalPrice = total;
+    this.cd.detectChanges();
+  }
+
+  calculatePrices = (useFreeCopies = true): {total: number, subtotal: number, discount: number} => {
     let prices = {
       subtotal: this.calculateSubtotal(),
       discount: 0,
       total: 0
     };
-    if (this.authService.currentUserValue.type === USER_TYPES.BECADO) {
+    if (this.authService.currentUserValue.type === USER_TYPES.BECADO && useFreeCopies) {
       prices['discount'] = this.calculateDiscount(this.getSimpleAndDoubleSidedQuantity());
       prices['total'] = prices['subtotal'] - prices['discount'];
     } else {
@@ -80,8 +90,8 @@ export class ConfirmOrderComponent implements OnInit {
     return discounts.reduce((object, discountObj) => {
       const quantityToDiscount = discountObj.quantity <= object.availableCopies ? discountObj.quantity : object.availableCopies;
       object.availableCopies -= quantityToDiscount;
-      if (quantityToDiscount > 0) { 
-        object.totalDiscount += discountObj.fn(quantityToDiscount); 
+      if (quantityToDiscount > 0) {
+        object.totalDiscount += discountObj.fn(quantityToDiscount);
         object.usedCopies += quantityToDiscount;
       }
       return object;
@@ -115,7 +125,7 @@ export class ConfirmOrderComponent implements OnInit {
     return this.filesDetail.reduce(
       (objectAccum, file) => {
         if(file.colour) {
-          objectAccum[file.double_sided ? 'doubleSidedColour' : 'simpleSidedColour'] += file.totalPages;  
+          objectAccum[file.double_sided ? 'doubleSidedColour' : 'simpleSidedColour'] += file.totalPages;
         } else {
           objectAccum[file.double_sided ? 'doubleSided' : 'simpleSided'] += file.totalPages;
         }
@@ -226,7 +236,7 @@ export class ConfirmOrderComponent implements OnInit {
   }
 
   onSubmit() {
-    this.finalOrder.emit({...this.confirmOrderForm.value, order_files: this.order});
+    this.finalOrder.emit({...this.confirmOrderForm.value, order_files: this.order, ...(this.authService.currentUserValue.type === USER_TYPES.BECADO && {use_free_copies: this.useFreeCopies}) });
   }
 
   calculateIdCampus = (element) => element.id
