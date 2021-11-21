@@ -50,9 +50,9 @@
                       Rango copiado!
                      </i>
                   </p>
-                  <p fxLayoutAlign="start center" *ngIf="!!orderFile.configuration.color">
-                     <mat-icon color="primary">keyboard_arrow_right</mat-icon>Color {{ orderFile.configuration.colour ?
-                     "✔" : "✘" }}
+                  <p fxLayoutAlign="start center">
+                     <mat-icon color="primary">keyboard_arrow_right</mat-icon>{{ orderFile.configuration.colour ?
+                     "Color" : "Blanco y negro" }}
                   </p>
                </div>
                <h2 fxFlex="50" fxLayoutAlign="center center" class="text-secondary">
@@ -133,9 +133,9 @@
              </mat-list>
              <h2 fxFlex="50" fxLayoutAlign="center center" class="text-secondary">
                   $
-                  <h5 class="ml-2">
+                  <span class="ml-2 mat-display-1 mb-0">
                      {{ringed.price}}
-                  </h5>
+                  </span>
                </h2>
            </div>
             <div class="separator separator-center mt-1" *ngIf="this.order.state.code !== ORDER_STATES.CANCELADO && this.order.state.code !== ORDER_STATES.NO_ENTREGADO && ringed.state.code == RING_STATES.TO_RING">

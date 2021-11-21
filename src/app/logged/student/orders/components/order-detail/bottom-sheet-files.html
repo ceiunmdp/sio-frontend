@@ -33,9 +33,9 @@
               <p fxLayoutAlign="start center" *ngIf="!!orderFile.configuration.range">
                  <mat-icon color="primary">keyboard_arrow_right</mat-icon>Páginas: {{ orderFile.configuration.range }}
               </p>
-              <p fxLayoutAlign="start center" *ngIf="!!orderFile.configuration.colour">
-                 <mat-icon color="primary">keyboard_arrow_right</mat-icon>Color {{ orderFile.configuration.colour ? "✔" :
-                 "✘" }}
+              <p fxLayoutAlign="start center">
+                 <mat-icon color="primary">keyboard_arrow_right</mat-icon>{{ orderFile.configuration.colour ? "Color" :
+                 "Blanco y negro" }}
               </p>
               <p fxLayoutAlign="start center">
                  <mat-icon color="primary">keyboard_arrow_right</mat-icon>Copias: {{ orderFile.quantity }}

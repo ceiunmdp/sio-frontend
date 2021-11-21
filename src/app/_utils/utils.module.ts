@@ -46,6 +46,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import player from 'lottie-web';
 import { TextSearchingInputComponent } from './forms/text-searching-input/text-searching-input.component';
 import { CardTableComponent } from './card-table/card-table.component';
+import { StatusColorDirectiveDirective } from './status-color-directive.directive';
 export function playerFactory() {
    return player;
 }
@@ -72,6 +73,7 @@ export function playerFactory() {
       MultiSelectInputComponent,
       TextSearchingInputComponent,
       CardTableComponent,
+      StatusColorDirectiveDirective,
    ],
    imports: [
       CommonModule,
@@ -120,7 +122,7 @@ export function playerFactory() {
       MultiSelectInputComponent,
       TextSearchingInputComponent,
       CardTableComponent,
-
+      StatusColorDirectiveDirective
    ],
    entryComponents: [AlertErrorComponent]
 })

@@ -12,6 +12,7 @@ import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-re
 import Swal from 'sweetalert2';
 import { _OnDataChange as dataFiles } from '../../components/files/files.component';
 import { OrdersService } from '../../orders.service';
+import {GeneralService} from 'src/app/_services/general.service';
 
 export interface UnproccesedOrder {
   campus_id: string,
@@ -51,13 +52,14 @@ export class NewOrderComponent implements OnInit {
   rootPath: string;
   @ViewChild('alertError', { static: true }) alertError;
 
-  constructor(private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private cd: ChangeDetectorRef, private orderService: OrdersService, private router: Router, private authService: AuthenticationService) {}
+  constructor(private generalService: GeneralService,private httpErrorResponseHandlerService: HttpErrorResponseHandlerService, private cd: ChangeDetectorRef, private orderService: OrdersService, private router: Router, private authService: AuthenticationService) {}
 
   ngOnInit() {
     this.rootPath = this.authService.currentUserValue.rootPath;
     this.getBindings().then(data => this.bindings = data.data.items).catch(error => this.handleErrors(error));
     this.getItems().then(data => this.items = data.data.items).catch(error => this.handleErrors(error));
     this.getCampuses().then(campuses => this.campuses = campuses).catch(error => this.handleErrors(error));
+    this.generalService.sendMessage({title: 'Nuevo pedido'});
   }
 
   onStepChange(stepperSelection: StepperSelectionEvent) {

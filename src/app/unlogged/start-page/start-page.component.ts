@@ -21,6 +21,7 @@ export class StartPageComponent implements OnInit, OnDestroy {
    messageAlert: string;
   _authState: Subscription;
    isLoading: boolean;
+   showElevation: boolean;
 
    constructor(
       private authService: AuthenticationService,
@@ -36,11 +37,10 @@ export class StartPageComponent implements OnInit, OnDestroy {
    }
 
    ngOnInit() {
+      this.showElevation = true;
       this.generalService.setDarkTheme(false);
-      console.log('inicio auth')
       this._authState = this.afAuth.authState.subscribe(user => {
          if (!!user && !!user.email && !!user.emailVerified) {
-            console.log('entro y llama a onsucess')
             this.onSuccess(user);
          }
       })
@@ -56,10 +56,6 @@ export class StartPageComponent implements OnInit, OnDestroy {
       const u: User = {
          token: e.xa,
       };
-      // TODO: Buscar en que property está el emailVerified del objeto "e", si está verificado -> seguir con el flujo
-      // del getUserData,  sino se debería quedar bloqueado en esa pantalla (verificar API del componente
-      // para obtener el evento cuando se presiona "Volver" y llamar a onSuccess nuevamente para que continúe el flujo)
-      console.log('entroo', e);
       if (e.emailVerified) {
         this.authService.updateCurrentUser(u);
         this.isLoading = true;
@@ -72,6 +68,8 @@ export class StartPageComponent implements OnInit, OnDestroy {
            }
             this.authService.updateCurrentUser(u);
          })
+      } else {
+        this.showElevation = false;
       }
    }
 
