@@ -47,7 +47,7 @@
               </cei-select-input>
               <div fxLayout="column" fxFlex="2 2 auto">
                 <cei-select-input fxFlex="1 1 auto" [name]="this.OPTIONS_RANGE" [form]="configFormGroup"
-                  [placeholder]="'Páginas'" [elements]="this.options_range">
+                  [placeholder]="'Páginas'" [elements]="this.options_range" (selected)="$event.id == 1 && this.resetRange(configFormGroup, fileFormGroup)">
                 </cei-select-input>
                 <mat-form-field
                   *ngIf="configFormGroup.controls[this.OPTIONS_RANGE].value == this.OPTIONS_RANGE_ENUM.CUSTOM"
