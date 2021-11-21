@@ -122,7 +122,12 @@ export class ItemsComponent implements OnInit {
           }, 400)
         })
       ).subscribe(
-        (data) => { this.metaDataItems = data.data.meta; this.linksItems = data.data.links; this.dataSourceItems.data = data.data.items; res(data.data.items) },
+        (data) => {
+          this.metaDataItems = data.data.meta;
+          this.linksItems = data.data.links;
+          this.dataSourceItems.data = data.data.items;
+          res(data.data.items)
+        },
         (e) => { this.handleErrors(e); rej(e) },
       )
     })
