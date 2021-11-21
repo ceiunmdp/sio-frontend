@@ -3,6 +3,7 @@ import { MediaChange, MediaObserver } from "@angular/flex-layout";
 import { Subscription, Observable } from "rxjs";
 import { Message } from "../_models/message";
 import { GeneralService } from "../_services/general.service";
+import {AuthenticationService} from '../_services/authentication.service';
 
 @Component({
    selector: "cei-logged",
@@ -60,7 +61,7 @@ export class LoggedComponent implements OnInit, OnDestroy {
       // this.prevScrollpos = currentScrollPos;
    }
 
-   constructor(private generalService: GeneralService, public mediaObserver: MediaObserver) { }
+   constructor(private authService: AuthenticationService,private generalService: GeneralService, public mediaObserver: MediaObserver) { }
 
    ngOnInit() {
       console.log('entro en cei');
@@ -80,6 +81,8 @@ export class LoggedComponent implements OnInit, OnDestroy {
             this.onDesktop();
          }
       });
+
+      this.authService.getAndUpdateUserData().toPromise();
    }
 
    ngOnDestroy() {

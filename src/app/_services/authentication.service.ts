@@ -2,8 +2,8 @@ import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/comm
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { BehaviorSubject, from, Observable, of } from 'rxjs';
-import { map, mergeMap, tap, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, from, Observable, of, throwError } from 'rxjs';
+import { map, mergeMap, tap, switchMap, catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { API, API as APIS } from '../_api/api';
 import { AND, OR } from '../_helpers/filterBuilder';
@@ -316,7 +316,16 @@ export class AuthenticationService {
         const token = this.currentUserValue.token;
         const decodedToken = jwt_decode(token);
         return this.getSpecificUserData(decodedToken.role).pipe(
-          tap(user => this.updateCurrentUser(user))
+          tap(user => this.updateCurrentUser(user)),
+          catchError((e: any) => {
+            if(decodedToken.role === USER_TYPES.BECADO) {
+              return this.getSpecificUserData(USER_TYPES.ESTUDIANTE).pipe(
+                tap(user => this.updateCurrentUser(user)),
+              );
+            } else {
+              return throwError(e);
+            }
+          })
         );
     }
 
