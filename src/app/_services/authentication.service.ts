@@ -300,6 +300,23 @@ export class AuthenticationService {
           );
     }
 
+    getParameters(): Observable<any> {
+      const queryHeaders = new HttpHeaders().append(
+          "Content-Type",
+          "application/json"
+      );
+      return this.http
+          .get<any>(`${environment.apiUrl}${API.USER_PARAMETERS}`, {
+              headers: queryHeaders,
+              observe: "response"
+          })
+          .pipe<any>(
+              map<HttpResponse<any>, any>(response => {
+                  return response.body;
+              })
+          );
+    }
+
     get currentUserValue(): User {
         return this.currentUserSubject.value;
     }

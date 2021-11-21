@@ -1,9 +1,9 @@
 <!-- <mat-slide-toggle [checked]="isDarkTheme" (change)="toggleDarkTheme($event.checked)">
    <span class="mat-body-2">Dark theme</span>
 </mat-slide-toggle> -->
-<div fxLayoutAlign="start center" fxLayoutGap="20px">
-  <button mat-button>
-    <mat-icon (click)="toggleDarkTheme(!isDarkTheme)">{{ isDarkTheme ? 'light_mode':'nightlight_round'}}</mat-icon>
+<div fxLayoutAlign="end center">
+  <button mat-icon-button class="mrs-1">
+    <mat-icon (click)="toggleDarkTheme(!isDarkTheme)">{{ isDarkTheme ? 'wb_sunny':'nights_stay'}}</mat-icon>
   </button>
   <!-- <button mat-icon-button [matMenuTriggerFor]="menuTheme">
      <mat-icon matBadge="15" matBadgeColor="warn">brush</mat-icon>
@@ -27,6 +27,14 @@
     <mat-icon class="mrs-2" *ngIf="this.authService.currentUserValue.available_storage - this.authService.currentUserValue.storage_used >= 31457280">cloud_upload</mat-icon>
     <span class="mat-h4 mb-0">{{this.generalService.formatBytes(this.authService.currentUserValue.available_storage - this.authService.currentUserValue.storage_used)}}</span>
   </div>
+  <span class="mls-5">
+    |
+  </span>
+  <a mat-icon-button *ngFor="let link of this.filteredLinks()" rel="noopener noreferrer" href="{{link.value}}" target="_blank">
+    <mat-icon mat-list-icon svgIcon="{{link.code === 'facebook_link' ? 'facebook' : 'instagram'}}">
+    </mat-icon>
+  </a>
+
 </div>
 
 <mat-menu #menuTheme="matMenu" style="z-index: 2000 !important;">

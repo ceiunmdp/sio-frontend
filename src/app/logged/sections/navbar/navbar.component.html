@@ -1,74 +1,84 @@
-<mat-toolbar *ngIf="user" color="primary"
-   [ngClass]="{ 'mat-toolbar-left': !(isDarkTheme$ | async), 'mat-toolbar-left-alt': isDarkTheme$ | async }">
-   <div fxFlex="80" fxLayoutAlign="start center">
-      <mat-icon fxFlex="20" fxFlexOffset="10" >person_pin</mat-icon>
-      <span class="m-0 ellipsis" style="font-size: 13px;" fxFlex="80">{{ user.display_name | titlecase }}</span>
-   </div>
-   <div fxFlex="20">
-      <button mat-icon-button  matTooltip="{{ user.display_name }}" [matMenuTriggerFor]="menuUser">
-         <mat-icon>keyboard_arrow_down</mat-icon>
-      </button>
-   </div>
-   <mat-menu #menuUser="matMenu">
-      <button mat-menu-item (click)="showProfile()">
-         <mat-icon>face</mat-icon>
-         <span>Ver perfil</span>
-      </button>
-      <button mat-menu-item (click)="changePassword(this.authService.currentUserValue)">
-         <mat-icon>lock</mat-icon>
-         <span>Cambiar contraseña</span>
-      </button>
-      <button mat-menu-item (click)="logout()">
-         <mat-icon>exit_to_app</mat-icon>
-         <span>Salir</span>
-      </button>
-   </mat-menu>
-</mat-toolbar>
-<mat-nav-list *ngIf="menu">
-   <div *ngFor="let mainMenu of menu.sub_functionalities">
-      <span class="title-menu pl-5">{{ mainMenu.name }}</span>
-      <div class="my-5">
-         <a *ngFor="let functionality of mainMenu.sub_functionalities" class="item-menu" mat-list-item
-            routerLink="{{ this.rootPath + routes[functionality.code.toUpperCase()] }}" [routerLinkActive]="['is-active']">
-            <div [ngSwitch]="functionality.code.toUpperCase()" [ngClass]="{
-                  'mr-5': true,
-                  'text-secondary': true
-               }">
-               <mat-icon *ngSwitchCase="menuItems.HOME">
-                  home
-               </mat-icon>
-               <mat-icon [svgIcon]="'nuevo_pedido_simple'" *ngSwitchCase="menuItems.NEW_ORDER"> </mat-icon>
-               <mat-icon [svgIcon]="'mis_pedidos_simple'" *ngSwitchCase="menuItems.MY_ORDERS"> </mat-icon>
-               <mat-icon [svgIcon]="'pedidos_en_curso_simple'" *ngSwitchCase="menuItems.ACTIVE_ORDERS"> </mat-icon>
-               <mat-icon *ngSwitchCase="menuItems.HISTORICAL_ORDERS">
-                  history
-               </mat-icon>
-               <mat-icon [svgIcon]="'transferir_saldo_simple'" *ngSwitchCase="menuItems.TRANSFER_MONEY"> </mat-icon>
-               <mat-icon *ngSwitchCase="menuItems.TOP_UP"> trending_up </mat-icon>
-               <mat-icon [svgIcon]="'movimientos'" *ngSwitchCase="menuItems.MOVEMENTS"> </mat-icon>
-               <mat-icon [svgIcon]="'movimientos'" *ngSwitchCase="menuItems.MOVEMENTS_LIST"> </mat-icon>
-               <mat-icon *ngSwitchCase="menuItems.STUDENT_LIST">
-                  list
-               </mat-icon>
+<div style="min-height: 100vh;" fxLayout="column" fxLayoutAlign="space-between">
+  <div>
+    <mat-toolbar *ngIf="user" color="primary"
+       [ngClass]="{ 'mat-toolbar-left': !(isDarkTheme$ | async), 'mat-toolbar-left-alt': isDarkTheme$ | async }">
+       <div fxFlex="80" fxLayoutAlign="start center">
+          <mat-icon fxFlex="20" fxFlexOffset="10" >person_pin</mat-icon>
+          <span class="m-0 ellipsis" style="font-size: 13px;" fxFlex="80">{{ user.display_name | titlecase }}</span>
+       </div>
+       <div fxFlex="20">
+          <button mat-icon-button  matTooltip="{{ user.display_name }}" [matMenuTriggerFor]="menuUser">
+             <mat-icon>keyboard_arrow_down</mat-icon>
+          </button>
+       </div>
+       <mat-menu #menuUser="matMenu">
+          <button mat-menu-item (click)="showProfile()">
+             <mat-icon>face</mat-icon>
+             <span>Ver perfil</span>
+          </button>
+          <button mat-menu-item (click)="changePassword(this.authService.currentUserValue)">
+             <mat-icon>lock</mat-icon>
+             <span>Cambiar contraseña</span>
+          </button>
+          <a mat-menu-item *ngFor="let link of this.filteredLinks()" rel="noopener noreferrer" href="{{link.value}}" target="_blank">
+             <mat-icon>contact_support</mat-icon>
+             <span>FAQs</span>
+          </a>
+          <button mat-menu-item (click)="logout()">
+             <mat-icon>exit_to_app</mat-icon>
+             <span>Salir</span>
+          </button>
+       </mat-menu>
+    </mat-toolbar>
+    <mat-nav-list *ngIf="menu">
+       <div *ngFor="let mainMenu of menu.sub_functionalities">
+          <span class="title-menu pl-5">{{ mainMenu.name }}</span>
+          <div class="my-5">
+             <a *ngFor="let functionality of mainMenu.sub_functionalities" class="item-menu" mat-list-item
+                routerLink="{{ this.rootPath + routes[functionality.code.toUpperCase()] }}" [routerLinkActive]="['is-active']">
+                <div [ngSwitch]="functionality.code.toUpperCase()" [ngClass]="{
+                      'mr-5': true,
+                      'text-secondary': true
+                   }">
+                   <mat-icon *ngSwitchCase="menuItems.HOME">
+                      home
+                   </mat-icon>
+                   <mat-icon [svgIcon]="'nuevo_pedido_simple'" *ngSwitchCase="menuItems.NEW_ORDER"> </mat-icon>
+                   <mat-icon [svgIcon]="'mis_pedidos_simple'" *ngSwitchCase="menuItems.MY_ORDERS"> </mat-icon>
+                   <mat-icon [svgIcon]="'pedidos_en_curso_simple'" *ngSwitchCase="menuItems.ACTIVE_ORDERS"> </mat-icon>
+                   <mat-icon *ngSwitchCase="menuItems.HISTORICAL_ORDERS">
+                      history
+                   </mat-icon>
+                   <mat-icon [svgIcon]="'transferir_saldo_simple'" *ngSwitchCase="menuItems.TRANSFER_MONEY"> </mat-icon>
+                   <mat-icon *ngSwitchCase="menuItems.TOP_UP"> trending_up </mat-icon>
+                   <mat-icon [svgIcon]="'movimientos'" *ngSwitchCase="menuItems.MOVEMENTS"> </mat-icon>
+                   <mat-icon [svgIcon]="'movimientos'" *ngSwitchCase="menuItems.MOVEMENTS_LIST"> </mat-icon>
+                   <mat-icon *ngSwitchCase="menuItems.STUDENT_LIST">
+                      list
+                   </mat-icon>
 
-               <mat-icon *ngSwitchCase="menuItems.USERS">manage_accounts</mat-icon>
-               <mat-icon *ngSwitchCase="menuItems.COURSES">shuffle</mat-icon>
-               <mat-icon *ngSwitchCase="menuItems.CAMPUSES">location_city</mat-icon>
-               <mat-icon *ngSwitchCase="menuItems.CAREERS">school</mat-icon>
-               <mat-icon *ngSwitchCase="menuItems.FILES">description</mat-icon>
-               <mat-icon *ngSwitchCase="menuItems.PARAMETERS">list</mat-icon>
-               <mat-icon *ngSwitchCase="menuItems.BINDINGS">architecture</mat-icon>
-               <mat-icon *ngSwitchCase="menuItems.ITEMS">category</mat-icon>
+                   <mat-icon *ngSwitchCase="menuItems.USERS">manage_accounts</mat-icon>
+                   <mat-icon *ngSwitchCase="menuItems.COURSES">shuffle</mat-icon>
+                   <mat-icon *ngSwitchCase="menuItems.CAMPUSES">location_city</mat-icon>
+                   <mat-icon *ngSwitchCase="menuItems.CAREERS">school</mat-icon>
+                   <mat-icon *ngSwitchCase="menuItems.FILES">description</mat-icon>
+                   <mat-icon *ngSwitchCase="menuItems.PARAMETERS">list</mat-icon>
+                   <mat-icon *ngSwitchCase="menuItems.BINDINGS">architecture</mat-icon>
+                   <mat-icon *ngSwitchCase="menuItems.ITEMS">category</mat-icon>
 
-               <span *ngSwitchDefault> </span>
-            </div>
-            <span [ngClass]="{
-                  'text-secondary-lighter': isDarkTheme$ | async,
-                  'text-secondary-darker': !(isDarkTheme$ | async)
-               }">
-               {{ functionality.name }}
-            </span>
-         </a>
-      </div>
-   </div>
-</mat-nav-list>
+                   <span *ngSwitchDefault> </span>
+                </div>
+                <span [ngClass]="{
+                      'text-secondary-lighter': isDarkTheme$ | async,
+                      'text-secondary-darker': !(isDarkTheme$ | async)
+                   }">
+                   {{ functionality.name }}
+                </span>
+             </a>
+          </div>
+       </div>
+    </mat-nav-list>
+  </div>
+  <div fxLayoutAlign="center">
+  </div>
+</div>

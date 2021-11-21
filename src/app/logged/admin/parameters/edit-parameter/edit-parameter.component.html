@@ -7,9 +7,14 @@
         <form fxFlex="100" class="mts-3" (submit)="onSubmitItemForm()"
             *ngIf="!!this.parameterForm ; else loadingDiv" fxLayoutGap="2%" fxFlex="100"
             class=" mxs-2" [formGroup]="parameterForm" fxLayout="column">
-            <cei-number-input [name]="this.NAMES_FORM_PATCH_PARAMETER.PARAMETER_VALUE" [form]="this.parameterForm"
-            [placeholder]="'Valor del parametro'" [minValue] = 0>
-            </cei-number-input>
+            <div [ngSwitch]="parameter.code">
+              <cei-text-input *ngSwitchCase="parameter.code === 'faqs_link' || parameter.code === 'facebook_link' || parameter.code === 'instagram_link' ? parameter.code: '' " [name]="this.NAMES_FORM_PATCH_PARAMETER.PARAMETER_VALUE" [form]="this.parameterForm"
+              [placeholder]="'Valor del parametro'">
+              </cei-text-input>
+              <cei-number-input *ngSwitchDefault [name]="this.NAMES_FORM_PATCH_PARAMETER.PARAMETER_VALUE" [form]="this.parameterForm"
+              [placeholder]="'Valor del parametro'" [minValue] = 0>
+              </cei-number-input>
+            </div>
             <!-- Actions Buttons -->
             <div fxLayoutAlign="space-around stretch" class="mts-5">
                 <button mat-raised-button [color]="'warn'" [disabled]="isLoadingPatchParameter"

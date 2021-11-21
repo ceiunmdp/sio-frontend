@@ -25,9 +25,8 @@ export class ToggleThemeComponent implements OnInit {
          this.isDarkTheme = darkTheme;
       });
    }
-   mostrar(event) {
-      console.log(event);
-   }
+
+   filteredLinks = () => this.authService.currentUserValue.links.filter(link => link.code === 'instagram_link' || link.code === 'facebook_link');
 
    toggleDarkTheme(checked: boolean) {
       console.log('se seteo', checked);

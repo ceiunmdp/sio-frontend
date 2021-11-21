@@ -10,6 +10,12 @@ export interface User {
    type?: string;
    rootPath?: string;
    homePath?: string;
+   links?: {
+     code: string;
+     id: string;
+     name: string;
+     value: string;
+   }[];
    serverStatus?: {
      free: number,
      size: number

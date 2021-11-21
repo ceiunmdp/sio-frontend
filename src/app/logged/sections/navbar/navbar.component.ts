@@ -45,6 +45,9 @@ export class NavbarComponent implements OnInit {
       this.getMenu();
    }
 
+   filteredLinks = () => this.authService.currentUserValue.links.filter(link => link.code === 'faqs_link');
+
+
    getMenu() {
       this.generalService.getMenu().subscribe(
          (modulee: Functionality) => {

@@ -36,15 +36,22 @@ export class EditParameterComponent implements OnInit {
   createParameterForm(parameter?: Parameter): FormGroup {
     const names = this.NAMES_FORM_PATCH_PARAMETER;
 
-    if (parameter.code === ParameterType.USERS_MINIMUM_BALANCE_ALLOWED) {
+    if (parameter.code === 'faqs_link' || parameter.code === 'facebook_link' || parameter.code === 'instagram_link') {
       return this.formBuilder.group({
-        [names.PARAMETER_VALUE]: [!!parameter && !!parameter.value ? parameter.value : '', [CustomValidators.minLength(0, "Valor del parámetro requerido")]]
+          [names.PARAMETER_VALUE]: [!!parameter && !!parameter.value ? parameter.value : '', [CustomValidators.required("Debe ingresar un link")]]
+        });
+    } else {
+      if (parameter.code === ParameterType.USERS_MINIMUM_BALANCE_ALLOWED) {
+        return this.formBuilder.group({
+          [names.PARAMETER_VALUE]: [!!parameter && !!parameter.value ? parameter.value : '', [CustomValidators.minLength(0, "Valor del parámetro requerido")]]
+        });
+      }
+
+      return this.formBuilder.group({
+        [names.PARAMETER_VALUE]: [!!parameter && !!parameter.value ? parameter.value : '', [CustomValidators.minLength(0, "Valor del parámetro requerido"), CustomValidators.minValue(0, "El valor debe ser mayor a 0")]]
       });
     }
 
-    return this.formBuilder.group({
-      [names.PARAMETER_VALUE]: [!!parameter && !!parameter.value ? parameter.value : '', [CustomValidators.minLength(0, "Valor del parámetro requerido"), CustomValidators.minValue(0, "El valor debe ser mayor a 0")]]
-    });
   }
 
   onSubmitItemForm() {
@@ -59,16 +66,16 @@ export class EditParameterComponent implements OnInit {
 
   patchParameter(parameterId: string) {
     this.isLoadingPatchParameter = true;
-    let value = this.parameterForm.value.value
+    let value = this.parameterForm.value.value;
     if (this.parameter.code === ParameterType.USERS_PROFESSORSHIPS_INITIAL_AVAILABLE_STORAGE || this.parameter.code === ParameterType.FILES_MAX_SIZE_ALLOWED)  {
         value = this.megaBytesToBytes(this.parameterForm.value.value)
     }
-    this.adminService.patchParameter({value : value}, parameterId).subscribe(response => {
+    this.adminService.patchParameter({value : value.toString()}, parameterId).subscribe(response => {
     }, e => {this.handleErrors(e); this.isLoadingPatchParameter = false }, () => { this.isLoadingPatchParameter = false; this.onCreated.emit() });
   }
 
-  
-  megaBytesToBytes(megaBytes) { 
+
+  megaBytesToBytes(megaBytes) {
     return megaBytes * (1024*1024);
   }
 
@@ -77,5 +84,5 @@ export class EditParameterComponent implements OnInit {
       if (this.messageError) {
         this.alertError.openError(this.messageError);
       }
-  }  
+  }
 }
