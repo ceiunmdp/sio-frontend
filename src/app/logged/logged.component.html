@@ -11,16 +11,17 @@
          <button mat-icon-button fxHide="true" fxShow.lt-md (click)="snav.toggle()">
             <mat-icon>menu</mat-icon>
          </button>
-
-         <span fxFlexOffset="2" fxFlex="58">{{ message?.title }}</span>
-         <!-- <div fxFlexOffset="30" fxLayoutAlign="start center">
-            <cei-toggle-theme class="mr-5"></cei-toggle-theme>
-            <button mat-icon-button [matMenuTriggerFor]="menuNotifications">
-               <mat-icon matBadge="15" matBadgeColor="warn">notifications_none</mat-icon>
-            </button>
-         </div> -->
-         <div fxFlexOffset="45" fxLayoutAlign="start center">
-            <cei-toggle-theme></cei-toggle-theme>
+         <div fxLayoutAlign="space-between center" fxFlex="100">
+           <span class="mls-4" fxHide fxShow.gt-xs>{{ message?.title }}</span>
+           <!-- <div fxFlexOffset="30" fxLayoutAlign="start center">
+              <cei-toggle-theme class="mr-5"></cei-toggle-theme>
+              <button mat-icon-button [matMenuTriggerFor]="menuNotifications">
+                 <mat-icon matBadge="15" matBadgeColor="warn">notifications_none</mat-icon>
+              </button>
+           </div> -->
+           <div fxFlex.lt-sm="100" fxLayoutAlign.lt-sm="end center" fxLayoutAlign="start center">
+              <cei-toggle-theme></cei-toggle-theme>
+           </div>
          </div>
       </mat-toolbar>
       <div class="mt-4 pb-4 mx-5">

@@ -1,9 +1,9 @@
 <div fxLayout="row wrap" fxLayoutAlign="space-between">
    <!-- Accesos directos -->
-   <div class=" mb-3" fxLayout="row wrap" fxLayoutAlign="space-between" fxFlex="100">
+   <div fxHide fxShow.gt-md class=" mb-3" fxLayout="row wrap" fxLayoutAlign="space-between" fxFlex="100">
       <cei-card-icon
          ceiMaterialElevation
-         fxFlex.lt-md="45"
+         fxFlex.lt-md="47"
          fxFlex.gt-md="20"
          [icon]="'nuevo_pedido'"
          [text]="'Nuevo pedido'"
@@ -13,7 +13,7 @@
       </cei-card-icon>
       <cei-card-icon
          ceiMaterialElevation
-         fxFlex.lt-md="45"
+         fxFlex.lt-md="47"
          fxFlex.gt-md="20"
          [icon]="'mis_pedidos_simple'"
          [text]="'Mis pedidos'"
@@ -21,7 +21,7 @@
       ></cei-card-icon>
       <cei-card-icon
          ceiMaterialElevation
-         fxFlex.lt-md="45"
+         fxFlex.lt-md="47"
          fxFlex.gt-md="20"
          [icon]="'movimientos'"
          [text]="'Movimientos'"
@@ -30,7 +30,7 @@
       ></cei-card-icon>
       <cei-card-icon
          ceiMaterialElevation
-         fxFlex.lt-md="45"
+         fxFlex.lt-md="47"
          fxFlex.gt-md="20"
          [icon]="'transferir_saldo'"
          [text]="'Transferir saldo'"

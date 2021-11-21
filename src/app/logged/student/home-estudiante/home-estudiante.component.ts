@@ -9,6 +9,7 @@ import { AuthenticationService } from "src/app/_services/authentication.service"
 import { USER_TYPES } from "src/app/_users/types";
 import { OrdersService } from "../orders/orders.service";
 import {AnimationOptions} from 'ngx-lottie';
+import {GeneralService} from 'src/app/_services/general.service';
 
 @Component({
    selector: "cei-home-estudiante",
@@ -28,11 +29,12 @@ export class HomeEstudianteComponent implements OnInit {
      loop: false
    };
 
-   constructor(public orderService: OrdersService, public authService: AuthenticationService) {}
+   constructor(public orderService: OrdersService, public authService: AuthenticationService, private generalService: GeneralService) {}
 
    ngOnInit() {
       this.getActiveOrders();
       this.rootPath = this.authService.currentUserValue.rootPath;
+      this.generalService.sendMessage({title: 'Home'});
    }
 
    getActiveOrders(sort?: Sort[], pagination?: Pagination) {
