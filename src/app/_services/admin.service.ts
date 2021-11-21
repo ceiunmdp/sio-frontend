@@ -659,4 +659,18 @@ export class AdminService {
          );
    }
 
+   getServerStatus(): Observable<ResponseAPI<any>> {
+      const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      return this.http
+         .get(`${environment.apiUrl}${API.SERVER_STATUS}`, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
 }

@@ -10,6 +10,10 @@ export interface User {
    type?: string;
    rootPath?: string;
    homePath?: string;
+   serverStatus?: {
+     free: number,
+     size: number
+   }
 }
 
 export interface Student extends User {

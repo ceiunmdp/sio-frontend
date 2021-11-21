@@ -27,6 +27,7 @@ export enum API {
    USERS_CAMPUS = "/users/campus",
    USERS_SCHOLARSHIPS = "/users/scholarships",
    PRINTERS = "/printers",
+   SERVER_STATUS = "/health/storage",
    ME= "/me"
 
 }

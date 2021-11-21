@@ -4,6 +4,8 @@ import { Subscription, Observable } from "rxjs";
 import { Message } from "../_models/message";
 import { GeneralService } from "../_services/general.service";
 import {AuthenticationService} from '../_services/authentication.service';
+import {USER_TYPES} from '../_users/types';
+import {AdminService} from '../_services/admin.service';
 
 @Component({
    selector: "cei-logged",
@@ -61,7 +63,7 @@ export class LoggedComponent implements OnInit, OnDestroy {
       // this.prevScrollpos = currentScrollPos;
    }
 
-   constructor(private authService: AuthenticationService,private generalService: GeneralService, public mediaObserver: MediaObserver) { }
+   constructor(private adminService: AdminService, private authService: AuthenticationService,private generalService: GeneralService, public mediaObserver: MediaObserver) { }
 
    ngOnInit() {
       console.log('entro en cei');
@@ -82,7 +84,16 @@ export class LoggedComponent implements OnInit, OnDestroy {
          }
       });
 
-      this.authService.getAndUpdateUserData().toPromise();
+      this.authService.getAndUpdateUserData().toPromise()
+        .then((): any => {
+          if (this.authService.currentUserValue.type === USER_TYPES.ADMIN) {
+            return this.adminService.getServerStatus().toPromise();
+          }
+          return Promise.resolve();
+        })
+        .then(response => {
+          this.authService.updateCurrentUser({serverStatus: response.data})
+        })
    }
 
    ngOnDestroy() {
