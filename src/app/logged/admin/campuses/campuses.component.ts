@@ -73,7 +73,7 @@ export class CampusesComponent implements OnInit {
   }
 
   onSearch(st: string) {
-    this.filter = this.fb.and(this.fb.where('campus.name', OPERATORS.CONTAINS, st));
+    this.filter = this.fb.and(this.fb.where('campus.name', OPERATORS.CONTAINS, st.trim()));
     this.getCampuses(this.filter)
   }
 

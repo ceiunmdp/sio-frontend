@@ -27,11 +27,13 @@ import { CreateEditUserComponent } from './users/create-edit-user/create-edit-us
 import { FilesModule } from 'src/app/shared/files/files.module';
 import { CampusesComponent } from './campuses/campuses.component';
 import { CreateEditCampusesComponent } from './campuses/create-edit-campuses/create-edit-campuses.component';
+import { RelationsComponent } from './relations/relations.component';
+import { CreateEditRelationComponent } from './relations/create-edit-relation/create-edit-relation.component';
 registerPlugin(FilePondPluginFileValidateType);
 registerPlugin(FilePondPluginFileEncode);
 
 @NgModule({
-  declarations: [CoursesComponent, CreateEditCourseComponent, CareersComponent, CreateEditCareerComponent, UsersComponent, CreateEditUserComponent, ItemsComponent, BindingsComponent, CreateEditBindingsComponent, EditItemComponent, ParametersComponent, EditParameterComponent, CampusesComponent, CreateEditCampusesComponent],
+  declarations: [CoursesComponent, CreateEditCourseComponent, CareersComponent, CreateEditCareerComponent, UsersComponent, CreateEditUserComponent, ItemsComponent, BindingsComponent, CreateEditBindingsComponent, EditItemComponent, ParametersComponent, EditParameterComponent, CampusesComponent, CreateEditCampusesComponent, RelationsComponent, CreateEditRelationComponent],
   imports: [
     CommonModule,
     AdminRoutingModule,

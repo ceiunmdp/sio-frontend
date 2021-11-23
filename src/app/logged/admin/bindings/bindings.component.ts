@@ -74,7 +74,7 @@ export class BindingsComponent implements OnInit {
   }
 
   onSearch(st: string) {
-    this.filter = this.fb.and(this.fb.where('binding.name', OPERATORS.CONTAINS, st));
+    this.filter = this.fb.and(this.fb.where('binding.name', OPERATORS.CONTAINS, st.trim()));
     this.getBindings(this.filter)
   }
 

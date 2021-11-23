@@ -12,6 +12,20 @@ export function dataUrlToBlob(dataurl: string): Blob {
     return new Blob([u8arr], {type:mime});
 }
 
+export function removeAccents(originalString: string) {
+    originalString = originalString.replace('Á','A')
+    originalString = originalString.replace('É','E')
+    originalString = originalString.replace('Í','I')
+    originalString = originalString.replace('Ó','O')
+    originalString = originalString.replace('Ú','U')
+    originalString = originalString.replace('á','a')
+    originalString = originalString.replace('é','e')
+    originalString = originalString.replace('í','i')
+    originalString = originalString.replace('ó','o')
+    originalString = originalString.replace('ú','u')
+    return originalString
+}
+
 export function dataURLtoFile(dataurl, filename): File {
  
     var arr = dataurl.split(','),

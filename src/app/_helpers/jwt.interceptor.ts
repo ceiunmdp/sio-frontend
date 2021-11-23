@@ -10,6 +10,7 @@ import { AlertService } from '../_services/alert.service';
 import { AuthenticationService } from '../_services/authentication.service';
 import { HttpErrorResponseHandlerService } from '../_services/http-error-response-handler.service';
 import { USER_TYPES } from '../_users/types';
+import { removeAccents } from '../_utils/utils';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
@@ -56,6 +57,10 @@ export class JwtInterceptor implements HttpInterceptor {
               //       const accessToken = evt.headers.get(environment.accessTokenHeaderName)
               //          ? evt.headers.get(environment.acces
               });
+              if (!!request.body && !!request.body.name)  {
+                request.body.name = removeAccents(request.body.name)
+              }
+            
             } else {
               // console.log('No entró en el interceptor');
             }

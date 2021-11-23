@@ -113,7 +113,7 @@ export class FileManagementComponent implements OnInit {
   }
 
   onSearchFiles(st: string) {
-    this.filterFile = this.fb.and(this.fb.where('file.name', OPERATORS.CONTAINS, st));
+    this.filterFile = this.fb.and(this.fb.where('file.name', OPERATORS.CONTAINS, st.trim()));
     this.getFiles(this.filterFile, this.sortFile, this.paginationFile)
   }
 

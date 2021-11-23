@@ -49,7 +49,7 @@
                <span class="mat-h3">Saldo en la cuenta</span> <br /><br />
                <span class="mat-h3">$ </span>
                <span class="mat-display-1">{{ this.authService.currentUserValue?.balance }}</span>
-               <span class="mat-h3 mls-2" *ngIf="this.authService?.currentUserValue?.type == this.userType.BECADO && this.authService.currentUserValue.remaining_copies > 0"> (+{{this.authService.currentUserValue.remaining_copies}} copias gratuitas)</span> <br />
+               <span class="mat-h3 mls-2" *ngIf="this.authService?.currentUserValue?.type == this.userType.BECADO && this.authService.currentUserValue.remaining_copies > 0"> (+{{this.authService.currentUserValue.remaining_copies}} copias aseguradas por el CEI)</span> <br />
              </div>
            </div>
          </mat-card-subtitle>

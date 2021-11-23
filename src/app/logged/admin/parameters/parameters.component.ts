@@ -73,7 +73,7 @@ export class ParametersComponent implements OnInit {
   }
 
   onSearch(st: string) {
-    this.filter = this.fb.and(this.fb.where('parameter.name', OPERATORS.CONTAINS, st));
+    this.filter = this.fb.and(this.fb.where('parameter.name', OPERATORS.CONTAINS, st.trim()));
     this.getParameters(this.filter)
   }
 

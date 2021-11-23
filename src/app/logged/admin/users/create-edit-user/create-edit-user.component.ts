@@ -220,7 +220,7 @@ export class CreateEditUserComponent implements OnInit {
   }
 
   getCoursesByNameAndSurname = (value: string) => {
-    const filter = this.fb.and(this.fb.where('course.name', OPERATORS.CONTAINS, value));
+    const filter = this.fb.and(this.fb.where('course.name', OPERATORS.CONTAINS, value.trim()));
     return this.orderService.getCourses(filter).pipe(map(response => response.data.items))
   }
 

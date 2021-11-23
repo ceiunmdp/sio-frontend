@@ -71,7 +71,7 @@ export class HistoricOrdersComponent implements OnInit {
         // TODO: No anda
         this.filter = this.fb.and(
             this.fb.where('state.code', OPERATORS.IN, ['cancelled', 'undelivered', 'delivered']),
-            this.fb.or(this.fb.where('student.dni', OPERATORS.CONTAINS, st), this.fb.where('student.full_name', OPERATORS.CONTAINS, st), this.fb.where('id_number', OPERATORS.IS, st))
+            this.fb.or(this.fb.where('student.dni', OPERATORS.CONTAINS, st.trim()), this.fb.where('student.full_name', OPERATORS.CONTAINS, st.trim()), this.fb.where('id_number', OPERATORS.IS, st))
         );
         this.getOrdersService(this.filter).catch((err) => this.handleErrors(err));
     }

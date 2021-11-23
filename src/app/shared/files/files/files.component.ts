@@ -139,12 +139,12 @@ export class FilesComponent implements OnInit {
   }
 
   onSearchCourses(st: string) {
-    this.filterCourse = this.fb.and(this.fb.where('course.name', OPERATORS.CONTAINS, st));
+    this.filterCourse = this.fb.and(this.fb.where('course.name', OPERATORS.CONTAINS, st.trim()));
     this.getCourses(this.filterCourse)
   }
 
   onSearchFiles(st: string) {
-    this.filterFile = this.fb.and(this.fb.where('file.name', OPERATORS.CONTAINS, st), this.fb.where('file_course.course_id', OPERATORS.IS, this.selectedCourse.id));
+    this.filterFile = this.fb.and(this.fb.where('file.name', OPERATORS.CONTAINS, st.trim()), this.fb.where('file_course.course_id', OPERATORS.IS, this.selectedCourse.id));
     this.getFiles(this.filterFile)
   }
 
@@ -331,7 +331,7 @@ export class FilesComponent implements OnInit {
 
   onSearchCoursesForFiles(event: any) {
     if (event.term.length >= 2) {
-      this.filterCourse = this.fb.and(this.fb.where('course.name', OPERATORS.CONTAINS, event.term));
+      this.filterCourse = this.fb.and(this.fb.where('course.name', OPERATORS.CONTAINS, event.term.trim()));
       this.getCourses(this.filterCourse)
       this.courses = this.dataSourceCourses.data;
     }

@@ -225,11 +225,11 @@ export class ChargeBalanceComponent implements OnInit {
       const fullname = this.findUserForm.value.fullname;
 
       if (!!dni) {
-         const where = this.fb.where('dni', OPERATORS.CONTAINS, dni)
+         const where = this.fb.where('dni', OPERATORS.CONTAINS, dni.trim())
          wheres.push(where)
       }
       if (!!fullname) {
-         const where = this.fb.where('full_name', OPERATORS.CONTAINS, fullname)
+         const where = this.fb.where('full_name', OPERATORS.CONTAINS, fullname.trim())
          wheres.push(where)
       }
       this.filter = this.fb.and(...wheres);

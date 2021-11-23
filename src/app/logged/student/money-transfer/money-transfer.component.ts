@@ -142,9 +142,9 @@ export class MoneyTransferComponent implements OnInit {
 
   onSearch(st: string) {
     this.filter = this.fb.or(
-      this.fb.where('full_name', OPERATORS.CONTAINS, st),
-      this.fb.where('dni', OPERATORS.CONTAINS, st),
-      this.fb.where('email', OPERATORS.CONTAINS, st)
+      this.fb.where('full_name', OPERATORS.CONTAINS, st.trim()),
+      this.fb.where('dni', OPERATORS.CONTAINS, st.trim()),
+      this.fb.where('email', OPERATORS.CONTAINS, st.trim())
     );
     this.getUsers(this.filter).toPromise().catch(err => this.handleErrors(err));
   }

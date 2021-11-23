@@ -149,9 +149,9 @@ export class UsersComponent implements OnInit {
 
   getSearchFilterByRol(typeUserFilter: typeUserFilter, st: string) {
     let filter;
-    const fullNameFilter = this.fb.where('full_name', OPERATORS.CONTAINS, st);
-    const emailFilter = this.fb.where('email', OPERATORS.CONTAINS, st);
-    const dniFilter = this.fb.where('dni', OPERATORS.CONTAINS, st);
+    const fullNameFilter = this.fb.where('full_name', OPERATORS.CONTAINS, st.trim());
+    const emailFilter = this.fb.where('email', OPERATORS.CONTAINS, st.trim());
+    const dniFilter = this.fb.where('dni', OPERATORS.CONTAINS, st.trim());
     switch (typeUserFilter) {
       case this.typeUserFilter.ALL:
       case this.typeUserFilter.ADMIN:

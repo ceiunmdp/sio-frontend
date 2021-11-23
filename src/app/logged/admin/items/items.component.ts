@@ -73,7 +73,7 @@ export class ItemsComponent implements OnInit {
   }
 
   onSearch(st: string) {
-    this.filter = this.fb.and(this.fb.where('item.name', OPERATORS.CONTAINS, st));
+    this.filter = this.fb.and(this.fb.where('item.name', OPERATORS.CONTAINS, st.trim()));
     this.getItems(this.filter)
   }
 

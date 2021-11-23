@@ -8,6 +8,7 @@ import { FilesComponent } from '../../shared/files/files/files.component';
 import { ItemsComponent } from './items/items.component';
 import { ParametersComponent } from './parameters/parameters.component';
 import { UsersComponent } from './users/users.component';
+import { RelationsComponent } from './relations/relations.component';
 
 
 const routes: Routes = [
@@ -61,7 +62,11 @@ const routes: Routes = [
       breadcrumb: 'Paramétricas'
     },
     component: ParametersComponent,
-  }
+  },
+  {
+    path: 'relaciones',
+    component: RelationsComponent,
+  },
 ];
 
 @NgModule({

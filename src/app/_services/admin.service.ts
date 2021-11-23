@@ -8,6 +8,7 @@ import { typeUserFilter } from '../logged/admin/users/users.component';
 import { API } from '../_api/api';
 import { Campus } from '../_models/campus';
 import { Course } from '../_models/orders/course';
+import { Relation } from '../_models/relation';
 import { Student } from '../_models/users/user';
 import { dataUrlToBlob } from '../_utils/utils';
 import { AND, FilterBuilder, OPERATORS, OR } from './../_helpers/filterBuilder';
@@ -33,6 +34,10 @@ export interface CampusPost {
 }
 
 export interface CareerPost {
+   name: string
+}
+
+export interface RelationPost {
    name: string
 }
 
@@ -336,16 +341,58 @@ export class AdminService {
          );
    }
 
-   getRelations(): Observable<any[]> {
+   getRelations(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<Relation[]>> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort, pagination })
       return this.http
-         .get(`${environment.apiUrl}/relations`, {
+         .get(`${environment.apiUrl}/${API.RELATIONS}`, {
             headers: queryHeaders,
-            observe: "response"
+            observe: "response",
+            params
          })
          .pipe(
             map<HttpResponse<any>, any>(response => {
-               return response.body.data;
+               return response.body;
+            })
+         );
+   }
+
+   postRelation(body: RelationPost): Observable<Career> {
+      const queryHeaders = new HttpHeaders().append(
+         "Content-Type",
+         "application/json"
+      );
+
+      return this.http
+         .post<any>(`${environment.apiUrl}/${API.RELATIONS}`, body, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
+            })
+         );
+   }
+
+
+   patchRelation(
+      body: RelationPost,
+      idRelation: string
+   ): Observable<Relation> {
+      const queryHeaders = new HttpHeaders().append(
+         "Content-Type",
+         "application/json"
+      );
+
+      return this.http
+         .patch<any>(`${environment.apiUrl}/${API.RELATIONS}/${idRelation}`, body, {
+            headers: queryHeaders,
+            observe: "response"
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>(response => {
+               return response.body;
             })
          );
    }

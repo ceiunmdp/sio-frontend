@@ -77,7 +77,7 @@ export class CareersComponent implements OnInit {
   }
 
   onSearch(st: string) {
-    this.filter = this.fb.and(this.fb.where('career.name', OPERATORS.CONTAINS, st));
+    this.filter = this.fb.and(this.fb.where('career.name', OPERATORS.CONTAINS, st.trim()));
     this.getCareers(this.filter)
   }
 
