@@ -92,7 +92,9 @@ export class LoggedComponent implements OnInit, OnDestroy {
           return Promise.resolve();
         })
         .then(response => {
-          this.authService.updateCurrentUser({serverStatus: response.data})
+          if (response) {
+            this.authService.updateCurrentUser({serverStatus: response.data})
+          }
         });
 
         this.authService.getParameters().toPromise()

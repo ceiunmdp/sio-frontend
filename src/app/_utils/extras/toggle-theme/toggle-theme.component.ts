@@ -26,7 +26,12 @@ export class ToggleThemeComponent implements OnInit {
       });
    }
 
-   filteredLinks = () => this.authService.currentUserValue.links.filter(link => link.code === 'instagram_link' || link.code === 'facebook_link');
+   filteredLinks = () => {
+    if (this.authService.currentUserValue && this.authService.currentUserValue.links) {
+      return this.authService.currentUserValue.links.filter(link => link.code === 'instagram_link' || link.code === 'facebook_link');
+    }
+    return [];
+   }
 
    toggleDarkTheme(checked: boolean) {
       console.log('se seteo', checked);
