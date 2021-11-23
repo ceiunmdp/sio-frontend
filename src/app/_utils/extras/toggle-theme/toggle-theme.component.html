@@ -12,10 +12,10 @@
     <mat-icon>add_shopping_cart</mat-icon>
     <span class="mat-h4 mb-0 mls-1">{{this.authService.currentUserValue.remaining_copies}}</span>
   </div>
-  <div *ngIf="this.authService.currentUserValue?.serverStatus && this.authService.currentUserValue?.type == this.userType.ADMIN" fxLayoutAlign="center center" matTooltip="Almacenamiento disponible del servidor">
+  <div *ngIf="this.authService.currentUserValue?.serverStatus && this.authService.currentUserValue?.type == this.userType.ADMIN" fxLayoutAlign="center center" matTooltip="Almacenamiento en uso del servidor">
     <mat-icon class="mrs-2" *ngIf="this.authService.currentUserValue.serverStatus.size - this.authService.currentUserValue.serverStatus.free < 31457280">disc_full</mat-icon>
     <mat-icon class="mrs-2" *ngIf="this.authService.currentUserValue.serverStatus.size - this.authService.currentUserValue.serverStatus.free >= 31457280">cloud_queue</mat-icon>
-    <span class="mat-h4 mb-0 mls-1">{{this.generalService.formatBytes(this.authService.currentUserValue.serverStatus.free)}} de</span>
+    <span class="mat-h4 mb-0 mls-1">{{this.generalService.formatBytes(this.authService.currentUserValue.serverStatus.size - this.authService.currentUserValue.serverStatus.free)}} de</span>
     <span class="mat-h4 mb-0 mls-1">{{this.generalService.formatBytes(this.authService.currentUserValue.serverStatus.size)}}</span>
   </div>
   <div fxLayoutAlign="center center" *ngIf="this.authService.currentUserValue?.type == this.userType.BECADO || this.authService.currentUserValue?.type == this.userType.ESTUDIANTE" matTooltip="Saldo disponible">

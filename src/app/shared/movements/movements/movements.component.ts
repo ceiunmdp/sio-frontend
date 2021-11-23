@@ -108,12 +108,12 @@ export class MovementsComponent implements OnInit {
     return from(promise);
   }
 
-  onTypeMovementFilter(movementType?: movementType) {
+  onTypeMovementFilter(movementTypeInput?: any) {
     this.inputFilterValue = '';
-    console.log(movementType);
-    this.movementTypeSelected = movementType;
+    console.log(movementTypeInput);
+    this.movementTypeSelected = movementTypeInput;
     console.log(this.movementTypeSelected);
-    this.filter = !!movementType ? this.fb.and(this.fb.where('type.code', OPERATORS.IS, movementType)) : null;
+    this.filter = !!movementTypeInput ? this.fb.and(this.fb.where('type.code', OPERATORS.IS, movementTypeInput)) : null;
     this.getMyMovements(this.filter, this.sort, this.pagination).toPromise().catch(error => this.handleErrors(error))
   }
 
