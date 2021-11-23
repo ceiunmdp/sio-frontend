@@ -101,6 +101,7 @@ export class UsersComponent implements OnInit {
   displayedProfessorshipsColumns: string[] = [
     'name',
     'email',
+    'storage',
     'verified',
     'disabled',
     'actions',
@@ -396,11 +397,24 @@ export class UsersComponent implements OnInit {
           this.isLoadingGetUsers = false;
         })
       ).subscribe(
-        (data) => { this.metaDataUsers = { ...data.data.meta }; this.linksUsers = data.data.links; this.dataSourceUsers.data = data.data.items; res(data.data.items) },
+        (data) => { this.convertBytesToMB(data.data.items) ;this.metaDataUsers = { ...data.data.meta }; this.linksUsers = data.data.links; this.dataSourceUsers.data = data.data.items; res(data.data.items) },
         (e) => { this.handleErrors(e); rej(e) },
       )
     })
     return from(promise);
+  }
+
+  convertBytesToMB(items: any[]) {
+    items.map(item => {
+        if (!!item.available_storage && !!item.storage_used) {
+          item.available_storage = this.bytesToMegaBytes(item.available_storage)
+          item.storage_used = this.bytesToMegaBytes(item.storage_used)
+        }
+    })
+  }
+
+  bytesToMegaBytes(bytes): number {
+    return Math.trunc((bytes / (1024*1024))*100)/100;
   }
 
   onCheckbox(checked, user) {

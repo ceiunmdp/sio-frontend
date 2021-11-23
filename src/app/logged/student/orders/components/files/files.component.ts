@@ -273,6 +273,21 @@ export class FilesComponent implements OnInit {
     this.selectedFiles$.next(selectedFiles);
   }
 
+  openFile(file) {
+    file.isLoading = true;
+    this.filesService.getFile(file.id).subscribe(
+      (blob: any) => {
+        var fileURL: any = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = fileURL;
+        a.target = '_blank';
+        a.click();
+      },
+      error => { this.handleErrors(error) },
+      () => file.isLoading = false
+    );
+  }
+
   handleErrors(err: HttpErrorResponse) {
     console.log(err);
     this.messageError = this.httpErrorResponseHandlerService.handleError(this.router, err);

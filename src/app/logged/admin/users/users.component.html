@@ -56,6 +56,13 @@
                         {{ user?.email }}
                     </td>
                 </ng-container>
+                <!-- Storage Column -->
+                <ng-container matColumnDef="storage" sticky>
+                    <th mat-header-cell *matHeaderCellDef>Almacenamiento(utilizado | disponible)</th>
+                    <td mat-cell *matCellDef="let user">
+                        {{ user?.storage_used }} MB | {{ user?.available_storage }} MB
+                    </td>
+                </ng-container>
                 <!-- Dni Column -->
                 <ng-container matColumnDef="dni" sticky>
                     <th mat-header-cell *matHeaderCellDef>DNI</th>
@@ -63,7 +70,7 @@
                         {{ user?.dni }}
                     </td>
                 </ng-container>
-                <!-- Dni Column -->
+                <!-- Copies Column -->
                 <ng-container matColumnDef="copies" sticky>
                     <th mat-header-cell *matHeaderCellDef>Copias restantes</th>
                     <td mat-cell *matCellDef="let user">

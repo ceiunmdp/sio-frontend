@@ -15,18 +15,18 @@
                     <li class="mat-tree-node">
                         <mat-checkbox [disabled]="this.disabled" [checked]="node.checked"
                             (change)="onCheckFile($event, node)" class="ml-2 checklist-leaf-node">
-                        </mat-checkbox>
-                        <!-- <mat-icon color="accent">loupe</mat-icon> -->
                         <span class="text-accent mxs-2">
                             •
-                        </span>
+                        </span>    
+                        <a class="text-primary">
+                            {{ node.name }}
+                        </a>
+                        </mat-checkbox>
+                        <!-- <mat-icon color="accent">loupe</mat-icon> -->
                         <!-- <span class="text-secondary-ligther">
                                     {{ node.name }}
                                 </span> -->
 
-                        <a class="text-primary" style="cursor: pointer;" (click)="downloadFile(node)">
-                            {{ node.name }}
-                        </a>
                         <span class="text-secondary mls-2">[{{this.generalService.formatBytes(node.size,1)}}]</span>
                         <mat-spinner *ngIf="node.isLoading" class="mls-2" diameter="20"></mat-spinner>
                         <!-- </mat-checkbox> -->
@@ -34,6 +34,10 @@
                                     (click)="downloadFile(node)">
                                     <mat-icon class="text-primary">cloud_download</mat-icon>
                                 </button> -->
+                        <!-- Abrir archivo -->
+                        <button mat-icon-button class="text-accent" matTooltip="Visualizar archivo" (click)="openFile(node)">
+                        <mat-icon class="mat-icon-medium">open_in_new</mat-icon>
+                        </button>
                     </li>
                 </mat-tree-node>
                 <!-- This is the tree node template for expandable nodes -->

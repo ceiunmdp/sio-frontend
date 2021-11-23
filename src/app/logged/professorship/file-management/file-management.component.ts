@@ -128,6 +128,21 @@ export class FileManagementComponent implements OnInit {
     if (refresh) this.onRefreshFiles();
   }
 
+  openFile(file) {
+    file.isLoading = true;
+    this.orderService.getFile(file.id).subscribe(
+      (blob: any) => {
+        var fileURL: any = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = fileURL;
+        a.target = '_blank';
+        a.click();
+      },
+      error => { this.handleErrors(error) },
+      () => file.isLoading = false
+    );
+  }
+
   getFiles(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<File[]> {
     this.isLoadingGetFiles = true;
     const promise: Promise<any> = new Promise((res, rej) => {
