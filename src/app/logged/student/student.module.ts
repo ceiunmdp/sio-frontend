@@ -12,7 +12,7 @@ import {OrdersModule} from './orders/orders.module';
 import { StudentRoutingModule } from './student-routing.module';
 import {LottieModule} from 'ngx-lottie';
 import player from 'lottie-web';
-
+export function playerFunction () { return player; }
 
 @NgModule({
   declarations: [
@@ -28,7 +28,7 @@ import player from 'lottie-web';
     UtilsModule,
     MatIconModule,
     SweetAlert2Module.forRoot(),
-    LottieModule.forRoot({ player: () => player }),
+    LottieModule.forRoot({ player: playerFunction }),
     StudentRoutingModule
   ],
   entryComponents: [BottomMoneyTransferComponent]

@@ -16,7 +16,7 @@ export class ToggleThemeComponent implements OnInit {
    messageError: string;
    isDarkTheme: boolean;
    public userType = USER_TYPES;
-   constructor(private router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService,private generalService: GeneralService, public authService: AuthenticationService) {}
+   constructor(private router: Router, private httpErrorResponseHandlerService: HttpErrorResponseHandlerService,public generalService: GeneralService, public authService: AuthenticationService) {}
 
    ngOnInit() {
       // this.isDarkTheme = this.authService.currentUserValue ? !!this.authService.currentUserValue.darkTheme : false;

@@ -33,7 +33,7 @@ registerLocaleData(localeEsAr, "es-Ar");
 
 export var firebaseConfig = environment.firebaseConfig;
 export function fbfunction() { return 'my_factory' };
-
+export function playerFunction () { return player; }
 
 @NgModule({
    declarations: [AppComponent, NotFoundComponent],
@@ -58,7 +58,7 @@ export function fbfunction() { return 'my_factory' };
       ProfileDialogModule,
       ChangePasswordDialogModule,
       ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-      LottieModule.forRoot({ player: () => player }),
+      LottieModule.forRoot({ player: playerFunction}),
       // NgxAuthFirebaseUIModule.forRoot(firebaseConfig),
       NgxAuthFirebaseUIModule.forRoot(firebaseConfig, fbfunction,
          {

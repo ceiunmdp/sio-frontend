@@ -43,6 +43,8 @@ import {MyOrdersComponent} from "./pages/my-orders/my-orders.component";
 import {BottomSheetFiles, OrderDetailComponent} from "./components/order-detail/order-detail.component";
 import {LottieModule} from 'ngx-lottie';
 import player from 'lottie-web';
+export function playerFunction () { return player; }
+
 @NgModule({
    declarations: [
       NewOrderComponent,
@@ -89,7 +91,7 @@ import player from 'lottie-web';
       MatMenuModule,
       DragDropModule,
       SweetAlert2Module.forRoot(),
-      LottieModule.forRoot({ player: () => player })
+      LottieModule.forRoot({ player: playerFunction }),
    ],
    exports: [NewOrderComponent, MyOrdersComponent, OrderDetailComponent],
    entryComponents: [SnackbarComponent, BottomSheetFiles]

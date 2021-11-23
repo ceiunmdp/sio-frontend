@@ -50,7 +50,7 @@
 </div>
 
 <div fxFlex="100" *ngIf="this.step == STEPS.CREATE_OR_EDIT">
-    <cei-create-edit-relation *ngIf="!this.isLoadingGetRelationss; else loadingDiv" fxFlex="100"
+    <cei-create-edit-relation *ngIf="!this.isLoadingGetRelations; else loadingDiv" fxFlex="100"
         [relations]="this.relations" [relation]="this.selectedRelation"
         (created)="this.fromCreateOrEditToList(true)" (cancelled)="this.fromCreateOrEditToList(false)">
     </cei-create-edit-relation>

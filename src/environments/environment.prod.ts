@@ -1,6 +1,7 @@
 export const environment = {
     production: true,
-    apiUrl: "https://siocei.com.ar/api/v1",
+    apiUrl: "https://beta.siocei.com.ar/api/v1",
+    wsUrl: "https://beta.siocei.com.ar/",
     firebaseConfig: {
         apiKey: "AIzaSyCw5zMTIkWzpO_H3AC_Amd4fN18IHYaQqE",
         authDomain: "sistema-de-impresiones-online.firebaseapp.com",

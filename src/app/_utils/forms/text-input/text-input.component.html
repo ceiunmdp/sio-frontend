@@ -1,9 +1,9 @@
 <div fxLayout="row" fxLayoutAlign="center center">
 
-<mat-icon class="mrs-2" [ngClass]="leftIconClass" *ngIf="leftIcon">
+<mat-icon class="mrs-2" *ngIf="leftIcon">
    {{ leftIcon }}
 </mat-icon>
-<mat-icon class="mrs-2" style="min-height: 20px; min-width: 20px;" [ngClass]="leftIconClass" *ngIf="leftIconSvg"
+<mat-icon class="mrs-2" style="min-height: 20px; min-width: 20px;" *ngIf="leftIconSvg"
    [svgIcon]="leftIconSvg"></mat-icon>
 
 <mat-form-field style="width: 100% !important" [formGroup]="form">

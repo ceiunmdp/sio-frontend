@@ -10,6 +10,10 @@ export interface User {
    type?: string;
    rootPath?: string;
    homePath?: string;
+   remaining_copies?: number;
+   balance?: number;
+   available_storage?: number;
+   storage_used?: number;
    links?: {
      code: string;
      id: string;

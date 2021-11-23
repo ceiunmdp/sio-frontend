@@ -13,13 +13,15 @@ import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
 import { registerPlugin } from 'ngx-filepond';
 registerPlugin(FilePondPluginFileValidateType);
 registerPlugin(FilePondPluginFileEncode);
+export function playerFunction () { return player; }
+
 @NgModule({
   declarations: [FilesComponent, EditFileComponent],
   imports: [
     CommonModule,
     MaterialModule,
     NgSelectModule,
-    LottieModule.forRoot({ player: () => player })
+    LottieModule.forRoot({ player: playerFunction }),
   ],
   providers: [
     NgSelectConfig,

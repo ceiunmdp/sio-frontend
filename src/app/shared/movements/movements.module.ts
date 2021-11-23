@@ -8,6 +8,7 @@ import { UtilsModule } from 'src/app/_utils/utils.module';
 import { MovementsComponent } from './movements/movements.component';
 import player from 'lottie-web';
 import {LottieModule} from 'ngx-lottie';
+export function playerFunction () { return player; }
 
 
 @NgModule({
@@ -19,7 +20,7 @@ import {LottieModule} from 'ngx-lottie';
     UtilsModule,
     MatIconModule,
     SweetAlert2Module.forRoot(),
-    LottieModule.forRoot({ player: () => player })
+    LottieModule.forRoot({ player: playerFunction}),
   ],
   exports: [MovementsComponent]
 })

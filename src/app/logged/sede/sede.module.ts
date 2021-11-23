@@ -21,6 +21,7 @@ import player from 'lottie-web';
 import {HomeSedeComponent} from "./home-sede/home-sede.component";
 import {FilesModule} from 'src/app/shared/files/files.module';
 import { ClipboardModule } from 'ngx-clipboard';
+export function playerFunction () { return player; }
 @NgModule({
    declarations: [
       OrdersComponent,
@@ -52,7 +53,7 @@ import { ClipboardModule } from 'ngx-clipboard';
       ClipboardModule,
       MatProgressSpinnerModule,
       SweetAlert2Module.forRoot(),
-      LottieModule.forRoot({ player: () => player })
+      LottieModule.forRoot({ player: playerFunction }),
    ],
    entryComponents: [BottomChargeBalance, BottomSheetFiles]
 })
