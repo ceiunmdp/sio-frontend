@@ -56,7 +56,7 @@ export class StartPageComponent implements OnInit, OnDestroy {
       const u: User = {
          token: e.xa,
       };
-      // if (e.emailVerified) {
+      if (e.emailVerified) {
         this.authService.updateCurrentUser(u);
         this.isLoading = true;
         this.authService.getUserData().toPromise()
@@ -68,9 +68,9 @@ export class StartPageComponent implements OnInit, OnDestroy {
            }
             this.authService.updateCurrentUser(u);
          })
-      // } else {
-      //   this.showElevation = false;
-      // }
+      } else {
+        this.showElevation = false;
+      }
    }
 
    onError(e) {

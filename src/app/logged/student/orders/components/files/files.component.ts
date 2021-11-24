@@ -188,7 +188,7 @@ export class FilesComponent implements OnInit {
         const fb = new FilterBuilder();
         const filter = fb.and(fb.where('careerCourseRelation.career_id', OPERATORS.IS, career.id));
 
-        this.filesService.getYears(filter).pipe(
+        this.filesService.getYears(filter, [{field: 'relation.name', sort: 'ASC'}]).pipe(
           map((response: ResponseAPI<Year[]>) => response.data.items)
         )
           .subscribe(
@@ -254,8 +254,8 @@ export class FilesComponent implements OnInit {
 
   /**
    * * Add or remove (according to checked argument value) the file argument from/to selectedFiles array
-   * @param {checked} 
-   * @param file 
+   * @param {checked}
+   * @param file
    */
   onCheckFile({ checked }, file: _File) {
     file.checked = checked;
