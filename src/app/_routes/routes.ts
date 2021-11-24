@@ -23,7 +23,7 @@ export enum Routes {
 
    // Admin routes
    COURSES = "/materias",
-   RELATIONS = "/relations",
+   RELATIONS = "/relaciones",
    CAREERS = "/carreras",
    FILES = "/archivos",
    PARAMETERS = "/parametricas",
