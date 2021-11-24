@@ -12,6 +12,7 @@ import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-re
 import { Sort } from 'src/app/_models/sort';
 import { finalize } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
 
 enum STEPS {
   LIST,
@@ -34,7 +35,6 @@ export class RelationsComponent implements OnInit {
   dataSourceRelations: MatTableDataSource<Relation>;
   displayedColumns: string[] = [
     'relationName',
-    'relationValue',
     'actions',
   ];
   // metadata from api
@@ -85,6 +85,32 @@ export class RelationsComponent implements OnInit {
     this.step = STEPS.LIST;
     this.selectedRelation = null; // Reset selectedParameter
     if (refresh) this.onRefresh();
+  }
+
+  onClickDeleteRelation(relation: Relation) {
+    Swal.fire({
+      title: `¿Seguro desea eliminar la relación ${relation.name}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      reverseButtons: true,
+      confirmButtonColor: '#d33',
+      confirmButtonText: 'Eliminar',
+      cancelButtonText: 'Cancelar',
+      showLoaderOnConfirm: true,
+      preConfirm: () => {
+        return this.deleteRelation(relation.id).then(deletedRelation => {
+          Swal.fire({
+            text: 'Relación borrada correctamente',
+            icon: 'success'
+          })
+        }).catch(e => this.handleErrors(e))
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    })
+  }
+
+  deleteRelation(relationId: string): Promise<void | Relation> {
+    return this.adminService.deleteRelation(relationId).toPromise().then(res => { this.onRefresh(); return res }).catch(err => {throw err})
   }
 
   // Services
