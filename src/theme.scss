@@ -118,7 +118,7 @@ $cei-theme-white: mat-palette($mat-grey, 300);
 $cei-theme-grey: mat-palette($mat-grey, 400);
 $cei-theme-darkgrey: mat-palette($mat-grey, 500);
 
-$background-color: map_get($mat-grey, 200);
+$background-color: map_get($mat-grey, 100);
 $text-color: map_get($mat-red, 300);
 
 // Theme

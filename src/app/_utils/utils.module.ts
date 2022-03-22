@@ -1,7 +1,9 @@
+import { SelectSearchingDynamicInputComponent } from './forms/select-searching-dynamic-input/select-searching-dynamic-input.component';
+import { FilePondModule } from 'ngx-filepond';
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FlexLayoutModule } from "@angular/flex-layout";
-import { ReactiveFormsModule } from "@angular/forms";
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import {
    MatIconModule,
    MatSelectModule,
@@ -9,7 +11,11 @@ import {
    MatBottomSheetModule,
    MatTabsModule,
    MatMenuModule,
-   MatRadioModule
+   MatRadioModule,
+   MatPaginatorModule,
+   MatCheckboxModule,
+   MatTooltipModule,
+   MatDividerModule
 } from "@angular/material";
 import { MatCardModule } from "@angular/material/card";
 import { MatInputModule } from "@angular/material/input";
@@ -32,7 +38,18 @@ import { SelectInputComponent } from "./forms/select-input/select-input.componen
 import { TextInputComponent } from "./forms/text-input/text-input.component";
 import { MatButtonModule } from "@angular/material/button";
 import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
-
+import { SpinnerErrorComponent } from './spinner-error/spinner-error.component';
+import { MultiSelectInputComponent } from './forms/multi-select-input/multi-select-input.component';
+import { SpinnerComponent } from './spinner/spinner.component';
+import { LottieModule } from 'ngx-lottie';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import player from 'lottie-web';
+import { TextSearchingInputComponent } from './forms/text-searching-input/text-searching-input.component';
+import { CardTableComponent } from './card-table/card-table.component';
+import { StatusColorDirectiveDirective } from './status-color-directive.directive';
+export function playerFactory() {
+   return player;
+}
 @NgModule({
    declarations: [
       InputTextComponent,
@@ -49,7 +66,14 @@ import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
       NumberInputComponent,
       PasswordInputComponent,
       SelectInputComponent,
-      TextInputComponent
+      TextInputComponent,
+      SpinnerErrorComponent,
+      SpinnerComponent,
+      SelectSearchingDynamicInputComponent,
+      MultiSelectInputComponent,
+      TextSearchingInputComponent,
+      CardTableComponent,
+      StatusColorDirectiveDirective,
    ],
    imports: [
       CommonModule,
@@ -67,7 +91,15 @@ import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
       MatTabsModule,
       MatMenuModule,
       MatRadioModule,
-      SweetAlert2Module
+      SweetAlert2Module,
+      FilePondModule,
+      FormsModule,
+      NgxMatSelectSearchModule,
+      MatPaginatorModule,
+      MatCheckboxModule,
+      MatTooltipModule,
+      MatDividerModule,
+      LottieModule.forRoot({ player: playerFactory })
    ],
    exports: [
       InputTextComponent,
@@ -82,8 +114,16 @@ import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
       CheckboxInputComponent,
       NumberInputComponent,
       SelectInputComponent,
-      TextInputComponent
+      TextInputComponent,
+      SpinnerErrorComponent,
+      SpinnerComponent,
+      FileInputComponent,
+      SelectSearchingDynamicInputComponent,
+      MultiSelectInputComponent,
+      TextSearchingInputComponent,
+      CardTableComponent,
+      StatusColorDirectiveDirective
    ],
-   entryComponents: [AlertErrorChildComponent]
+   entryComponents: [AlertErrorComponent]
 })
-export class UtilsModule {}
+export class UtilsModule { }

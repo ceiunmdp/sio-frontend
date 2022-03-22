@@ -1,4 +1,4 @@
 export enum ITEM_TYPES {
-   CONFIGURACION = 0,
-   ANILLADO = 1
+   ITEM = 'Item',
+   BINDING = 'Binding',
 }

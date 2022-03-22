@@ -1,0 +1,157 @@
+<!-- </form> -->
+<div fxLayout="row wrap">
+  <div fxFlex="100%">
+    <form *ngIf="this.confirmOrderForm" [formGroup]="confirmOrderForm" fxLayout="column">
+      <cei-select-input [calculateName]="this.calculateNameCampus" [calculateId]="this.calculateIdCampus"
+        fxFlex="1 1 auto" [name]="this.CAMPUS" [form]="confirmOrderForm"
+        [placeholder]="'Seleccione la sede donde lo retirará'" [elements]="this.campuses">
+      </cei-select-input>
+    </form>
+  </div>
+</div>
+
+<!-- Tabla de detalles del pedido -->
+<div class="my-4" fxLayout="row wrap">
+  <div fxFlex="100%">
+    <table fxFlex="100%" mat-table *ngIf="this.dataSource" [dataSource]="this.dataSource" class="mat-elevation-z8">
+      <!-- Item Name Column -->
+      <ng-container matColumnDef="file">
+        <th mat-header-cell *matHeaderCellDef>Item</th>
+        <td mat-cell *matCellDef="let item">
+          {{item?.name}}
+        </td>
+      </ng-container>
+
+      <!-- totalPages Column -->
+      <ng-container matColumnDef="totalPages">
+        <th mat-header-cell *matHeaderCellDef>Páginas Totales</th>
+        <td mat-cell *matCellDef="let item">
+          <span *ngIf="item.totalPages">
+            {{ item?.totalPages }}
+          </span>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <!-- Quantity Column -->
+      <ng-container matColumnDef="quantity">
+        <th mat-header-cell *matHeaderCellDef>Cantidad</th>
+        <td mat-cell *matCellDef="let item">
+          <ng-container *ngIf="item.quantity">
+            {{ item.quantity }}
+          </ng-container>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <!-- unitPrice Column -->
+      <ng-container matColumnDef="unitPrice">
+        <th mat-header-cell *matHeaderCellDef>Precio Unitario</th>
+        <td mat-cell *matCellDef="let item">
+          <ng-container *ngIf="item.unitPrice">
+            {{ item.unitPrice | moneda }}
+          </ng-container>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <!-- Footers -->
+      <!-- empty footer row-->
+      <ng-container matColumnDef="emptyFooter">
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <ng-container matColumnDef="subtotalTitle">
+        <td mat-footer-cell *matFooterCellDef><i>Subtotal</i></td>
+      </ng-container>
+      <ng-container matColumnDef="subtotalVal">
+        <td mat-footer-cell *matFooterCellDef><i>{{this.totalPrice | moneda}}</i></td>
+      </ng-container>
+
+      <ng-container matColumnDef="discountTitle">
+        <td mat-footer-cell *matFooterCellDef class="text-primary">
+            Descuento *
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="discountVal">
+        <td mat-footer-cell *matFooterCellDef class="text-primary">-{{this.discount | moneda}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalTitle">
+        <td mat-footer-cell *matFooterCellDef>
+          <b>Total</b>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="totalVal">
+        <td mat-footer-cell *matFooterCellDef>
+          <b>{{this.finalPrice | moneda}}</b>
+        </td>
+      </ng-container>
+
+      <!-- totalPrice Column -->
+      <ng-container matColumnDef="totalPrice">
+        <th mat-header-cell *matHeaderCellDef>Precio Total</th>
+        <td mat-cell *matCellDef="let item">
+          <ng-container *ngIf="item.totalPrice">
+            {{ item.totalPrice | moneda }}
+          </ng-container>
+        </td>
+      </ng-container>
+
+      <!-- Disclaimer column -->
+      <ng-container matColumnDef="disclaimer">
+        <td mat-footer-cell *matFooterCellDef colspan="5">
+          <span *ngIf="this.confirmOrderForm.valid" class="accent">
+            Verifique los datos del pedido y luego presione finalizar.
+          </span>
+          <span *ngIf="!this.confirmOrderForm.get(this.CAMPUS).valid" class="warn">
+            Por favor, seleccione en la parte superior la sede donde lo retirará
+          </span>
+        </td>
+      </ng-container>
+      <!-- DisclaimerDiscount column -->
+      <ng-container matColumnDef="disclaimerDiscount">
+        <td mat-footer-cell *matFooterCellDef colspan="5">
+          <i class="text-secondary" >
+            <span *ngIf="this.discount > 0">
+              * Se utilizarán {{usedCopies}} de las {{availablesCopies}} copias disponibles que posee por su condición de becado
+            </span>
+            <span *ngIf="this.discount === 0">
+              * No se hará uso de las copias disponibles que posee por la condición de becado
+            </span>
+          </i>
+        </td>
+      </ng-container>
+
+      <!-- The table will render two header rows, one data row per data object, and two footer rows. -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <ng-container *ngIf="this.discount > 0">
+        <tr mat-footer-row *matFooterRowDef="displayedFooter1"></tr>
+        <tr mat-footer-row *matFooterRowDef="displayedFooter2"></tr>
+      </ng-container>
+      <tr mat-footer-row *matFooterRowDef="displayedFooter3"></tr>
+      <ng-container *ngIf="this.discount > 0">
+        <tr mat-footer-row *matFooterRowDef="['disclaimerDiscount']"></tr>
+      </ng-container>
+
+      <tr mat-footer-row *matFooterRowDef="['disclaimer']" class="example-second-footer-row"></tr>
+    </table>
+  </div>
+  <div *ngIf="this.authService.currentUserValue.type === USER_TYPES.BECADO" class="mts-5">
+    <mat-checkbox [(ngModel)]="this.useFreeCopies" (change)="changeUseFreeCopies()">Utilizar el beneficio otorgado por la beca</mat-checkbox>
+  </div>
+</div>
+<div fxLayoutAlign="space-between">
+  <button mat-button matStepperPrevious [disabled]="this.isPosting">Anterior</button>
+  <button mat-raised-button [color]="'primary'" (click)="this.onSubmit()" [disabled]="this.isPosting">
+    <span>
+      Finalizar
+    </span>
+    <mat-icon *ngIf="this.isPosting" class="mls-1">
+        <mat-spinner color="accent" diameter="20">
+        </mat-spinner>
+    </mat-icon>
+  </button>
+</div>
+<cei-alert-error #alertError></cei-alert-error>

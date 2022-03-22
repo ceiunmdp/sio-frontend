@@ -1,0 +1,42 @@
+<div fxLayout="row" fxLayoutAlign="center center">
+   <mat-form-field fxFlex="100" [formGroup]="form">
+      <mat-label *ngIf="this.label">
+         <mat-icon *ngIf="this.icon">{{ icon }}</mat-icon>
+         <b>{{ label }}</b>
+      </mat-label>
+      <mat-hint>
+         {{ this.hint }}
+      </mat-hint>
+      <mat-select [formControlName]="name" id="{{ name }}" placeholder="{{ placeholder }}"
+         [disabled]="disabled ? '' : null" (selectionChange)="change($event)">
+         <ngx-mat-select-search [placeholderLabel]="placeholderSearching" [searching]="searchingSpinner"
+            [noEntriesFoundLabel]="placeholderNoValue" [formControlName]="nameSearching"></ngx-mat-select-search>
+         <!-- <mat-option value="{{ proxyCalculateId()(element) }}" *ngFor="let element of elements">
+            {{ proxyCalculateName()(element) }}
+         </mat-option> -->
+         <mat-option [disabled]="element && element.disabled" *ngFor="let element of filteredValues"
+            value="{{ proxyCalculateId()(element) }}">
+            {{ proxyCalculateName()(element) }}
+         </mat-option>
+         <mat-option *ngIf="!filteredValues" disabled>
+            Comience su búsqueda...
+         </mat-option>
+         <mat-option *ngIf="filteredValues && filteredValues.length < 1" disabled>
+            Sin resultados
+         </mat-option>
+         <!-- Para que cuando no se encuentre la busqueda quede seleccionado el elemento previo, sino se resetea 
+         el select, pero no el form, y queda inconsistente -->
+         <mat-option *ngIf="filteredValues && filteredValues.length < 1 && !!this.selectedElement"
+            value="this.selectedElement?.id" hidden>
+            {{this.selectedElement?.name}}
+         </mat-option>
+         <!-- {{ proxyCalculateId()(this.calculateSelected(this.form.get(this.name).value)) }} -->
+      </mat-select>
+      <mat-error *ngIf=" this.form.get(this.name).errors && (this.form.get(this.name).dirty ||
+            this.form.get(this.name).touched) ">
+         <b>
+            {{ objectValues(this.form.get(this.name).errors)[0] }}
+         </b>
+      </mat-error>
+   </mat-form-field>
+</div>

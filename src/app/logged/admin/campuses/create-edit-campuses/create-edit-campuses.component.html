@@ -1,0 +1,46 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>{{!!this.campus ? 'Editar Sede' : 'Crear Sede'}}</mat-card-title>
+        <mat-card-subtitle>{{!!this.campus ? this.campus.name : ''}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <form fxFlex="100" class="mts-3" (submit)="onSubmitCampusForm()"
+            *ngIf="!!this.campusForm ; else loadingDiv" fxLayoutGap="2%" fxFlex="100"
+            class=" mxs-2" [formGroup]="campusForm" fxLayout="column">
+            <cei-text-input [clearable]="true" [name]="this.NAMES_FORM_POST_CAMPUS.CAMPUS_NAME" [form]="this.campusForm"
+                [placeholder]="'Nombre de la sede'">
+            </cei-text-input>
+            <!-- Actions Buttons -->
+            <div fxLayoutAlign="space-around stretch" class="mts-5">
+                <button mat-raised-button [color]="'warn'" [disabled]="isLoadingPostCampus"
+                    (click)="this.onClickCancel()" type="button">
+                    <span>
+                        Cancelar
+                    </span>
+                </button>
+                <button mat-raised-button [color]="'primary'" [disabled]="!campusForm.valid || this.isLoadingPostCampus"
+                    type="submit">
+                    <mat-icon *ngIf="!campusForm.valid; else saveIcon">lock</mat-icon>
+                    <ng-template #saveIcon>
+                        <mat-icon *ngIf="campusForm.valid && !isLoadingPostCampus; else loadingIcon">save</mat-icon>
+                    </ng-template>
+                    <span>
+                        Confirmar
+                    </span>
+                    <ng-template #loadingIcon>
+                        <mat-icon>
+                            <mat-spinner color="accent" diameter="20">
+                            </mat-spinner>
+                        </mat-icon>
+                    </ng-template>
+                </button>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>
+
+<cei-alert-error #alertError></cei-alert-error>
+
+<ng-template #loadingDiv>
+    <app-spinner fxFlex="100" fxLayoutAlign="center start"></app-spinner>
+</ng-template>

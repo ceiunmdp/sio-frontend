@@ -1,7 +1,7 @@
-import { File } from "./file";
+import { Year } from './year';
 
 export interface Course {
-   id: number;
+   id: string;
    name: string;
-   children?: File[];
+   relations?: Year[];
 }

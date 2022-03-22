@@ -1,10 +1,11 @@
+import { MovementType } from './orders/movementType';
+import { Student, User } from './users/user';
+
 export interface Movement {
-   id: number;
-   usuarioOrigen: string;
-   usuarioDestino: string;
-   importe: number;
-   tipo: string;
-   description: string;
-   icon: string;
-   fecha: Date;
+   id: string;
+   amount: number,
+   date: Date,
+   source: User,
+   target: User,
+   type: MovementType
 }

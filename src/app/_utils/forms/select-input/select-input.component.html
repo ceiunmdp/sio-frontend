@@ -5,7 +5,7 @@
           <b>{{ label }}</b>
        </mat-label>
        <mat-select [formControlName]="name" id="{{name}}" placeholder="{{placeholder}}"
-          [disabled]="disabled? '' : null">
+          [disabled]="disabled || form.controls[name].disabled ? '' : null" [multiple]="multiple? 'multiple' : null" (selectionChange)="change($event)">
           <mat-option *ngIf="defaultValue">{{ defaultValue }}</mat-option>
           <mat-option value="{{ proxyCalculateId()(element) }}" *ngFor="let element of elements">
              {{ proxyCalculateName()(element) }}

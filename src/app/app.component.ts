@@ -1,6 +1,12 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, HostListener } from "@angular/core";
 import { Observable } from "rxjs";
 import { GeneralService } from "./_services/general.service";
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { isNullOrUndefined } from 'util';
+import {AuthenticationService} from './_services/authentication.service';
+import {AnimationOptions} from 'ngx-lottie';
+// import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
    selector: "cei-root",
@@ -9,12 +15,50 @@ import { GeneralService } from "./_services/general.service";
 })
 export class AppComponent implements OnInit {
    isDarkTheme$: Observable<boolean>;
+   isSetFB$: Observable<boolean>;
 
-   constructor(private generalService: GeneralService) {}
+   deferredPrompt: any;
+   showButton = false;
+
+   mainLoadingLottie: AnimationOptions = {
+     path: 'assets/animations/main-loading.json',
+     loop: true
+   };
+
+   constructor(private generalService: GeneralService, private authService: AuthenticationService) {
+     this.isSetFB$ = this.authService.isSetFB$;
+   }
 
    ngOnInit() {
       this.isDarkTheme$ = this.generalService.getDarkTheme();
       this.addIcons();
+   }
+
+   @HostListener('window:beforeinstallprompt', ['$event'])
+   onbeforeinstallprompt(e) {
+      console.log('entroooooooooooo', e);
+      // Prevent Chrome 67 and earlier from automatically showing the prompt
+      e.preventDefault();
+      // Stash the event so it can be triggered later.
+      this.deferredPrompt = e;
+      this.showButton = true;
+   }
+
+   addToHomeScreen() {
+      // hide our user interface that shows our A2HS button
+      this.showButton = false;
+      // Show the prompt
+      this.deferredPrompt.prompt();
+      // Wait for the user to respond to the prompt
+      this.deferredPrompt.userChoice
+         .then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+               console.log('User accepted the A2HS prompt');
+            } else {
+               console.log('User dismissed the A2HS prompt');
+            }
+            this.deferredPrompt = null;
+         });
    }
 
    // Add icons gloabally
@@ -34,5 +78,6 @@ export class AppComponent implements OnInit {
       this.generalService.addIcon("transferir", "transfer.svg");
       this.generalService.addIcon("movimientos", "movimientos.svg");
       this.generalService.addIcon("mis_pedidos", "mis_pedidos.svg");
+      this.generalService.addIcon("scholarship", "scholarship.svg");
    }
 }

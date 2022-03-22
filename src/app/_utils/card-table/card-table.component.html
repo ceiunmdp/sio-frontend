@@ -1,0 +1,21 @@
+<mat-card fxFlex="100">
+    <mat-card-header *ngIf="this.title" class="pl-0 ml-0 mbs-4" fxLayoutAlign="space-between center">
+        <mat-card-title class="mb-0">{{this.title}}</mat-card-title>
+        <div fxLayout="row" fxLayoutGap="15px">
+            <ng-content select="[controlButtons]"></ng-content>
+        </div>
+    </mat-card-header>
+    <mat-card-content class="mxs-5">
+        <div fxLayout="column">
+            <div fxLayoutAlign="center center">
+              <ng-content select="[filterInputs]"></ng-content>
+            </div>
+            <ng-content select="[table]"></ng-content>
+            <mat-paginator *ngIf="showPaginator" [pageIndex]="this.metaData?.current_page - 1"
+                [pageSize]="this.metaData?.items_per_page" [length]="this.metaData?.total_items" fxFlex="100"
+                [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons
+                (page)="onPaginatorEvent($event)"></mat-paginator>
+        </div>
+    </mat-card-content>
+
+</mat-card>

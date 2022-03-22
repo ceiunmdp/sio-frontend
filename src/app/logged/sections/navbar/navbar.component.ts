@@ -1,14 +1,17 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
+import { MatDialog, MatDialogRef } from "@angular/material";
 import { Router } from "@angular/router";
-import { Module } from "src/app/_models/menu/module";
+import { Observable } from "rxjs";
+import { ChangePasswordDialogComponent } from "src/app/shared/change-password-dialog/change-password-dialog.component";
+import { ProfileDialogComponent } from "src/app/shared/profile-dialog/profile-dialog.component";
+import { MenuItems } from "src/app/_menu-items/menuItems";
+import { Functionality } from 'src/app/_models/menu/functionality';
 import { User } from "src/app/_models/users/user";
 import { Routes } from "src/app/_routes/routes";
-import { MenuItems } from "src/app/_menu-items/menuItems";
 import { GeneralService } from "src/app/_services/general.service";
 import { AuthenticationService } from "../../../_services/authentication.service";
 import { HttpErrorResponseHandlerService } from "./../../../_services/http-error-response-handler.service";
-import { Observable } from "rxjs";
 
 @Component({
    selector: "cei-navbar",
@@ -17,29 +20,42 @@ import { Observable } from "rxjs";
 })
 export class NavbarComponent implements OnInit {
    user: User;
-   menu: Module;
+   menu: Functionality;
    routes = Routes; // Necessary for the view
    menuItems = MenuItems;
    isDarkTheme$: Observable<boolean>;
+   rootPath: string;
+   profileDialog: MatDialogRef<ProfileDialogComponent>;
+   changePasswordDialog: MatDialogRef<ChangePasswordDialogComponent>;
 
    constructor(
       private generalService: GeneralService,
+      private dialogRef: MatDialog,
       public authService: AuthenticationService,
       private httpErrorResponseHandlerService: HttpErrorResponseHandlerService,
       private router: Router
-   ) {}
+   ) { }
 
    ngOnInit() {
       console.log(MenuItems.ACTIVE_ORDERS);
       this.isDarkTheme$ = this.generalService.getDarkTheme();
 
       this.user = this.authService.currentUserValue;
+      this.rootPath = this.user.rootPath;
       this.getMenu();
    }
 
+   filteredLinks = () => {
+     if (this.authService.currentUserValue && this.authService.currentUserValue.links) {
+       return this.authService.currentUserValue.links.filter(link => link.code === 'faqs_link');
+     }
+     return [];
+   }
+
+
    getMenu() {
       this.generalService.getMenu().subscribe(
-         (modulee: Module) => {
+         (modulee: Functionality) => {
             console.log(modulee);
 
             this.menu = modulee;
@@ -50,9 +66,23 @@ export class NavbarComponent implements OnInit {
       );
    }
 
+   showProfile() {
+      this.dialogRef.open(ProfileDialogComponent).updateSize('40vw')
+   }
+
+   changePassword(user) {
+      this.dialogRef.open(ChangePasswordDialogComponent, {
+        data: {
+          userId: user.id, userName: user.display_name, self: true
+        },
+        minWidth: '40vw'
+      });
+   }
+
    logout() {
       this.authService.logout().subscribe(
          () => {
+           console.log(this.authService.currentUserValue);
             this.authService.removeCurrentUser();
             this.router.navigate([Routes.LOGIN]);
          },

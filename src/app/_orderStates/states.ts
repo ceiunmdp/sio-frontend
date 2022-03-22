@@ -1,15 +1,8 @@
 export enum ORDER_STATES {
-   // IMPRESO = 1,
-   // POR_IMPRIMIR = 2,
-   // SOLICITADO = 3,
-   // EN_PROCESO = 4,
-   // PARA_RETIRAR = 5,
-   // ENTREGADO = 6,
-   // CANCELADO = 7
-   SOLICITADO = 1,
-   EN_PROCESO = 2,
-   PARA_RETIRAR = 3,
-   ENTREGADO = 4,
-   NO_ENTREGADO = 5,
-   CANCELADO = 6
+   SOLICITADO = 'requested',
+   EN_PROCESO = 'in_process',
+   PARA_RETIRAR = 'ready',
+   ENTREGADO = 'delivered',
+   NO_ENTREGADO = 'undelivered',
+   CANCELADO = 'cancelled'
 }

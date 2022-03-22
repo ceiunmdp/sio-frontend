@@ -1,15 +1,25 @@
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { environment } from "src/environments/environment";
-import { Order } from "src/app/_models/orders/order";
-import { HttpParams, HttpHeaders, HttpResponse, HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+import { API } from 'src/app/_api/api';
+import { AND, OR } from 'src/app/_helpers/filterBuilder';
+import { Order } from "src/app/_models/orders/order";
+import { Pagination } from 'src/app/_models/pagination';
+import { ResponseAPI } from 'src/app/_models/response-api';
+import { Sort } from 'src/app/_models/sort';
+import { Student } from 'src/app/_models/users/user';
+import { MOVEMENTS } from "src/app/_movements/movements";
+import { AuthenticationService } from 'src/app/_services/authentication.service';
+import {Printer} from "src/app/_models/printer";
+import { RestUtilitiesService } from 'src/app/_services/rest-utilities.service';
+import { environment } from "src/environments/environment";
 
 @Injectable({
    providedIn: "root"
 })
 export class SedeService {
-   constructor(private http: HttpClient) { }
+   constructor(private http: HttpClient, private restService: RestUtilitiesService, private authService: AuthenticationService) { }
 
    getOrders(active?: boolean): Observable<Order[]> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
@@ -30,46 +40,35 @@ export class SedeService {
          );
    }
 
-   getUsers(name?: string, surname?: string, dni?: string, email?: string): Observable<any> {
+   getStudents(filter?: OR | AND, sort?: Sort[], pagination?: Pagination): Observable<ResponseAPI<Student[]>> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
-      let params = new HttpParams();
-
-      if (name) {
-         params = params.append("name", name);
-      }
-      if (surname) {
-         params = params.append("surname", surname);
-      }
-      if (dni) {
-         params = params.append("dni", dni);
-      }
-      if (email) {
-         params = params.append("email", email);
-      }
-
-      return this.http
-         .get<any>(`${environment.apiUrl}/students`, {
+      const params: HttpParams = this.restService.formatCreateAndAppendQps({ filter, sort, pagination })
+      return this.http.get(environment.apiUrl + API.USERS_STUDENTS,
+         {
             headers: queryHeaders,
             observe: "response",
             params
-         })
-         .pipe(
-            map<HttpResponse<any>, any>(response => {
-               return response.body.data;
+         }).pipe(
+            map<HttpResponse<ResponseAPI<Student[]>>, ResponseAPI<Student[]>>(result => {
+               return result.body;
             })
          );
    }
 
-   chargeBalance(idUser: number, balance: number): Observable<any> {
+   chargeBalance(idUser: number, amount: number): Observable<any> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
       let body;
 
       body = {
-         balance
+         amount,
+         type: {
+            code: MOVEMENTS.TOP_UP
+         },
+         source_id: this.authService.currentUserValue.id,
+         target_id: idUser,
       };
-
       return this.http
-         .patch<any>(`${environment.apiUrl}/students/${idUser}`, JSON.stringify(body), {
+         .post<any>(`${environment.apiUrl}${API.MOVEMENTS}`, JSON.stringify(body), {
             headers: queryHeaders,
             observe: "response"
          })
@@ -80,18 +79,18 @@ export class SedeService {
          );
    }
 
-   patchOrderFile(orderId: number, orderFileId: number, stateId: number): Observable<any> {
+   patchOrderFile(orderId: number, orderFileId: number, stateCode: string, printer_id?: string): Observable<any> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
       let body;
-
       body = {
          state: {
-            id: stateId
-         }
+            code: stateCode
+         },
+         // ! Test printer
+         ...(!!printer_id && { printer_id })
       };
-
       return this.http
-         .patch<any>(`${environment.apiUrl}/user/orders/${orderId}/order-files/${orderFileId}`, JSON.stringify(body), {
+         .patch<any>(`${environment.apiUrl}/orders/${orderId}/order-files/${orderFileId}`, JSON.stringify(body), {
             headers: queryHeaders,
             observe: "response"
          })
@@ -102,18 +101,18 @@ export class SedeService {
          );
    }
 
-   patchOrderRing(orderId: number, ringGroupId: number, stateId: number): Observable<any> {
+   patchOrderRing(orderId: number, ringGroupId: number, stateCode: string): Observable<any> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
       let body;
 
       body = {
          state: {
-            id: stateId
+            code: stateCode
          }
       };
 
       return this.http
-         .patch<any>(`${environment.apiUrl}/user/orders/${orderId}/ringed-groups/${ringGroupId}`, JSON.stringify(body), {
+         .patch<any>(`${environment.apiUrl}/orders/${orderId}/binding-groups/${ringGroupId}`, JSON.stringify(body), {
             headers: queryHeaders,
             observe: "response"
          })
@@ -124,16 +123,16 @@ export class SedeService {
          );
    }
 
-   patchOrder(orderId: number, stateId: number): Observable<any> {
+   patchOrder(orderId: string, stateCode: string): Observable<any> {
       const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
       let body;
       body = {
          state: {
-            id: stateId
+            code: stateCode
          }
       };
       return this.http
-         .patch<any>(`${environment.apiUrl}/user/orders/${orderId}`, JSON.stringify(body), {
+         .patch<any>(`${environment.apiUrl}/orders/${orderId}`, JSON.stringify(body), {
             headers: queryHeaders,
             observe: "response"
          })
@@ -142,5 +141,18 @@ export class SedeService {
                return response.body.data;
             })
          );
+   }
+
+   getPrinters() {
+      const queryHeaders = new HttpHeaders().append("Content-Type", "application/json");
+      return this.http.get(environment.apiUrl + API.PRINTERS,
+          {
+            headers: queryHeaders,
+            observe: "response",
+          }).pipe(
+            map<HttpResponse<ResponseAPI<Printer[]>>, any>(result => {
+                return result.body.data;
+            })
+          );
    }
 }

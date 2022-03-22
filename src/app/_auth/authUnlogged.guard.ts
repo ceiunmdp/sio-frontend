@@ -1,3 +1,4 @@
+import { Routes } from 'src/app/_routes/routes';
 import { Injectable } from '@angular/core';
 import {
     ActivatedRouteSnapshot,
@@ -8,7 +9,6 @@ import {
     Router,
     RouterStateSnapshot
 } from '@angular/router';
-import { Routes } from '../_routes/routes';
 import { AuthenticationService } from '../_services/authentication.service';
 
 @Injectable({
@@ -33,13 +33,14 @@ export class AuthGuardUnlogged implements CanActivate, CanActivateChild, CanLoad
     }
 
     checkUnlogged(url: string): boolean {
-      //   console.log('revisando para el usuario:', this.authService.currentUserValue);
-      //   console.log('Autenticado:', this.authService.isAuthenticated());
+        //   console.log('revisando para el usuario:', this.authService.currentUserValue);
+        //   console.log('Autenticado:', this.authService.isAuthenticated());
         if (!this.authService.isAuthenticated()) {
             // console.log('entrooo');
             return true;
         }
-        this.router.navigate(['/cei/home']);
+        console.log('entro aca, ', url)
+        this.router.navigate([Routes.MAIN]);
         return false;
     }
 

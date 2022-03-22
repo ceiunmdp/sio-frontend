@@ -7,29 +7,13 @@
       <mat-hint *ngIf="!!this.hint">
          {{ this.hint }}
       </mat-hint>
-      <span
-         *ngIf="(!!this.prefix && !!this.showPrefix) || !!this.form.get(this.name).value"
-         matPrefix
-         class="mr-2 text-secondary"
-         >{{ this.prefix }}&nbsp;</span
-      >
-      <input
-         (focus)="this.showPrefix = true; mostrar()"
-         (focusout)="this.showPrefix = false"
-         matInput
-         [formControlName]="name"
-         id="{{ name }}"
-         name="{{ name }}"
-         type="number"
-         placeholder="{{ placeholder }}"
-         [readonly]="readonly"
-         [attr.disabled]="disabled ? '' : null"
-         min="{{ minValue }}"
-         max="{{ maxValue }}"
-      />
+      <span *ngIf="(!!this.prefix && !!this.showPrefix) || !!this.form.get(this.name).value" matPrefix
+         class="mr-2 text-secondary">{{ this.prefix }}&nbsp;</span>
+      <input (focus)="this.showPrefix = true" (focusout)="this.showPrefix = false" matInput [formControlName]="name"
+         id="{{ name }}" name="{{ name }}" type="number" placeholder="{{ placeholder }}" [readonly]="readonly"
+         [attr.disabled]="disabled ? '' : null" min="{{ minValue }}" max="{{ maxValue }}" />
       <mat-error
-         *ngIf="this.form.get(this.name).errors && (this.form.get(this.name).dirty || this.form.get(this.name).touched)"
-      >
+         *ngIf="this.form.get(this.name).errors && (this.form.get(this.name).dirty || this.form.get(this.name).touched)">
          {{ objectValues(this.form.get(this.name).errors)[0] }}
       </mat-error>
    </mat-form-field>

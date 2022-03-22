@@ -25,9 +25,17 @@
                   "aot": false,
                   "assets": [
                      "src/favicon.ico",
-                     "src/assets"
+                     "src/assets",
+                     "src/manifest.webmanifest",
+                     {
+                        "glob": "**/*",
+                        "input": "node_modules/ngx-auth-firebaseui/assets/",
+                        "output": "./assets/"
+                     }
                   ],
                   "styles": [
+                     "./node_modules/filepond/dist/filepond.min.css",
+                     "./node_modules/@ng-select/ng-select/themes/material.theme.css",
                      "src/styles.scss",
                      "src/theme.scss"
                   ],
@@ -61,7 +69,9 @@
                            "maximumWarning": "6kb",
                            "maximumError": "10kb"
                         }
-                     ]
+                     ],
+                     "serviceWorker": true,
+                     "ngswConfigPath": "ngsw-config.json"
                   }
                }
             },
@@ -91,7 +101,13 @@
                   "karmaConfig": "karma.conf.js",
                   "assets": [
                      "src/favicon.ico",
-                     "src/assets"
+                     "src/assets",
+                     "src/manifest.webmanifest",
+                     {
+                        "glob": "**/*",
+                        "input": "node_modules/ngx-auth-firebaseui/assets/",
+                        "output": "./assets/"
+                     }
                   ],
                   "styles": [
                      "src/styles.scss"

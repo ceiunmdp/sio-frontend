@@ -1,7 +1,4 @@
-import { Year } from './year';
-
 export interface Career {
-    id: number;
+    id: string;
     name: string;
-    children: Year[];
 }

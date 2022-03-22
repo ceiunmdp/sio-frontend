@@ -1,7 +1,10 @@
+import { ITEM_TYPES } from 'src/app/_items/types';
 export interface Item {
-   id: number;
+   id: string;
+   code: string;
    name: string;
    price: number;
+   type: ITEM_TYPES;
+   //NO SE SI VA
    maximumLimit: number;
-   type: number;
 }

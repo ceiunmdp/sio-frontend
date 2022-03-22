@@ -1,7 +1,8 @@
-import { Course } from './course';
+import { Career } from './career';
 
+// TODO: DEPRECATED -> USE RELATION
 export interface Year {
-    id: number;
+    id: string;
     name: string;
-    children: Course[];
+    careers: Career[];
 }

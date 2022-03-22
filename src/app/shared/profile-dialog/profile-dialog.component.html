@@ -1,0 +1,47 @@
+<h1 mat-dialog-title>Edicion de perfil</h1>
+<form [formGroup]="this.userForm" *ngIf="!!this.userForm">
+    <div mat-dialog-content>
+        <cei-text-input [clearable]="true" [name]="this.NAME" [form]="this.userForm"
+            [placeholder]="'Nombre del usuario'">
+        </cei-text-input>
+        <cei-text-input [clearable]="true" [name]="this.EMAIL" [form]="this.userForm"
+            [placeholder]="'Email del usuario'">
+        </cei-text-input>
+        <span *ngIf="this.user.type === this.USER_TYPES.ESTUDIANTE ||
+        this.user.type === this.USER_TYPES.BECADO">
+            <cei-text-input placeholder="Ingrese su numero de DNI" [form]="this.userForm" [name]="this.DNI" [label]="'DNI'">
+            </cei-text-input>
+        </span>
+    </div>
+    <div mat-dialog-actions>
+        <button type="button" mat-raised-button mat-dialog-close color="warn">Cerrar</button>
+        <button type="button" (click)="this.onSubmit(this.user.type)" [disabled]="!userForm.valid || isSent"
+            mat-raised-button [color]="!isSent ? 'primary' : 'accent'">
+            <mat-icon *ngIf="!userForm.valid; else saveIcon">lock</mat-icon>
+        <ng-template #saveIcon>
+            <mat-icon *ngIf="userForm.valid && !isLoadingPatchUser && !isSent; else elseIf">save</mat-icon>
+        </ng-template>
+        <span *ngIf="!isLoadingPatchUser && !isSent">
+            Enviar
+        </span>
+        <span *ngIf="userForm.valid && isLoadingPatchUser && !isSent">
+            Enviando
+        </span>
+        <span *ngIf="!isLoadingPatchUser && isSent">
+            Enviado!
+        </span>
+        <ng-template #elseIf>
+            <mat-icon *ngIf="!isLoadingPatchUser && isSent; else loadingIcon">
+                done
+            </mat-icon>
+        </ng-template>
+        <ng-template #loadingIcon>
+            <mat-icon>
+                <mat-spinner color="accent" diameter="20">
+                </mat-spinner>
+            </mat-icon>
+        </ng-template>
+        </button>
+    </div>
+</form>
+<cei-alert-error #alertError></cei-alert-error>

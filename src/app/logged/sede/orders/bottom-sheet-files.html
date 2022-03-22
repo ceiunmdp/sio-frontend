@@ -2,7 +2,7 @@
    <h2 class="text-secondary">
       Detalles del pedido
       <span class="text-secondary">
-         #{{this.order.id}}
+         #{{this.order.id_number}}
       </span>
    </h2>
 </div>
@@ -10,23 +10,24 @@
    <div>
       <h4 class="text-secondary">Estado:
          <span class="text-secondary-darker">
-            {{this.order.state.name}}
+            {{this.actualState.name}}
          </span>
       </h4>
    </div>
    <mat-accordion>
-      <mat-expansion-panel *ngFor="let orderFile of this.order.orderFiles; let i=index">
+      <mat-expansion-panel *ngFor="let orderFile of this.order.orderFiles; let i=index" [expanded]="this.expanded === i"
+       (opened)="this.expanded = i" (closed)="this.expanded = null">
          <mat-expansion-panel-header>
             <mat-panel-description>
                <span>
-                  <span [ngClass]="{'text-primary': orderFile.state.id == FILE_STATES.POR_IMPRIMIR}">
+                  <span [ngClass]="{'text-primary': orderFile.state.code == FILE_STATES.TO_PRINT}">
                      {{ orderFile.state.name }}
                   </span>
                   - {{orderFile.file.name | titlecase}}
                   <b> </b>
-                  <span class="text-secondary">
+                  <!-- <span class="text-secondary">
                      ({{orderFile.file.course.name}})
-                  </span>
+                  </span> -->
                </span>
             </mat-panel-description>
          </mat-expansion-panel-header>
@@ -34,66 +35,80 @@
             <div fxLayout="row">
                <div fxLayout="column" fxFlex="50">
                   <p fxLayoutAlign="start center">
-                     <mat-icon color="primary">keyboard_arrow_right</mat-icon> {{ orderFile.configuration.doubleFace ?
-                     "Simple faz" : "Doble faz" }}
+                     <mat-icon color="primary">keyboard_arrow_right</mat-icon> {{ orderFile.configuration.double_sided ?
+                     "Doble faz" : "Simple faz" }}
                   </p>
                   <p fxLayoutAlign="start center">
-                     <mat-icon color="primary">keyboard_arrow_right</mat-icon>Diapositivas por hoja: {{
-                     orderFile.configuration.slidesPerSheet }}
+                     <mat-icon color="primary">keyboard_arrow_right</mat-icon>Páginas por hoja: {{
+                     orderFile.configuration.slides_per_sheet }}
                   </p>
-                  <p fxLayoutAlign="start center" *ngIf="!!orderFile.configuration.fromUntil">
+                  <p fxLayoutAlign="start center" *ngIf="!!orderFile.configuration.range">
                      <mat-icon color="primary">keyboard_arrow_right</mat-icon>Páginas: {{
-                     orderFile.configuration.fromUntil }}
+                     orderFile.configuration.range }}
+                     <mat-icon class="clickable mxs-5 text-secondary mat-icon-medium" ngxClipboard (cbOnSuccess)="this.configurationRangeCopied = orderFile.configuration.id" [cbContent]="orderFile.configuration.range">content_copy</mat-icon>
+                     <i class="text-secondary" *ngIf="this.configurationRangeCopied === orderFile.configuration.id">
+                      Rango copiado!
+                     </i>
                   </p>
-                  <p fxLayoutAlign="start center" *ngIf="!!orderFile.configuration.color">
-                     <mat-icon color="primary">keyboard_arrow_right</mat-icon>Color {{ orderFile.configuration.color ?
-                     "✔" : "✘" }}
+                  <p fxLayoutAlign="start center">
+                     <mat-icon color="primary">keyboard_arrow_right</mat-icon>{{ orderFile.configuration.colour ?
+                     "Color" : "Blanco y negro" }}
                   </p>
                </div>
                <h2 fxFlex="50" fxLayoutAlign="center center" class="text-secondary">
                   $
-                  <h5 class="ml-2">
-                     {{orderFile.price}}
-                  </h5>
+                  <span class="ml-2 mat-display-1 mb-0">
+                     {{orderFile.itemPrice}}
+                  </span>
                </h2>
             </div>
-            <div class="separator separator-center mt-1">
-               <mat-icon class="text-secondary">print</mat-icon>
-            </div>
-            <div fxLayout="row" class="mt-2">
-               <div fxFlex="60" fxLayoutAlign="start center">
-                  <button [color]="'accent'" *ngIf="orderFile.state.id == FILE_STATES.IMPRESO; else spanPorImprimir"
-                     mat-button (click)="onChangeFileState(order.id, orderFile.id,FILE_STATES.POR_IMPRIMIR)">
-                     Por imprimir
-                  </button>
-                  <ng-template #spanPorImprimir>
-                     <span class="text-secondary mr-2">
-                        Por imprimir
-                     </span>
-                  </ng-template>
+            <ng-container *ngIf="this.order.state.code !== ORDER_STATES.CANCELADO && this.order.state.code !== ORDER_STATES.NO_ENTREGADO && (orderFile.state.code == FILE_STATES.PRINTING || orderFile.state.code == FILE_STATES.TO_PRINT)">
+              <div class="separator separator-center mt-1">
+                 <mat-icon class="text-secondary">print</mat-icon>
+              </div>
+              <div fxLayout="row" fxFlex="100" fxLayoutAlign="space-between center" class="mt-2">
+                <!-- <div fxFlex="1 1 auto">
+                  <cei-select-input [disabled]="orderFile.isLoading || orderFile.state.code == FILE_STATES.PRINTING" [name]="this.PRINTER_NAME"
+                      [form]="this.printerForm" [placeholder]="'Seleccione el método de impresión'"
+                      [elements]="this.printers" >
+                  </cei-select-input>
+                </div> -->
+                <!-- <div fxFlex="1 1 auto" fxLayoutAlign="center"> -->
+                  <div fxFlex="33">
 
-                  <mat-icon class="text-secondary"
-                     [ngStyle]="{'transform': orderFile.state.id == FILE_STATES.IMPRESO ? 'rotate(180deg)' : ''}">
-                     label_important</mat-icon>
-                  <button *ngIf="orderFile.state.id == FILE_STATES.POR_IMPRIMIR; else spanImpreso" mat-button
-                     [color]="'accent'" (click)="onChangeFileState(order.id, orderFile.id,FILE_STATES.IMPRESO)">
-                     Imprimir
+                  </div>
+                  <button fxFlex="33" mat-flat-button [disabled]="orderFile.isLoading || orderFile.state.code == FILE_STATES.PRINTING" [color]="'accent'" (click)="onPrintFile(order.id, orderFile)">
+                      <span *ngIf="!orderFile.isLoading; else loadingIcon">
+                        <!-- {{this.printerForm.get(this.PRINTER_NAME).value == 0 ? 'Cambiar a impreso' : 'Imprimir'}} -->
+                        Imprimir
+                      </span>
+                      <ng-template #loadingIcon>
+                        <mat-icon>
+                            <mat-spinner color="accent" diameter="20">
+                            </mat-spinner>
+                        </mat-icon>
+                      </ng-template>
                   </button>
-                  <ng-template #spanImpreso>
-                     <span class="text-secondary ml-2">
-                        Impreso
-                     </span>
-                  </ng-template>
-               </div>
-               <div fxFlex="40" fxLayoutAlign="center center">
-                  <button mat-icon-button class="text-accent">
-                     <mat-icon>open_in_new</mat-icon>
-                     <!-- Abrir archivo -->
+                <!-- </div> -->
+                <div fxFlex="33" fxLayoutAlign="end center">
+                  <button mat-icon-button class="text-accent" (click)="openFile(orderFile.file)">
+                      <mat-icon>open_in_new</mat-icon>
+                      <!-- Abrir archivo -->
                   </button>
-               </div>
-            </div>
+                 </div>
+              </div>
+            </ng-container>
          </div>
       </mat-expansion-panel>
+      <ng-template #loadingDiv>
+        <div fxFlex="100" fxLayoutAlign="center center">
+          <mat-icon>
+              <mat-spinner color="accent" diameter="20">
+              </mat-spinner>
+          </mat-icon>
+        </div>
+      </ng-template>
+
       <!-- Anillados -->
       <mat-expansion-panel *ngFor="let ringed of this.ringedGroups; let i=index">
          <mat-expansion-panel-header>
@@ -106,41 +121,60 @@
             </mat-panel-description>
          </mat-expansion-panel-header>
          <div class="ml-5 text-secondary-darker">
-            <mat-list dense>
-               <mat-list-item *ngFor="let fileRinged of ringed.files; let i=index">
-                  <b class="text-secondary">
-                     {{i+1 + '° &nbsp;'}}
-                  </b>
-                  <span class="text-secondary-darker"> <b>{{fileRinged.name}}</b> &nbsp; ({{fileRinged.course}}) </span>
-               </mat-list-item>
-            </mat-list>
-            <div class="separator separator-center mt-1">
+           <div fxLayout="row">
+             <mat-list dense fxFlex="50">
+                <mat-list-item *ngFor="let fileRinged of ringed.files; let i=index">
+                   <b class="text-secondary">
+                      {{i+1 + '° &nbsp;'}}
+                   </b>
+                   <!-- <span class="text-secondary-darker"> <b>{{fileRinged.name}}</b> &nbsp; ({{fileRinged.course}}) </span> -->
+                   <span class="text-secondary-darker"> <b>{{fileRinged}}</b> </span>
+                </mat-list-item>
+             </mat-list>
+             <h2 fxFlex="50" fxLayoutAlign="center center" class="text-secondary">
+                  $
+                  <span class="ml-2 mat-display-1 mb-0">
+                     {{ringed.price}}
+                  </span>
+               </h2>
+           </div>
+            <div class="separator separator-center mt-1" *ngIf="this.order.state.code !== ORDER_STATES.CANCELADO && this.order.state.code !== ORDER_STATES.NO_ENTREGADO && ringed.state.code == RING_STATES.TO_RING">
                <mat-icon class="text-secondary">check_circle_outline</mat-icon>
             </div>
 
-            <div fxLayoutAlign="center center">
-               <button [color]="'accent'" *ngIf="ringed.state.id == RING_STATES.ANILLADO; else spanPorAnillar"
-                  mat-button (click)="onChangeRingState(order.id, ringed.id, RING_STATES.POR_ANILLAR)">
+            <div fxLayoutAlign="center center" *ngIf="this.order.state.code !== ORDER_STATES.CANCELADO && this.order.state.code !== ORDER_STATES.NO_ENTREGADO && ringed.state.code == RING_STATES.TO_RING">
+               <!-- <button [color]="'accent'" *ngIf="ringed.state.code == RING_STATES.RINGED; else spanPorAnillar"
+                  mat-button (click)="onChangeRingState(order.id, ringed.id, RING_STATES.TO_RING)">
                   Por anillar
                </button>
                <ng-template #spanPorAnillar>
                   <span class="text-secondary mr-2">
                      Por anillar
                   </span>
-               </ng-template>
-
+                </ng-template> -->
+                <span class="text-secondary mr-2">
+                   Por anillar
+                </span>
                <mat-icon class="text-secondary"
-                  [ngStyle]="{'transform': ringed.state.id == RING_STATES.ANILLADO ? 'rotate(180deg)' : ''}">
+                  [ngStyle]="{'transform': ringed.state.code == RING_STATES.RINGED ? 'rotate(180deg)' : ''}">
                   label_important</mat-icon>
-               <button *ngIf="ringed.state.id == RING_STATES.POR_ANILLAR; else spanAnillado" mat-button
-                  [color]="'accent'" (click)="onChangeRingState(order.id, ringed.id, RING_STATES.ANILLADO)">
+               <button mat-button
+                  [color]="'accent'" (click)="onChangeRingState(order.id, ringed.id, RING_STATES.RINGED)">
+                  Anillar
+               </button>
+<!--
+               <mat-icon class="text-secondary"
+                  [ngStyle]="{'transform': ringed.state.code == RING_STATES.RINGED ? 'rotate(180deg)' : ''}">
+                  label_important</mat-icon>
+               <button *ngIf="ringed.state.code == RING_STATES.TO_RING else spanAnillado" mat-button
+                  [color]="'accent'" (click)="onChangeRingState(order.id, ringed.id, RING_STATES.RINGED)">
                   Anillar
                </button>
                <ng-template #spanAnillado>
                   <span class="text-secondary ml-2">
                      Anillado
                   </span>
-               </ng-template>
+               </ng-template> -->
             </div>
 
          </div>

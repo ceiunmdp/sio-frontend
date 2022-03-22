@@ -1,8 +1,11 @@
 import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
-import { OrdersComponent } from "./orders/orders.component";
+import { RouterModule, Routes } from "@angular/router";
+import { MovementsComponent } from "../../shared/movements/movements/movements.component";
 import { ChargeBalanceComponent } from "./charge-balance/charge-balance.component";
-import { HistoricOrdersComponent } from "./historic-orders/historic-orders.component";
+import {HistoricOrdersComponent} from "./historic-orders/historic-orders.component";
+import { HomeSedeComponent } from "./home-sede/home-sede.component";
+import { OrdersComponent } from "./orders/orders.component";
+import {FilesComponent} from 'src/app/shared/files/files/files.component';
 
 const routes: Routes = [
    {
@@ -10,16 +13,28 @@ const routes: Routes = [
       redirectTo: "pedidos"
    },
    {
+      path: "home",
+      component: HomeSedeComponent
+   },
+   {
       path: "pedidos",
       component: OrdersComponent
    },
    {
-      path: "pedidos-historico",
+      path: "pedidos-historicos",
       component: HistoricOrdersComponent
    },
    {
       path: "estudiantes",
       component: ChargeBalanceComponent
+   },
+   {
+    path: 'archivos',
+    component: FilesComponent,
+   },
+   {
+      path: "movimientos",
+      component: MovementsComponent
    }
 ];
 

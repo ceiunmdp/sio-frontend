@@ -1,32 +1,40 @@
-import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { MatTableModule } from "@angular/material/table";
-import { SedeRoutingModule } from "./sede-routing.module";
-import { OrdersComponent, BottomSheetFiles } from "./orders/orders.component";
-import { ChargeBalanceComponent, BottomChargeBalance } from "./charge-balance/charge-balance.component";
-import { UtilsModule } from "src/app/_utils/utils.module";
-import { FlexLayoutModule } from "@angular/flex-layout";
-import { MatButtonModule } from "@angular/material/button";
-import { MatCardModule } from "@angular/material/card";
-import { MatDividerModule } from "@angular/material/divider";
-import { ReactiveFormsModule } from "@angular/forms";
-import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
-import { HistoricOrdersComponent } from "./historic-orders/historic-orders.component";
-import { MatIconModule, MatPaginatorModule, MatInputModule, MatSortModule, MatMenuModule } from "@angular/material";
-import { MatExpansionModule } from "@angular/material/expansion";
-import { MatListModule } from "@angular/material/list";
-
+import {CommonModule} from "@angular/common";
+import {NgModule} from "@angular/core";
+import {FlexLayoutModule} from "@angular/flex-layout";
+import {ReactiveFormsModule} from "@angular/forms";
+import {MatIconModule, MatInputModule, MatMenuModule, MatPaginatorModule, MatProgressSpinnerModule, MatSortModule} from "@angular/material";
+import {MatButtonModule} from "@angular/material/button";
+import {MatCardModule} from "@angular/material/card";
+import {MatDividerModule} from "@angular/material/divider";
+import {MatExpansionModule} from "@angular/material/expansion";
+import {MatListModule} from "@angular/material/list";
+import {MatTableModule} from "@angular/material/table";
+import {SweetAlert2Module} from "@sweetalert2/ngx-sweetalert2";
+import {LottieModule} from "ngx-lottie";
+import {MovementsModule} from "src/app/shared/movements/movements.module";
+import {UtilsModule} from "src/app/_utils/utils.module";
+import {BottomChargeBalance, ChargeBalanceComponent} from "./charge-balance/charge-balance.component";
+import {HistoricOrdersComponent} from "./historic-orders/historic-orders.component";
+import {BottomSheetFiles, OrdersComponent} from "./orders/orders.component";
+import {SedeRoutingModule} from "./sede-routing.module";
+import player from 'lottie-web';
+import {HomeSedeComponent} from "./home-sede/home-sede.component";
+import {FilesModule} from 'src/app/shared/files/files.module';
+import { ClipboardModule } from 'ngx-clipboard';
+export function playerFunction () { return player; }
 @NgModule({
    declarations: [
       OrdersComponent,
       ChargeBalanceComponent,
       BottomChargeBalance,
       HistoricOrdersComponent,
+      HomeSedeComponent,
       BottomSheetFiles
    ],
    imports: [
       CommonModule,
       SedeRoutingModule,
+      MovementsModule,
       MatTableModule,
       UtilsModule,
       MatButtonModule,
@@ -41,7 +49,11 @@ import { MatListModule } from "@angular/material/list";
       MatInputModule,
       MatSortModule,
       MatMenuModule,
-      SweetAlert2Module.forRoot()
+      FilesModule,
+      ClipboardModule,
+      MatProgressSpinnerModule,
+      SweetAlert2Module.forRoot(),
+      LottieModule.forRoot({ player: playerFunction }),
    ],
    entryComponents: [BottomChargeBalance, BottomSheetFiles]
 })

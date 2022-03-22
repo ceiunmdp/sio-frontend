@@ -1,85 +1,106 @@
-<div style="min-height: 100vh;">
-   <cei-header></cei-header>
-   <!-- Container padre de las cards (filas)-->
-   <div class="mt-4" fxLayout="row wrap" fxLayoutAlign="center start">
-      <!-- <mat-card class="m-0" fxFlex.lt-md="100" fxFlex.gt-md="40" fxFlexOffset.gt-sm="5%"
-          [ngClass.lt-md]="{ 'border-radius-0': true}"> -->
-      <mat-card class="m-0" fxFlex.lt-md="100" fxFlex.gt-md="40" [ngClass.lt-md]="{ 'border-radius-0': true}">
-         <mat-card-content>
-            <mat-tab-group #tabs [selectedIndex]="selectedTab" [color]="'accent'" mat-stretch-tabs
-               mat-align-tabs="center">
-               <mat-tab class="p-5">
-                  <ng-template mat-tab-label>
-                     <mat-icon class="example-tab-icon">exit_to_app</mat-icon>
-                     <span class="ml-2">Iniciar sesión</span>
-                  </ng-template>
-                  <mat-card>
-                     <mat-card-content>
-                        <form fxLayout="column" [formGroup]="formLogin" (ngSubmit)="onLogin()">
-                           <!-- <cei-input-text fxFlexOffset="10px" [name]="'email'" [form]="formLogin" [type]="'text'"
-                              [placeholder]="'Ingrese su email'">
-                           </cei-input-text> -->
-                           <cei-email-input class="mt-2" [form]="formLogin" [name]="'email'"
-                              [placeholder]="'Ingrese su email'" [clearable]="true">
-                           </cei-email-input>
-                           <!-- <cei-input-text [name]="'password'" [form]="formLogin" [type]="'password'"
-                              [placeholder]="'Ingrese su contraseña'">
-                           </cei-input-text> -->
+<div class="content" fxLayout="column" fxLayoutAlign="stretch">
+   <cei-header fxHide fxShow.lt-md></cei-header>
+   <div fxFlex="100" fxLayoutAlign="stretch stretch" >
+      <div fxHide fxShow.gt-sm fxFlex="35" fxLayout="column wrap"
+        [style.background-image]="'url(../../../assets/images/login.jpg)'"
+        fxLayoutAlign="space-between center" class="img-overlay-side">
+        <div fxFlex="66" style="z-index: 3 !important;" fxLayoutAlign="center center" fxLayout="column">
+          <img
+              src="../../../assets/images/cei-verde.png"
+              class="logo mbs-4" />
+          <!-- <div style="text-align: center; text-justify: inter-word;">
+            <h1 style="text-align: center;" fxLayoutAlign="center center" style="color: white">
+              Sistema online de impresiones
+            </h1>
+          </div> -->
+        </div>
+        <div fxFlex="33" fxLayoutAlign="center center">
+          <!-- <img *ngIf="(this.tenant$ | async)?.logo" [src]="this.generalService.sanitizeUrl((this.tenant$ | async)?.logo)"
+              class="logo" /> -->
+        </div>
+        <!-- <div fxFlex="10" fxLayoutAlign="center center">
+              <b class=" mat-h3 mts-1" style="color: white;margin: 0; opacity: 1;">
+                Powered by
+              </b>
+              <img class="logoTramontech" src="assets/logos/simfinix/logotext.png">
 
-                           <cei-password-input class="mt-2 mb-3" [name]="'password'" [form]="formLogin"
-                              [placeholder]="'Ingrese su contraseña'">
-                           </cei-password-input>
+          </div> -->
+          <div fxFlex="33">
 
-                           <button mat-flat-button type="submit" color="primary"
-                              [disabled]="!formLogin.valid">Ingresar</button>
-                           <cei-alert [message]='this.messageAlert' [type]='this.typeAlert'></cei-alert>
-                        </form>
-                        <div class="my-2">
-                           <a [routerLink]="['/']" class="text-primary-darker">
-                              ¿Olvidaste tu contraseña?
-                           </a>
-                        </div>
-                     </mat-card-content>
-                  </mat-card>
-               </mat-tab>
-               <mat-tab label="Registrarse">
-                  <mat-card class="border-radius-0">
-                     <ng-template mat-tab-label>
-                        <mat-icon class="example-tab-icon">assignment_ind</mat-icon>
-                        <span class="ml-2">Registrarse</span>
-                     </ng-template>
-                     <mat-card-content>
-                        <form fxLayout="column" [formGroup]="formRegister" (ngSubmit)="onRegister()">
-                           <cei-input-text [form]="formRegister" [name]="'name'" [type]="'text'"
-                              [placeholder]="'Ingrese su nombre'">
-                           </cei-input-text>
-                           <cei-input-text [form]="formRegister" [name]="'surname'" [type]="'text'"
-                              [placeholder]="'Ingrese su apellido'">
-                           </cei-input-text>
-                           <cei-input-text [form]="formRegister" [name]="'email'" [type]="'text'"
-                              [placeholder]="'Ingrese su email'">
-                           </cei-input-text>
-                           <cei-input-text [form]="formRegister" [name]="'dni'" [type]="'number'"
-                              [placeholder]="'Ingrese su dni'">
-                           </cei-input-text>
-                           <cei-input-text [form]="formRegister" [name]="'password'" [type]="'password'"
-                              [placeholder]="'Ingrese su contraseña'">
-                           </cei-input-text>
-                           <button mat-flat-button type="submit" color="primary"
-                              [disabled]="!formRegister.valid">Registrarse</button>
-                        </form>
-                     </mat-card-content>
-                  </mat-card>
-               </mat-tab>
-            </mat-tab-group>
-         </mat-card-content>
-      </mat-card>
-      <!-- <cei-animated-text></cei-animated-text> -->
+          </div>
+        <!-- <div fxLayoutAlign="center center" fxLayout="column">
+          <div fxLayoutAlign="center center">
+              <b class=" mat-h3 mts-1" style="color: white;margin: 0; opacity: 1;">
+                Powered by
+              </b>
+              <img class="logoTramontech" src="assets/logos/simfinix/logotext.png">
+          </div>
+          <span class="text-secondary-lighter" style=" opacity: 1;">
+              v&nbsp;{{pjson.version}}
+          </span>
+        </div> -->
+      </div>
+      <div fxFlex.lt-md="100" fxFlex.gt-sm="65" fxLayout="row wrap" fxLayoutAlign="center center" fxFlexOrder.lt-md="2">
+        <div class="mb-5" fxFlex="100" fxLayoutAlign="center center">
+          <h1 class="mb-5">
+            Sistema online de impresiones
+          </h1>
+        </div>
+        <ngx-auth-firebaseui [ngClass]="{'mat-elevation-z6': this.showElevation}" *ngIf="!this.isLoading; else loadingDiv" fxFlex.lt-md="100" fxFlex.gt-sm="60" [signInTabText]="'Iniciar Sesión'"
+          [signInCardTitleText]="'Ingresá tus credenciales'" [loginButtonText]="'Ingresar' "
+          [forgotPasswordButtonText]="'Olvidé mi contraseña'" [nameText]="'Nombre' "
+          [nameErrorRequiredText]="'El nombre es requerido'" [nameErrorMinLengthText]="'El nombre es muy corto!' "
+          [nameErrorMaxLengthText]="'El nombre es muy largo!' " [emailText]="'E-mail'"
+          [emailErrorRequiredText]="'El e-mail es requerido' "
+          [emailErrorPatternText]="'El formato del e-mail no es válido' " [passwordText]="'Contraseña'"
+          [passwordErrorRequiredText]="'La contraseña es requerida' " [registerTabText]="'Registrarse'"
+          [registerCardTitleText]="'Completá el formulario de registro' " [registerButtonText]="'Registrarme' "
+          [guestButtonText]="'Continuar como invitado' " [resetPasswordTabText]="'Resetear contraseña' "
+          [resetPasswordInputText]="'Ingrese su e-mail' " [resetPasswordErrorRequiredText]="'El e-mail es requerido' "
+          [resetPasswordErrorPatternText]="'El formato del e-mail no es válido'"
+          [resetPasswordActionButtonText]="'Resetear'"
+          [resetPasswordInstructionsText]="'Te enviamos un mail a la casilla indicada. Seguí las instrucciones para reestablecer tu contraseña' "
+          [sendNewVerificationEmailText]="'Enviar un nuevo e-mail de confirmación'" [messageOnEmailConfirmationSuccess]="'
+          Se ha enviado un nuevo correo electrónico de confirmación.'" [signOutText]="'Salir'"
+          [verifyEmailGoBackText]="'Volver'" [verifyEmailTitleText]="'¡Sólo falta confirmar tu dirección de correo!'"
+          [verifyEmailConfirmationText]="'Te acabamos de enviar un correo electrónico de confirmación. Para validar tu cuenta, revisá la bandeja de entrada y hacé clic en el enlace adjunto.'"
+          (onSuccess)="this.onSuccess($event)" [emailConfirmationTitle]="'?' " [emailConfirmationText]="'?' "
+          (onError)="this.onError($event)" [guestEnabled]="false" [providers]="[]">
+
+        </ngx-auth-firebaseui>
+        <div>
+
+        </div>
+
+        <ng-template #loadingDiv>
+            <app-spinner fxFlex="100" fxLayoutAlign="center start"></app-spinner>
+        </ng-template>
+      </div>
    </div>
-   <!-- <cei-footer></cei-footer> -->
+
+   <!-- <ngx-auth-firebaseui-avatar [links]="[{text:'probando'}]"></ngx-auth-firebaseui-avatar> -->
+   <!-- <cei-footer>
+      </cei-footer> -->
+
+
+
+   <!-- <ngx-auth-firebaseui [signInTabText]="'Iniciar Sesión'" [signInCardTitleText]="'Ingresá tus credenciales'"
+   [loginButtonText]="'Ingresar' " [forgotPasswordButtonText]="'Olvidé mi contraseña'" [nameText]="'Nombre' "
+   [nameErrorRequiredText]="'El nombre es requerido'" [nameErrorMinLengthText]="'El nombre es muy corto!' "
+   [nameErrorMaxLengthText]="'El nombre es muy largo!' " [emailText]="'E-mail'"
+   [emailErrorRequiredText]="'El e-mail es requerido' " [emailErrorPatternText]="'El formato del e-mail no es válido' "
+   [passwordText]="'Contraseña'" [passwordErrorRequiredText]="'La contraseña es requerida' "
+   [registerTabText]="'Registrarse'" [registerCardTitleText]="'Completá el formulario de registro' "
+   [registerButtonText]="'Registrarme' " [guestButtonText]="'Continuar como invitado' "
+   [resetPasswordTabText]="'Resetear contraseña' " [resetPasswordInputText]="'Ingrese su e-mail' "
+   [resetPasswordErrorRequiredText]="'El e-mail es requerido' "
+   [resetPasswordErrorPatternText]="'El formato del e-mail no es válido'" [resetPasswordActionButtonText]="'Resetear' "
+   [resetPasswordInstructionsText]="'Te enviamos un mail a la casilla indicada. Seguí las instrucciones para reestablecer tu contraseña' "
+   [emailConfirmationTitle]="'?' " [emailConfirmationText]="'?' " [guestEnabled]="false">
+</ngx-auth-firebaseui> -->
 </div>
 
 <cei-alert-error #alertError></cei-alert-error>
 <swal #registerSuccessSwal title="Te registraste correctamente" text="Se te envió un mail de confirmación a tu correo"
-   icon="success" [confirmButtonText]="'Ok'" (confirm)="this.cleanForms()">
+   icon="success" [confirmButtonText]="'Ok'">
 </swal>

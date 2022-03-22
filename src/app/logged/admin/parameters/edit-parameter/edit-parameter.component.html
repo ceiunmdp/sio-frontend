@@ -1,0 +1,51 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Editar Parametrica</mat-card-title>
+        <mat-card-subtitle>{{!!this.parameter ? this.parameter.name : ''}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <form fxFlex="100" class="mts-3" (submit)="onSubmitItemForm()"
+            *ngIf="!!this.parameterForm ; else loadingDiv" fxLayoutGap="2%" fxFlex="100"
+            class=" mxs-2" [formGroup]="parameterForm" fxLayout="column">
+            <div [ngSwitch]="parameter.code">
+              <cei-text-input *ngSwitchCase="parameter.code === 'faqs_link' || parameter.code === 'facebook_link' || parameter.code === 'instagram_link' ? parameter.code: '' " [name]="this.NAMES_FORM_PATCH_PARAMETER.PARAMETER_VALUE" [form]="this.parameterForm"
+              [placeholder]="'Valor del parametro'">
+              </cei-text-input>
+              <cei-number-input *ngSwitchDefault [name]="this.NAMES_FORM_PATCH_PARAMETER.PARAMETER_VALUE" [form]="this.parameterForm"
+              [placeholder]="'Valor del parametro'" [minValue] = 0>
+              </cei-number-input>
+            </div>
+            <!-- Actions Buttons -->
+            <div fxLayoutAlign="space-around stretch" class="mts-5">
+                <button mat-raised-button [color]="'warn'" [disabled]="isLoadingPatchParameter"
+                    (click)="this.onClickCancel()" type="button">
+                    <span>
+                        Cancelar
+                    </span>
+                </button>
+                <button mat-raised-button [color]="'primary'" [disabled]="!parameterForm.valid || this.isLoadingPatchParameter"
+                    type="submit">
+                    <mat-icon *ngIf="!parameterForm.valid; else saveIcon">lock</mat-icon>
+                    <ng-template #saveIcon>
+                        <mat-icon *ngIf="parameterForm.valid && !isLoadingPatchParameter; else loadingIcon">save</mat-icon>
+                    </ng-template>
+                    <span>
+                        Confirmar
+                    </span>
+                    <ng-template #loadingIcon>
+                        <mat-icon>
+                            <mat-spinner color="accent" diameter="20">
+                            </mat-spinner>
+                        </mat-icon>
+                    </ng-template>
+                </button>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>
+
+<cei-alert-error #alertError></cei-alert-error>
+
+<ng-template #loadingDiv>
+    <app-spinner fxFlex="100" fxLayoutAlign="center start"></app-spinner>
+</ng-template>

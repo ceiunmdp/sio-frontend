@@ -1,5 +1,5 @@
-import { Component, OnInit, Input } from "@angular/core";
-import { MatSnackBar } from "@angular/material";
+import { Component, OnInit, Inject } from "@angular/core";
+import { MatSnackBar, MAT_SNACK_BAR_DATA } from "@angular/material";
 import { AlertErrorChildComponent } from "./alert-error-child/alert-error-child.component";
 
 @Component({
@@ -9,9 +9,9 @@ import { AlertErrorChildComponent } from "./alert-error-child/alert-error-child.
 })
 export class AlertErrorComponent implements OnInit {
    // tslint:disable-next-line: variable-name
-   constructor(private _snackBar: MatSnackBar) {}
+   constructor(private _snackBar: MatSnackBar) { }
 
-   ngOnInit() {}
+   ngOnInit() { }
 
    openError(message: string) {
       this._snackBar.openFromComponent(AlertErrorChildComponent, {

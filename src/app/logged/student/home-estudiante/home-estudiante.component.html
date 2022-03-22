@@ -1,0 +1,123 @@
+<div fxLayout="row wrap" fxLayoutAlign="space-between">
+   <!-- Accesos directos -->
+   <div fxHide fxShow.gt-md class=" mb-3" fxLayout="row wrap" fxLayoutAlign="space-between" fxFlex="100">
+      <cei-card-icon
+         ceiMaterialElevation
+         fxFlex.lt-md="47"
+         fxFlex.gt-md="20"
+         [icon]="'nuevo_pedido'"
+         [text]="'Nuevo pedido'"
+         [routerLink]="this.rootPath + [routes.NEW_ORDER]"
+         routerLinkActive="router-link-active"
+      >
+      </cei-card-icon>
+      <cei-card-icon
+         ceiMaterialElevation
+         fxFlex.lt-md="47"
+         fxFlex.gt-md="20"
+         [icon]="'mis_pedidos_simple'"
+         [text]="'Mis pedidos'"
+         [routerLink]="this.rootPath + [routes.MY_ORDERS]"
+      ></cei-card-icon>
+      <cei-card-icon
+         ceiMaterialElevation
+         fxFlex.lt-md="47"
+         fxFlex.gt-md="20"
+         [icon]="'movimientos'"
+         [text]="'Movimientos'"
+         [routerLink]="this.rootPath + [routes.MY_MOVEMENTS]"
+         [ngClass.lt-md]="{ 'mt-4': true }"
+      ></cei-card-icon>
+      <cei-card-icon
+         ceiMaterialElevation
+         fxFlex.lt-md="47"
+         fxFlex.gt-md="20"
+         [icon]="'transferir_saldo'"
+         [text]="'Transferir saldo'"
+         [routerLink]="this.rootPath + [routes.TRANSFER_MONEY]"
+         class="px-0"
+         [ngClass.lt-md]="{ 'mt-4': true, 'px-0': true }"
+      >
+      </cei-card-icon>
+   </div>
+   <!-- Saldo -->
+   <mat-card class="card-shadow" fxFlex="100" [ngClass.lt-md]="{ 'border-radius-0': true }">
+      <mat-card-header>
+         <mat-card-subtitle fxFlex="100">
+           <div fxLayout="row" fxLayoutAlign="space-between">
+             <div>
+               <span class="mat-h3">Saldo en la cuenta</span> <br /><br />
+               <span class="mat-h3">$ </span>
+               <span class="mat-display-1">{{ this.authService.currentUserValue?.balance }}</span>
+               <span class="mat-h3 mls-2" *ngIf="this.authService?.currentUserValue?.type == this.userType.BECADO && this.authService.currentUserValue.remaining_copies > 0"> (+{{this.authService.currentUserValue.remaining_copies}} copias aseguradas por el CEI)</span> <br />
+             </div>
+           </div>
+         </mat-card-subtitle>
+      </mat-card-header>
+   </mat-card>
+
+   <!-- Pedidos en curso -->
+   <mat-card *ngIf="!this.isLoadingGetOrders; else loadingDiv" class="m-0 my-3 card-shadow" fxFlex="100" [ngClass.lt-md]="{ 'border-radius-0': true }">
+      <mat-card-header>
+         <mat-card-subtitle><span class="mat-h3">Pedidos en curso</span></mat-card-subtitle>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content class="mx-3">
+         <mat-list *ngIf="orders.length > 0; else noOrders">
+            <mat-list-item *ngFor="let order of orders">
+               <!-- <span fxFlex.gt-md="25" fxFlex.lt-lg="15">
+                  <span fxHide="true" fxShow.gt-md>Pedido</span> #{{ order.id }}
+               </span> -->
+               <span fxFlex.gt-md="37" fxFlex.lt-lg="1 1 auto" class="text-accent">
+                  #{{ order.id_number }}
+               </span>
+               <span fxFlex.gt-md="37" fxFlex.lt-lg="1 1 auto" class="text-secondary">
+                  {{ order.tracking[0].timestamp | date: "dd/MM/yy H:mm" }}
+               </span>
+               <span fxFlex.gt-md="37" fxFlex.lt-lg="1 1 auto" fxLayoutAlign="start center">
+                  <mat-icon ceiStatusColorDirective [status]="order.state.code" class="mr-1 mat-icon-small" mat-list-icon svgIcon="customCircle"></mat-icon>
+                  {{ order.state.name }}
+               </span>
+               <button
+                  fxHide="true"
+                  fxShow.gt-md
+                  mat-raised-button
+                  fxFlex="20"
+                  [routerLink]="[this.rootPath + routes.ORDER_DETAIL, order.id]"
+                  routerLinkActive="active"
+                  color="primary"
+               >
+                  Ver más
+               </button>
+               <button
+                  [routerLink]="[this.rootPath + routes.ORDER_DETAIL, order.id]"
+                  routerLinkActive="active"
+                  fxLayoutAlign="center"
+                  fxHide="true"
+                  fxShow.lt-lg
+                  mat-mini-fab
+                  color="primary"
+               >
+                  <mat-icon>search</mat-icon>
+               </button>
+            </mat-list-item>
+         </mat-list>
+         <ng-template #noOrders>
+           <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="start center">
+             <ng-lottie width="170px" [options]="noOrdersLottie"></ng-lottie>
+             <span>
+               No tenés pedidos en curso. Para realizar un nuevo pedido <a class="text-accent" [routerLink]="this.rootPath + [routes.NEW_ORDER]">hacé click acá</a>
+             </span>
+           </div>
+         </ng-template>
+
+      </mat-card-content>
+      <mat-card-footer>
+         <!-- Para cargar saldo -->
+      </mat-card-footer>
+   </mat-card>
+</div>
+
+<ng-template #loadingDiv>
+    <app-spinner fxFlex="100" fxLayoutAlign="center start"></app-spinner>
+</ng-template>

@@ -1,12 +1,13 @@
-import { AbstractControl, ValidatorFn, FormControl, FormGroup } from "@angular/forms";
+import { AbstractControl, FormGroup, ValidatorFn } from "@angular/forms";
 
 export class CustomValidators {
+
    static required(message: string): ValidatorFn {
       return (control: AbstractControl): { [key: string]: any } | null => {
-         return control && !control.value
+         return control && (!control.value || (typeof control.value !== "number" ? control.value.length < 1 : false))
             ? {
-                 required: message
-              }
+               required: message
+            }
             : null;
       };
    }
@@ -15,25 +16,28 @@ export class CustomValidators {
       return (control: AbstractControl): { [key: string]: any } | null => {
          return control && !/^\d+$/.test(control.value)
             ? {
-                 number: message
-              }
+               number: message
+            }
             : null;
       };
    }
 
    static minLength(minLength: number, message: string): ValidatorFn {
       return (control: AbstractControl): { [key: string]: any } | null => {
+         if (control.value === null) {
+            return null;
+         }
          if (typeof control.value !== "number") {
             return control && control.value.trim().length < minLength
                ? {
-                    minLength: message
-                 }
+                  minLength: message
+               }
                : null;
          } else {
             return control && control.value.toString().length < minLength
                ? {
-                    minLength: message
-                 }
+                  minLength: message
+               }
                : null;
          }
       };
@@ -42,16 +46,51 @@ export class CustomValidators {
    static maxLength(maxLength: number, message: string): ValidatorFn {
       return (control: AbstractControl): { [key: string]: any } | null => {
          if (typeof control.value !== "number") {
-            return control && control.value.trim().length > maxLength
+            return control && control.value && control.value.trim().length > maxLength
                ? {
-                    maxLength: message
-                 }
+                  maxLength: message
+               }
                : null;
          } else {
             return control && control.value.toString().length > maxLength
                ? {
-                    maxLength: message
-                 }
+                  maxLength: message
+               }
+               : null;
+         }
+      };
+   }
+
+   static minValue(minValue: number, message: string): ValidatorFn {
+      return (control: AbstractControl): { [key: string]: any } | null => {
+         if (typeof control.value !== 'number') {
+            return {
+               minValue: message,
+            }
+         } else {
+            console.log('min value', minValue);
+            console.log('control value', control.value);
+            console.log('condition', (control && control.value && control.value < minValue));
+            return control && control.value && control.value < minValue
+               ? {
+                  minValue: message,
+               }
+               : null;
+         }
+      };
+   }
+
+   static maxValue(maxValue: number, message: string): ValidatorFn {
+      return (control: AbstractControl): { [key: string]: any } | null => {
+         if (typeof control.value !== 'number') {
+            return {
+               maxValue: message,
+            }
+         } else {
+            return control && control.value && control.value > maxValue
+               ? {
+                  maxValue: message,
+               }
                : null;
          }
       };
@@ -66,19 +105,19 @@ export class CustomValidators {
             ).test(control.value.trim())
             ? null
             : {
-                 email: message
-              };
+               email: message
+            };
       };
    }
 
    static password(message: string): ValidatorFn {
       return (control: AbstractControl): { [key: string]: any } | null => {
          return control &&
-            new RegExp(/^^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=*().,_]).*$/, "i").test(control.value.trim())
+            new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&+-])[A-Za-z\d@$!%*?&+-]{8,}$/, "i").test(control.value.trim())
             ? null
             : {
-                 password: message
-              };
+               password: message
+            };
       };
    }
 
@@ -89,9 +128,21 @@ export class CustomValidators {
 
          return prefix && suffix && prefix.value.trim().length + suffix.value.trim().length !== 10
             ? {
-                 phoneNumberInvalid: message
-              }
+               phoneNumberInvalid: message
+            }
             : null;
       };
+   }
+
+
+   static sameAs(form: FormGroup, compareValue: string, message: string): ValidatorFn {
+      return (control: AbstractControl): { [key: string]: any } | null => {
+
+         return form.controls[`${compareValue}`] === control.value 
+            ? {
+               sameAsInvalid: message
+            }
+            : null;
+      }
    }
 }
