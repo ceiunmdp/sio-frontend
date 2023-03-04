@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatBottomSheet, MatBottomSheetRef, MatTableDataSource, MAT_BOTTOM_SHEET_DATA, PageEvent } from '@angular/material';
 import { Router } from '@angular/router';
@@ -18,7 +18,7 @@ import { HttpErrorResponseHandlerService } from 'src/app/_services/http-error-re
 import { MovementService } from 'src/app/_services/movement.service';
 import { CustomValidators } from 'src/app/_validators/custom-validators';
 import Swal from 'sweetalert2';
-import {AnimationOptions} from 'ngx-lottie';
+import { AnimationOptions } from 'ngx-lottie';
 
 @Component({
   selector: 'cei-money-transfer',
@@ -55,9 +55,9 @@ export class MoneyTransferComponent implements OnInit {
   @ViewChild('alertError', { static: true }) alertError;
   messageError: string;
   noOrdersLottie: AnimationOptions = {
-      path: 'assets/animations/empty-orders.json',
-      loop: false
-   };
+    path: 'assets/animations/empty-orders.json',
+    loop: false
+  };
 
 
   constructor(
@@ -71,7 +71,7 @@ export class MoneyTransferComponent implements OnInit {
   ngOnInit() {
     this.fb = new FilterBuilder();
     this.getUserData().toPromise().catch(err => this.handleErrors(err));
-    this.generalService.sendMessage({title: 'Transferencia de saldo'})
+    this.generalService.sendMessage({ title: 'Transferencia de saldo' })
     this.dataSourceUsers = new MatTableDataSource();
     this.displayedColumns = this.displayedUsersColumns;
     this.filter = this.fb.and(this.fb.where('disabled', OPERATORS.IS, 'false'));
@@ -79,7 +79,7 @@ export class MoneyTransferComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    if(!!this._users) {
+    if (!!this._users) {
       this._users.unsubscribe();
     }
   }
@@ -138,7 +138,7 @@ export class MoneyTransferComponent implements OnInit {
     refBS.afterDismissed().subscribe((refresh) => {
       if (refresh) window.location.reload();
     });
- }
+  }
 
   onSearch(st: string) {
     this.filter = this.fb.or(
@@ -183,9 +183,9 @@ export class MoneyTransferComponent implements OnInit {
   templateUrl: "bottom-money-transfer.html"
 })
 
-export class BottomMoneyTransferComponent implements OnInit {
-  @ViewChild("responseSwal", { static: true }) private responseSwal: SwalComponent;
-  @ViewChild("questionSwal", { static: true }) private questionSwal: SwalComponent;
+export class BottomMoneyTransferComponent implements OnInit, AfterViewInit {
+  @ViewChild("responseSwal", { static: true }) private questionSwal: SwalComponent;
+  //@ViewChild("questionSwal", { static: true }) private questionSwal: SwalComponent;
   updatedUser;
   transferMoneyUser: any;
   currentUser: any;
@@ -193,81 +193,94 @@ export class BottomMoneyTransferComponent implements OnInit {
   public readonly MONEY = "money";
 
   constructor(
-     private _bottomSheetRef: MatBottomSheetRef<BottomMoneyTransferComponent>,
-     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
-     private fb: FormBuilder,
-     private authService: AuthenticationService,
-     private movementsService: MovementService
+    private _bottomSheetRef: MatBottomSheetRef<BottomMoneyTransferComponent>,
+    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
+    private fb: FormBuilder,
+    private authService: AuthenticationService,
+    private movementsService: MovementService
   ) {
-     this.transferMoneyUser = data.toUser;
-     this.currentUser = data.fromUser;
+    this.transferMoneyUser = data.toUser;
+    this.currentUser = data.fromUser;
+    console.log('ButtonMoneyTransfer', this.questionSwal)
+
   }
 
   ngOnInit() {
-     this.transferForm = this.createMoneyTransferForm();
+    this.transferForm = this.createMoneyTransferForm();
+  }
+
+  ngAfterViewInit() {
+    console.log('questionSwalaa', this.questionSwal);
+
   }
 
   onCancelCharge() {
-     this._bottomSheetRef.dismiss(false);
+    this._bottomSheetRef.dismiss(false);
   }
 
   onConfirmSwal() {
-     this._bottomSheetRef.dismiss(true);
+    this._bottomSheetRef.dismiss(true);
   }
 
   onClickChargeBalance() {
-     this.questionSwal.swalOptions = {
-        title: "Transferencia de saldo",
-        text: `¿Confirma que desea transferir $${this.transferForm.value.money} a ${this.transferMoneyUser.display_name}?`,
-        icon: "question",
-        showConfirmButton: true,
-        showCancelButton: true,
-        confirmButtonText: "Confirmar",
-        cancelButtonText: "Cancelar",
-        preConfirm: () => {
-           return this.transferMoney().then(response => {
-              this.updatedUser = response.data;
-              Swal.fire({
-                 title: "Transferencia de saldo exitosa",
-                 text: response.message,
-                 icon: "success",
-                 showConfirmButton: true,
-                 confirmButtonText: "Continuar",
-              }).then(res => {this.onConfirmSwal(); this.authService.getAndUpdateUserData().toPromise()})
-           }).catch(e => {
-              Swal.fire({
-                 title: "Carga de saldo",
-                 text: "No se pudo realizar la transferencia, inténtelo nuevamente",
-                 icon: "error",
-                 showConfirmButton: true,
-                 confirmButtonText: "Continuar"
-              })
-           })
-        },
-        allowOutsideClick: () => !Swal.isLoading()
-     };
-     setTimeout(() => {
-        this.questionSwal.fire();
-     }, 0);
+    console.log('Onclick', this.questionSwal)
+
+
+    this.questionSwal.swalOptions = {
+      title: "Transferencia de saldo",
+      text: `¿Confirma que desea transferir $${this.transferForm.value.money} a ${this.transferMoneyUser.display_name}?`,
+      icon: "question",
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Confirmar",
+      cancelButtonText: "Cancelar",
+      preConfirm: () => {
+        return this.transferMoney().then(response => {
+          this.updatedUser = response.data;
+          Swal.fire({
+            title: "Transferencia de saldo exitosa",
+            text: response.message,
+            icon: "success",
+            showConfirmButton: true,
+            confirmButtonText: "Continuar",
+          }).then(res => { this.onConfirmSwal(); this.authService.getAndUpdateUserData().toPromise() })
+        }).catch(e => {
+          Swal.fire({
+            title: "Carga de saldo",
+            text: "No se pudo realizar la transferencia, inténtelo nuevamente",
+            icon: "error",
+            showConfirmButton: true,
+            confirmButtonText: "Continuar"
+          })
+        })
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    };
+    setTimeout(() => {
+
+      console.log('InsideTime', this.questionSwal)
+      this.questionSwal.fire();
+
+    }, 100);
   }
 
   createMoneyTransferForm(): FormGroup {
     return this.fb.group({
-       [this.MONEY]: ["", [
-          CustomValidators.required("El campo es obligatorio"),
-          CustomValidators.minValue(1, "La carga debe ser positiva"),
-          CustomValidators.maxValue(this.currentUser.balance, "No puede transferir mas que su saldo actual"),
+      [this.MONEY]: ["", [
+        CustomValidators.required("El campo es obligatorio"),
+        CustomValidators.minValue(1, "La carga debe ser positiva"),
+        CustomValidators.maxValue(this.currentUser.balance, "No puede transferir mas que su saldo actual"),
       ]]
     });
   }
 
   transferMoney(): Promise<any> {
-     return this.movementsService.createMovement(this.currentUser.id, this.transferMoneyUser.id, MOVEMENTS.TRANSFER , this.transferForm.value.money).toPromise();
+    return this.movementsService.createMovement(this.currentUser.id, this.transferMoneyUser.id, MOVEMENTS.TRANSFER, this.transferForm.value.money).toPromise();
   }
 
   openLink(event: MouseEvent): void {
-     this._bottomSheetRef.dismiss(false);
-     event.preventDefault();
+    this._bottomSheetRef.dismiss(false);
+    event.preventDefault();
   }
 
 }
